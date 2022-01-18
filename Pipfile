@@ -5,6 +5,7 @@ name = "pypi"
 
 [packages]
 axie-utils = "*"
+"discord.py" = "*"
 
 [dev-packages]
 
