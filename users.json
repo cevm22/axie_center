@@ -9,5 +9,6 @@
   "ban_alltime": 1,
   "num_tickets": 20,
   "num_commands": 100,
-  "ticket_open": true
+  "ticket_open": true,
+  "language": "ES"
 }]
