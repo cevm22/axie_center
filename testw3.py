@@ -60,26 +60,43 @@ def get_nonce():
     )
     return nonce
 
-
-def get_tx(tx_hash):
+def test(tx_hash):
     w3 = Web3(
             Web3.HTTPProvider(
                 RONIN_PROVIDER_FREE,
                 request_kwargs={
                     "headers": {"content-type": "application/json",
                                 "user-agent": USER_AGENT}}))
-    tx = w3.eth.get_transaction(tx_hash)
-    tx_contract=str(tx['to'])
-    tx_from=str(tx['from'])
-    tx_coded=(tx.input)
-    if tx_contract.lower() == AXIE_CONTRACT.lower():
-        ctr = w3.eth.contract(address=Web3.toChecksumAddress(tx_contract), abi=AXIE_ABI)
-        vector=AXIE_tx(ctr,tx_coded,tx_contract.lower())
-        return vector
-    else:
-        ctr = w3.eth.contract(address=Web3.toChecksumAddress(tx_contract), abi=SLP_ABI)
-        vector=TOKEN_tx(ctr,tx_coded,tx_contract.lower(),tx_from.lower())
-        return vector
+    tx = w3.eth.get_transaction_receipt(tx_hash)
+    print(tx.status)
+    return
+
+def get_tx(tx_hash):
+    try:
+        w3 = Web3(
+                Web3.HTTPProvider(
+                    RONIN_PROVIDER_FREE,
+                    request_kwargs={
+                        "headers": {"content-type": "application/json",
+                                    "user-agent": USER_AGENT}}))
+        tx = w3.eth.get_transaction(tx_hash)
+        tx_confirm = w3.eth.get_transaction_receipt(tx_hash)
+        if int(tx_confirm.status) == 1:
+            tx_contract=str(tx['to'])
+            tx_from=str(tx['from'])
+            tx_coded=(tx.input)
+            if tx_contract.lower() == AXIE_CONTRACT.lower():
+                ctr = w3.eth.contract(address=Web3.toChecksumAddress(tx_contract), abi=AXIE_ABI)
+                vector=AXIE_tx(ctr,tx_coded,tx_contract.lower())
+                return vector
+            else:
+                ctr = w3.eth.contract(address=Web3.toChecksumAddress(tx_contract), abi=SLP_ABI)
+                vector=TOKEN_tx(ctr,tx_coded,tx_contract.lower(),tx_from.lower())
+                return vector
+        else:
+            return 'TX_FAIL'
+    except Exception as e:
+        return "NOT_FOUND"
 
 
 def AXIE_tx(ctr,tx__input,tx__contract):
@@ -97,5 +114,7 @@ def TOKEN_tx(ctr,tx__input,tx__contract,tx__from):
     vector=[tx__contract,tx__from,tx_to,tx_value]
     return vector   
 
-
-
+#print("tx rechazada")
+#print(get_tx('0x1124b6011f9b0014fc956e3b6debff7916551cf2b7a96430b27a99f45c84ede9'))
+print("tx aceptada")
+print(get_tx('0xeffc9c0d2f0e7ef7cc96d85aa1eda34efbda8f4a7245a2a793bda51c6f518095'))
