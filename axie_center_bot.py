@@ -18,8 +18,11 @@ async def test1(ctx):
     #<@!375140672329613324> # andres
     #358375624294924289 #lasthope
     #return
+#=======================
+#Private Sale 
 @bot.command()
-async def test(ctx):
+async def ps(ctx):
+    #template MSG
     vec=[
         "PS-0000001",
         123456, #axie ID
