@@ -1,0 +1,26 @@
+[{
+  "_id": {
+    "$oid": "61e6fa20171f468620d42c5b"
+  },
+  "init_time": 1642527399,
+  "comision": 2,
+  "end_time": 1642530400,
+  "log": "comentarios",
+  "ronin_1": "ronin:1ba2228e2c90bc6cc4fd7c3fe62e796c4321356f",
+  "ronin_2": "ronin:cb0e8315633348f559bc0edf781f53b48c97ebca",
+  "sendhash_1": "0xcea4ced35f6e5d8ce647099f46d0706ddee5a3d521d169ee3cfbfafa098275c8",
+  "sendhash_2": "0x504c6596b97b39486923f1399ae2fafec44be652047e83d58a88fbca9d82a403",
+  "status_hash_1": true,
+  "status_hash_2": true,
+  "status_send_1": true,
+  "status_send_2": true,
+  "ticket": "td-1642527399",
+  "ticket_stat": 1,
+  "token_1": "AXIE",
+  "token_2": "USDC",
+  "txhash_1": "0xcea4ced35f6e5d8ce647099f46d0706ddee5a3d521d169ee3cfbfafa098275c8",
+  "txhash_2": "0x504c6596b97b39486923f1399ae2fafec44be652047e83d58a88fbca9d82a403",
+  "type": "Private Sale",
+  "value_1": 123456,
+  "value_2": 100
+}]

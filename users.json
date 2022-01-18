@@ -1,0 +1,13 @@
+[{
+  "_id": {
+    "$oid": "61e704a5171f468620d42c68"
+  },
+  "discord_id": 123123123,
+  "tickets_log": "PV-123",
+  "ronin": "ronin:1bx2d",
+  "ban": true,
+  "ban_alltime": 1,
+  "num_tickets": 20,
+  "num_commands": 100,
+  "ticket_open": true
+}]
