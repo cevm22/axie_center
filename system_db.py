@@ -12,7 +12,7 @@ client = MongoClient(MONGO_URI) #inicializacion de la base datos
 # DB CREATE ticket PRIVATE SALE
 #======================================================================
 def create_ticket_PS(vec):
-    db=client['logs'] # DB
+    db=client['tx_db'] # DB
     collection=db['tickets'] # Collection
     collection.insert_one({
                 "init_time": vec[4],
