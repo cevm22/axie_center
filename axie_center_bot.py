@@ -79,8 +79,10 @@ async def trade(ctx):
         '2022-01-19 00:00:50',#Closed:
         'Notas varias en caso de cancelar o error',#Notes:
     ]
-    ticket_msg=ES_msg_templates.ticket_msg(vec)
-    await ctx.send(embed=ticket_msg)
+    trade_msg_1=ES_msg_templates.trade_msg_1(vec)
+    trade_msg_2=ES_msg_templates.trade_msg_2(vec)
+    await ctx.send(embed=trade_msg_1)
+    await ctx.send(embed=trade_msg_2)
     return
 
 
