@@ -15,3 +15,6 @@ TODO:
 - Crear sistema de tickets de soporte
 - Crear sistema de duplicidad de comprobantes hash. (primero filtrar por ronin y despues hash)
 - Crear sistema de duplicidad de venta de axies(filtrar por axie y revisar que ticket esta en proceso)
+
+
+-Agregar condicional a los Proof_Hash en los templates para enviar el MarkDown de Link o enviar emotes str('[Marketplace]'+'('+str(axie_url+str(msg[4])+')'))
