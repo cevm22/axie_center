@@ -4,6 +4,7 @@ from discord.ext import tasks
 import datetime
 import config
 import ES_msg_templates
+import system_db
 #El bot es activado con el prefijo '_' + comando en la funcion
 bot = commands.Bot(command_prefix='_',help_command=None)
 
@@ -92,12 +93,15 @@ async def trade(ctx):
 #Change Idiom 
 @bot.command()
 async def ch(ctx,languaje):
+    #Verificar que se encuentre registrado
+    #Verificar que no tenga BAN
     if languaje.lower()=='es':
-        #Actualizar base de datos del usuario agregando "es"
-        await ctx.send("Has cambiado a ESPAÑOL")
+        system_db.change_language(1642527399,'es')
+        await ctx.send("Has cambiado a ESPAÑOL :flag_es:")
 
     if languaje.lower()=='en':
-        await ctx.send("You Changed to ENGLISH")
+        system_db.change_language(1642527399,'en')
+        await ctx.send("You Changed to ENGLISH :flag_us:")
     return
 
 #=======================

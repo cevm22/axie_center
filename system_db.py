@@ -56,6 +56,16 @@ def enroll_new(vec):
                 "language": "EN"
                 })
     return
-print("inicio")
-vector=[1642527399,'ronin:1bsdu3s8fnfd7823hdfsfv9']
-enroll_new(vector)
+
+#======================================================================
+# DB change status LANGUAGE
+#======================================================================
+def change_language(user,lan):
+    db=client['users_data'] # DB
+    collection=db['user'] # Collection
+    data=collection.update_one({'discord_id':user},{"$set":{'language':lan}})
+    return data
+
+#print("inicio")
+#vector=[1642527399,'ronin:1bsdu3s8fnfd7823hdfsfv9']
+#enroll_new(vector)
