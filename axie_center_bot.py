@@ -57,6 +57,34 @@ async def ticket(ctx):
     return
 
 #=======================
+#Axie Trade 
+@bot.command()
+async def trade(ctx):
+    #template MSG TICKET
+    vec=[
+        'T-00001',#Ticket ID:
+        'PENDING',#Ticket Status:
+        "2022-01-19 00:00:50",#Opened:
+        '123456',#Axie_1 ID:
+        #Axie_1 img:
+        '654321',#Axie_2 ID:
+        #Axie_2 img:
+        '0xcea4ced35f6e5d8ce647099f46d0706ddee5a3d521d169ee3cfbfafa098275c8',#Owner_1 Proof Hash:
+        ':white_check_mark:',#Owner_1 Status Hash:
+        '0xd1fa214b3e920c8d50ab83e502e4237b8de472cb3b3e2a4189d8830fcccedd65',#Owner_2 Proof Hash:
+        ':white_check_mark:',#Owner_2 Status Hash:
+        ':white_check_mark:',#Assets in AxieCenter: 
+        ':x:',#AxieCenter to Owner_1 Hash:
+        ':x:',#AxieCenter to Owner_2 Hash:
+        '2022-01-19 00:00:50',#Closed:
+        'Notas varias en caso de cancelar o error',#Notes:
+    ]
+    ticket_msg=ES_msg_templates.ticket_msg(vec)
+    await ctx.send(embed=ticket_msg)
+    return
+
+
+#=======================
 #Change Idiom 
 @bot.command()
 async def ch(ctx,languaje):
