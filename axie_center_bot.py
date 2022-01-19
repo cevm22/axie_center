@@ -94,24 +94,24 @@ async def trade(ctx):
 #Change Idiom 
 @bot.command()
 async def ch(ctx,languaje):
-    #Verificar que no tenga BAN
-    banned=aux_func.ban_validation(1642527399)
-    if banned==True:
-        await ctx.send("BANNED")
-        return
-    else:
-        #Verificar que se encuentre registrado
-        verify=system_db.validate_user(164252739)
-        if not verify:
+    user_id=str(ctx.message.author.id)
+    #Verificar que se encuentre registrado
+    verify=system_db.validate_user(user_id)
+    if not verify:
             await ctx.send("**NO** estas registrado, usa el comando : **_enroll** para ingresar a Axie Center.")
             return
-        else:
+    #Verificar que no tenga BAN
+    banned=aux_func.ban_validation(user_id)
+    if banned==True:
+            await ctx.send("BANNED")
+            return
+    else:
             if languaje.lower()=='es':
-                system_db.change_language(1642527399,'es')
+                system_db.change_language(user_id,'es')
                 await ctx.send("Has cambiado a ESPAÑOL :flag_es:")
 
             if languaje.lower()=='en':
-                system_db.change_language(1642527399,'en')
+                system_db.change_language(user_id,'en')
                 await ctx.send("You Changed to ENGLISH :flag_us:")
             return
 
