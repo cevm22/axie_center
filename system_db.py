@@ -65,7 +65,17 @@ def change_language(user,lan):
     collection=db['user'] # Collection
     data=collection.update_one({'discord_id':user},{"$set":{'language':lan}})
     return data
+#======================================================================
+# VALIDATE USER enrolled
+#======================================================================
+def validate_user(user_ID):
+    db=client['users_data'] # DB
+    collection=db['user'] # Collection     
+    data=collection.find_one({"discord_id":user_ID})   
+    return data
 
 print("inicio")
 #vector=[1642527399,'ronin:1bsdu3s8fnfd7823hdfsfv9'] #enroll func
 #vector=["PS-000001",765432,100,2,1642617963] #private sale func
+
+#print(validate_user(164252739))

@@ -94,15 +94,21 @@ async def trade(ctx):
 @bot.command()
 async def ch(ctx,languaje):
     #Verificar que se encuentre registrado
-    #Verificar que no tenga BAN
-    if languaje.lower()=='es':
-        system_db.change_language(1642527399,'es')
-        await ctx.send("Has cambiado a ESPAÑOL :flag_es:")
+    verify=system_db.validate_user(164252739)
+    if not verify:
+        await ctx.send("**NO** estas registrado, usa el comando : **_enroll** para ingresar a Axie Center.")
+        return
+    else:
+        #Verificar que no tenga BAN
+            
+        if languaje.lower()=='es':
+            system_db.change_language(1642527399,'es')
+            await ctx.send("Has cambiado a ESPAÑOL :flag_es:")
 
-    if languaje.lower()=='en':
-        system_db.change_language(1642527399,'en')
-        await ctx.send("You Changed to ENGLISH :flag_us:")
-    return
+        if languaje.lower()=='en':
+            system_db.change_language(1642527399,'en')
+            await ctx.send("You Changed to ENGLISH :flag_us:")
+        return
 
 #=======================
 #Change enrol 
