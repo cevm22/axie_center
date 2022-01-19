@@ -66,6 +66,6 @@ def change_language(user,lan):
     data=collection.update_one({'discord_id':user},{"$set":{'language':lan}})
     return data
 
-#print("inicio")
-#vector=[1642527399,'ronin:1bsdu3s8fnfd7823hdfsfv9']
-#enroll_new(vector)
+print("inicio")
+#vector=[1642527399,'ronin:1bsdu3s8fnfd7823hdfsfv9'] #enroll func
+#vector=["PS-000001",765432,100,2,1642617963] #private sale func
