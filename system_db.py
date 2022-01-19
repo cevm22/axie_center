@@ -36,9 +36,26 @@ def create_ticket_PS(vec):
                 "type": "Private Sale",
                 "value_1": vec[1], #AXIE id
                 "value_2": vec[2], #USDC token
-})
+                })
     return
-
+#======================================================================
+# DB ENROLL new users
+#======================================================================
+def enroll_new(vec):
+    db=client['users_data'] # DB
+    collection=db['user'] # Collection
+    collection.insert_one({
+                "discord_id": vec[0],
+                "tickets_log": 0,
+                "ronin": vec[1],
+                "ban": False,
+                "ban_alltime": 0,
+                "num_tickets": 0,
+                "num_commands": 0,
+                "ticket_open": False,
+                "language": "EN"
+                })
+    return
 print("inicio")
-vector=['PS-000001',987654,100,2,1642527399]
-create_ticket_PS(vector)
+vector=[1642527399,'ronin:1bsdu3s8fnfd7823hdfsfv9']
+enroll_new(vector)

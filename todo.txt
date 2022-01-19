@@ -3,9 +3,6 @@ Ideas general para Axie Center:
 - Intercambio de Axies
 
 TODO:
-- Crear Base de datos para tickets y seguimiento
-- Crear Base de datos para registro de usuarios
-- Crear Base de datos para Ban list
 - Crear flujo de venta privada
 - Crear flujo de intercambio de Axies
 - Crear script para el caso de NO cumplir con el trato, regrese el Axie o Token a sus respectivos owners

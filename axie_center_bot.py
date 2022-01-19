@@ -103,7 +103,7 @@ async def ch(ctx,languaje):
 #=======================
 #Change enrol 
 @bot.command()
-async def enrol(ctx,ronin):
+async def enroll(ctx,ronin):
     
     await ctx.send("Welcome to Axie Center")
     #En caso que ya este registrado 
