@@ -55,5 +55,31 @@ async def ticket(ctx):
     ticket_msg=ES_msg_templates.ticket_msg(vec)
     await ctx.send(embed=ticket_msg)
     return
+
+#=======================
+#Change Idiom 
+@bot.command()
+async def ch(ctx,languaje):
+    if languaje.lower()=='es':
+        #Actualizar base de datos del usuario agregando "es"
+        await ctx.send("Has cambiado a ESPAÑOL")
+
+    if languaje.lower()=='en':
+        await ctx.send("You Changed to ENGLISH")
+    return
+
+#=======================
+#Change enrol 
+@bot.command()
+async def enrol(ctx,ronin):
+    
+    await ctx.send("Welcome to Axie Center")
+    #En caso que ya este registrado 
+    #await ctx.send("You are already registered!")
+    #En caso que el Wallet YA esta registrado
+    #await ctx.send("This Ronin address is already in use, Please Verify it!")
+    #Addres no validada por el nodo
+    #await ctx.send("Invalid Address")
+    return
 print("bot started")
 bot.run(config.token)
