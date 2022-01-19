@@ -5,6 +5,7 @@ import datetime
 import config
 import ES_msg_templates
 import system_db
+import aux_func
 #El bot es activado con el prefijo '_' + comando en la funcion
 bot = commands.Bot(command_prefix='_',help_command=None)
 
@@ -93,22 +94,26 @@ async def trade(ctx):
 #Change Idiom 
 @bot.command()
 async def ch(ctx,languaje):
-    #Verificar que se encuentre registrado
-    verify=system_db.validate_user(164252739)
-    if not verify:
-        await ctx.send("**NO** estas registrado, usa el comando : **_enroll** para ingresar a Axie Center.")
+    #Verificar que no tenga BAN
+    banned=aux_func.ban_validation(1642527399)
+    if banned==True:
+        await ctx.send("BANNED")
         return
     else:
-        #Verificar que no tenga BAN
-            
-        if languaje.lower()=='es':
-            system_db.change_language(1642527399,'es')
-            await ctx.send("Has cambiado a ESPAÑOL :flag_es:")
+        #Verificar que se encuentre registrado
+        verify=system_db.validate_user(164252739)
+        if not verify:
+            await ctx.send("**NO** estas registrado, usa el comando : **_enroll** para ingresar a Axie Center.")
+            return
+        else:
+            if languaje.lower()=='es':
+                system_db.change_language(1642527399,'es')
+                await ctx.send("Has cambiado a ESPAÑOL :flag_es:")
 
-        if languaje.lower()=='en':
-            system_db.change_language(1642527399,'en')
-            await ctx.send("You Changed to ENGLISH :flag_us:")
-        return
+            if languaje.lower()=='en':
+                system_db.change_language(1642527399,'en')
+                await ctx.send("You Changed to ENGLISH :flag_us:")
+            return
 
 #=======================
 #Change enrol 
