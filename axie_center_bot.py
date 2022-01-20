@@ -8,15 +8,15 @@ import system_db
 import aux_func
 #El bot es activado con el prefijo '_' + comando en la funcion
 bot = commands.Bot(command_prefix='_',help_command=None)
+client=discord.Client(activity=discord.Game(name='Axie Center'))
 
-
-#@bot.command()
-async def test1(ctx):
-    a=str(ctx.message)
-    print(a)
-    #print(type(a))
+@bot.command()
+async def test(ctx):    
+    user = await bot.fetch_user(358375624294924289)
+    await user.send('hi my name is *bot name here* and i am a bot!') 
+    #await ctx.message.author.send('hi, i am a bot!')#enviar DM tomando el mensaje del autor
     #await ctx.send(f"se han agregado 200 puntos a <@{a}>")
-    await ctx.send("Test")
+    #await ctx.send("Test")
     #<@!375140672329613324> # andres
     #358375624294924289 #lasthope
     #return
