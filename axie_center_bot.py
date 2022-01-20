@@ -6,6 +6,7 @@ import config
 import ES_msg_templates
 import system_db
 import aux_func
+import blockchain_func
 #El bot es activado con el prefijo '_' + comando en la funcion
 bot = commands.Bot(command_prefix='_',help_command=None)
 client=discord.Client(activity=discord.Game(name='Axie Center'))
@@ -119,14 +120,28 @@ async def ch(ctx,languaje):
 #Change enrol 
 @bot.command()
 async def enroll(ctx,ronin):
-    
-    await ctx.send("Welcome to Axie Center")
     #En caso que ya este registrado 
-    #await ctx.send("You are already registered!")
-    #En caso que el Wallet YA esta registrado
-    #await ctx.send("This Ronin address is already in use, Please Verify it!")
-    #Addres no validada por el nodo
-    #await ctx.send("Invalid Address")
-    return
+    user_ID=str(ctx.message.author.id)
+    user_exist=system_db.validate_user(user_ID)
+    if not user_exist:
+            #Addres no validada por el nodo
+            valid_address=blockchain_func.validate_ronin(ronin)
+            if valid_address == True:
+                #Verificar que el Wallet YA esta registrado
+                ronin_exist=system_db.validate_ronin(str(ronin.lower()))
+                if not ronin_exist:
+                    #### Hacer flujo de registro            
+                    await ctx.send("Welcome to Axie Center")
+                    return
+                else:
+                    await ctx.send("This Ronin address is already in use, Please Verify it! and send it again")
+                    return
+            else:
+                await ctx.send("Invalid Address, Please use a valid **ronin** Address")
+                return
+    else:
+        await ctx.send("You are already registered!")
+        return
+
 print("bot started")
 bot.run(config.token)

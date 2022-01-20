@@ -74,6 +74,14 @@ def validate_user(user_ID):
     data=collection.find_one({"discord_id":user_ID})   
     return data
 #======================================================================
+# VALIDATE RONIN enrolled before
+#======================================================================
+def validate_ronin(ronin):
+    db=client['users_data'] # DB
+    collection=db['user'] # Collection     
+    data=collection.find_one({"ronin":ronin})   
+    return data
+#======================================================================
 # VALIDATE USER not banned
 #======================================================================
 def user_gotban(user_ID):
