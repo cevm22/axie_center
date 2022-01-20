@@ -4,6 +4,13 @@ Ideas general para Axie Center:
 
 TODO:
 - Crear flujo de venta privada
+    -Func aceptacion ticket
+    -Func cancelacion ticket
+    -Func Bloqueo de terceros a acceder a ticket
+    -Func verificacion de tokens en hotwallet
+    -Func envío de tokens a los users
+    -Func status tickets
+
 - Crear flujo de intercambio de Axies
 - Crear script para el caso de NO cumplir con el trato, regrese el Axie o Token a sus respectivos owners
 - Crear script para el caso de SI cumplir con el trato, enviar el axie y el token a sus nuevos owners

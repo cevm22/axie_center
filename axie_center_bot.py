@@ -25,6 +25,9 @@ async def test(ctx):
 #Private Sale 
 @bot.command()
 async def ps(ctx):
+    #Flujo creación de Ticket para venta privada
+
+
     #template MSG
     vec=[
         "PS-0000001",
