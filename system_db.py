@@ -55,7 +55,7 @@ def enroll_new(vec):
                 "ticket_open": False,
                 "language": "EN"
                 })
-    return
+    return True
 
 #======================================================================
 # DB change status LANGUAGE

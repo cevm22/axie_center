@@ -130,9 +130,15 @@ async def enroll(ctx,ronin):
                 #Verificar que el Wallet YA esta registrado
                 ronin_exist=system_db.validate_ronin(str(ronin.lower()))
                 if not ronin_exist:
-                    #### Hacer flujo de registro            
-                    await ctx.send("Welcome to Axie Center")
-                    return
+                    #### Hacer flujo de registro
+                    vector=[user_ID,str(ronin.lower())]
+                    validate_enroll=system_db.enroll_new(vector)            
+                    if validate_enroll == True:
+                        await ctx.send("Welcome to Axie Center")
+                        return
+                    else:
+                        await ctx.send("Somthing is wrong, please verify with an Admin")
+                        return
                 else:
                     await ctx.send("This Ronin address is already in use, Please Verify it! and send it again")
                     return
