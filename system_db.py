@@ -18,6 +18,8 @@ def create_ticket_PS(vec):
                 "init_time": vec[4],
                 "comision": vec[3],
                 "end_time": 0,
+                "discord_id_1":vec[5],
+                "discord_id_2":0,
                 "log": "comentarios",
                 "ronin_1": "ronin:1ba2228e2c90bc6cc4fd7c3fe62e796c4321356f",
                 "ronin_2": "0",
@@ -44,8 +46,9 @@ def create_ticket_PS(vec):
 def user_ticket_opened(user_ID):
     db=client['users_data'] # DB
     collection=db['user'] # Collection     
-    data=collection.find_one({"discord_id":user_ID},{"ticket_open":1}) 
-    return data["ticket_open"]
+    data=collection.find_one({"discord_id":user_ID},{"ticket_open":1, "ticket_last":1}) 
+    return [data["ticket_open"],data["ticket_last"]]
+
 #======================================================================
 # DB ENROLL new users
 #======================================================================
@@ -61,6 +64,7 @@ def enroll_new(vec):
                 "num_tickets": 0,
                 "num_commands": 0,
                 "ticket_open": False,
+                "ticket_last":"0",
                 "language": "EN"
                 })
     return True
@@ -106,9 +110,9 @@ def user_ban_count(user_ID):
     data=collection.find_one({"discord_id":user_ID},{"ban_alltime":1})
     return data['ban_alltime']
 
-print("inicio")
+#print("inicio")
 #vector=[1642527399,'ronin:1bsdu3s8fnfd7823hdfsfv9'] #enroll func
 #vector=["PS-000001",765432,100,2,1642617963] #private sale func
 
 #print(validate_user(164252739))
-print(user_ticket_opened("358375624294924289"))
+#print(user_ticket_open_last("358375624294924289"))

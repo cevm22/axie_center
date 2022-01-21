@@ -39,22 +39,29 @@ async def ps(ctx,axie_ID,price):
             return
     else:   
         #Revisar que el usuario no tenga ticket abierto o pendiente
-        #Flujo creación de Ticket para venta privada
-        #hacer funcion para obtener ID incremental
-            #hacer base datos para status
-        new_id=1
-        ticket_vec=[
-            str('PS-'+ str(new_id)),#"PS-0000001", ticket id
-            int(axie_ID), #axie ID
-            int(price), #price
-            2,#comision #pendiente hacer func comision
-            "358375624294924289"#timestamp
-        ]
-        system_db.create_ticket_PS(ticket_vec)
-        #pendiente para casos de huevos
-        ps_msg_template=ES_msg_templates.ps_msg(ticket_vec)
-        await user.send(embed=ps_msg_template)
-        return
+        ticket_status=system_db.user_ticket_opened(user_id)
+        if ticket_status[0] == True:
+            await user.send("Ya cuentas con un ticket pendiente, debes **cancelarlo o terminarlo** antes de solicitarlo uno nuevo." +"\n" + "Ticket ID pendiente es > **"+str(ticket_status[1])+"**")
+            #Funcion para ver status de ticket pendiente y enviarlo al usuario
+            return
+        else:
+            #Flujo creación de Ticket para venta privada
+            #hacer funcion para obtener ID incremental
+                #hacer base datos para status
+            new_id=1
+            ticket_vec=[
+                str('PS-'+ str(new_id)),#"PS-0000001", ticket id
+                int(axie_ID), #axie ID
+                int(price), #price
+                2,#comision #pendiente hacer func comision
+                "358375624294924289",#timestamp
+                user_id
+            ]
+            system_db.create_ticket_PS(ticket_vec)
+            #pendiente para casos de huevos
+            ps_msg_template=ES_msg_templates.ps_msg(ticket_vec)
+            await user.send(embed=ps_msg_template)
+            return
 #=======================
 #Ticket 
 @bot.command()
