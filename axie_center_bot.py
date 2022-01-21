@@ -24,19 +24,36 @@ async def test(ctx):
 #=======================
 #Private Sale 
 @bot.command()
-async def ps(ctx):
-    #Flujo creación de Ticket para venta privada
-
-
-    #template MSG
-    vec=[
-        "PS-0000001",
-        "4164536", #axie ID
-        100, #price
-    ]
-    ps_msg_template=ES_msg_templates.ps_msg(vec)
-    await ctx.send(embed=ps_msg_template)
-    return
+async def ps(ctx,axie_ID,price):
+    user_id=str(ctx.message.author.id)
+    user = await bot.fetch_user(user_id)
+    #Verificar que se encuentre registrado
+    verify=system_db.validate_user(user_id)
+    if not verify:
+            await ctx.send("**NO** estas registrado, usa el comando : **_enroll** para ingresar a Axie Center.")
+            return
+    #Verificar que no tenga BAN
+    banned=aux_func.ban_validation(user_id)
+    if banned==True:
+            await ctx.send("BANNED")
+            return
+    else:   
+        #Revisar que el usuario no tenga ticket abierto o pendiente
+        #Flujo creación de Ticket para venta privada
+        #hacer funcion para obtener ID incremental
+        new_id=1
+        ticket_vec=[
+            str('PS-'+ str(new_id)),#"PS-0000001", ticket id
+            int(axie_ID), #axie ID
+            int(price), #price
+            2,#comision #pendiente hacer func comision
+            "358375624294924289"#timestamp
+        ]
+        system_db.create_ticket_PS(ticket_vec)
+        #pendiente para casos de huevos
+        ps_msg_template=ES_msg_templates.ps_msg(ticket_vec)
+        await user.send(embed=ps_msg_template)
+        return
 #=======================
 #Ticket 
 @bot.command()
