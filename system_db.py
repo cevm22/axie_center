@@ -39,6 +39,14 @@ def create_ticket_PS(vec):
                 })
     return
 #======================================================================
+# VALIDATE USERS_TICKET in pending/opened
+#======================================================================
+def user_ticket_opened(user_ID):
+    db=client['users_data'] # DB
+    collection=db['user'] # Collection     
+    data=collection.find_one({"discord_id":user_ID},{"ticket_open":1}) 
+    return data["ticket_open"]
+#======================================================================
 # DB ENROLL new users
 #======================================================================
 def enroll_new(vec):
@@ -103,3 +111,4 @@ print("inicio")
 #vector=["PS-000001",765432,100,2,1642617963] #private sale func
 
 #print(validate_user(164252739))
+print(user_ticket_opened("358375624294924289"))

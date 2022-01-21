@@ -41,6 +41,7 @@ async def ps(ctx,axie_ID,price):
         #Revisar que el usuario no tenga ticket abierto o pendiente
         #Flujo creación de Ticket para venta privada
         #hacer funcion para obtener ID incremental
+            #hacer base datos para status
         new_id=1
         ticket_vec=[
             str('PS-'+ str(new_id)),#"PS-0000001", ticket id
