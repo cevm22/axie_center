@@ -34,11 +34,12 @@ async def ps(ctx,axie_ID,price):
     #verificacion numeros enteros y menores a 1000
     try:
         comision=aux_func.comision_calc(int(price))
+        verify_axie_ID=int(axie_ID)
     except:
         await user.send("Ingresar SOLO valores decimales")
         return
     #verificar numeros positivos
-    if int(price)<1:
+    if int(price)<1 or int(verify_axie_ID)<1:
         await user.send("Ingresar SOLO valores decimales POSITIVOS")
         return
     

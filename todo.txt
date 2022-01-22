@@ -23,3 +23,7 @@ TODO:
 
 
 -Agregar condicional a los Proof_Hash en los templates para enviar el MarkDown de Link o enviar emotes str('[Marketplace]'+'('+str(axie_url+str(msg[4])+')'))
+
+###############
+Pendientes
+- Agregar identificacion de axies en huevo o baneados
