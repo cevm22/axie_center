@@ -59,10 +59,18 @@ def update_ticket_last_status(user,ticket_id):
 #======================================================================
 # UPDATE  to cancel tickets in user DB
 #======================================================================
-def update_cancel_ticket(user,ticket):
+def update_cancel_ticket(user):
     db=client['users_data'] # DB
     collection=db['user'] # Collection
     data=collection.update_one({'discord_id':user},{"$set":{"ticket_open":False}})
+    return True
+#======================================================================
+# UPDATE  to cancel ticket ID in ticket DB
+#======================================================================
+def update_cancel_ticket_ID(ticket):
+    db=client['tx_db'] # DB
+    collection=db['tickets'] # Collection
+    data=collection.update_one({'ticket':ticket},{"$set":{"ticket_stat":0}})
     return True
 #======================================================================
 # DB ENROLL new users

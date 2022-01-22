@@ -123,8 +123,16 @@ async def cancel(ctx, ticket):
     if ticket_status[0] == False:
         await user.send("No cuentas con tickets abiertos ")
         return
+    #update ticket cancel
+        #buscar el ticket en tickets DB por ticket ID y actualizar ticket status a 0
+    cancel_ticketID=system_db.update_cancel_ticket_ID(ticket)
+    print("cancelar ticket ID")
+    print(cancel_ticketID)
     #actualizando user db ticket_open=false
-    system_db.update_cancel_ticket(user_id,ticket)
+    cancel_ticket_USER=system_db.update_cancel_ticket(user_id)
+    print("Actualizar User ticket status a False")
+    print(cancel_ticket_USER)
+    #si fue previamente aceptado por user 2, buscar y actualizar user db ticket_open=false
     await user.send("TICKET CANCELADO")
     return
 
