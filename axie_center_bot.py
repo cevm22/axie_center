@@ -26,6 +26,7 @@ async def test(ctx):
 @bot.command()
 async def ps(ctx,axie_ID,price):
     user_id=str(ctx.message.author.id)
+    comision=aux_func.comision_calc(int(price))
     user = await bot.fetch_user(user_id)
     #Verificar que se encuentre registrado
     verify=system_db.validate_user(user_id)
@@ -50,7 +51,7 @@ async def ps(ctx,axie_ID,price):
                 str('PS-'+ str(new_id)),#"PS-0000001", ticket id
                 int(axie_ID), #axie ID
                 int(price), #price
-                2,#comision #pendiente hacer func comision
+                comision,#comision #pendiente hacer func comision
                 "358375624294924289",#timestamp
                 user_id
             ]
