@@ -117,6 +117,14 @@ def user_ban_count(user_ID):
     data=collection.find_one({"discord_id":user_ID},{"ban_alltime":1})
     return data['ban_alltime']
 #======================================================================
+# FIND tickets stats
+#======================================================================
+def pull_tickets_stats_total(user_ID):
+    db=client['tx_db'] # DB
+    collection=db['tickets_stats'] # Collection     
+    data=collection.find_one({"stats_db":"stats"},{"total":1})
+    return data['total']
+#======================================================================
 # CREATE tickets DB stats
 #======================================================================
 def create_tickets_stats_db():
@@ -139,6 +147,8 @@ def update_tickets_stats():
     return True
 
 
+
+#print(create_tickets_stats_db())
 #vector=[1642527399,'ronin:1bsdu3s8fnfd7823hdfsfv9'] #enroll func
 #vector=["PS-000001",765432,100,2,1642617963] #private sale func
 

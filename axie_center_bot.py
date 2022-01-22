@@ -45,9 +45,7 @@ async def ps(ctx,axie_ID,price):
             return
         else:
             #Flujo creación de Ticket para venta privada
-            #hacer funcion para obtener ID incremental
-                #hacer base datos para status
-            new_id=1
+            new_id=int(system_db.pull_tickets_stats_total(user_id))+1
             ticket_vec=[
                 str('PS-'+ str(new_id)),#"PS-0000001", ticket id
                 int(axie_ID), #axie ID
