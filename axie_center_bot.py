@@ -60,6 +60,8 @@ async def ps(ctx,axie_ID,price):
             system_db.update_ticket_last_status(user_id,ticket_vec[0])
             #Crear Ticket
             system_db.create_ticket_PS(ticket_vec)
+            #Incrementar total tickets stats
+            system_db.update_tickets_stats()
             #pendiente para casos de huevos
             ps_msg_template=ES_msg_templates.ps_msg(ticket_vec)
             await user.send(embed=ps_msg_template)

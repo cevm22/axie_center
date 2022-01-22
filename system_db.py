@@ -54,7 +54,7 @@ def user_ticket_opened(user_ID):
 def update_ticket_last_status(user,ticket_id):
     db=client['users_data'] # DB
     collection=db['user'] # Collection
-    data=collection.update_one({'discord_id':user},{"$set":{"ticket_open":1, "ticket_last":ticket_id}})
+    data=collection.update_one({'discord_id':user},{"$set":{"ticket_open":True, "ticket_last":ticket_id}})
     return True
 #======================================================================
 # DB ENROLL new users
@@ -123,14 +123,22 @@ def create_tickets_stats_db():
     db=client['tx_db'] # DB
     collection=db['tickets_stats'] # Collection
     collection.insert_one({
+                    "stats_db":"stats",
                     "total":0,
                     "cancelled":0,
                     "done":0
                 })
     return True
+#======================================================================
+# UPDATE  ticket_last y ticket_status
+#======================================================================
+def update_tickets_stats():
+    db=client['tx_db'] # DB
+    collection=db['tickets_stats'] # Collection
+    data=collection.update_one({'stats_db':"stats"},{"$inc":{"total":+1}})
+    return True
 
-create_tickets_stats_db()
-#print("inicio")
+
 #vector=[1642527399,'ronin:1bsdu3s8fnfd7823hdfsfv9'] #enroll func
 #vector=["PS-000001",765432,100,2,1642617963] #private sale func
 
