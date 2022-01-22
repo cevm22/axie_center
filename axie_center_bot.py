@@ -42,7 +42,6 @@ async def ps(ctx,axie_ID,price):
         ticket_status=system_db.user_ticket_opened(user_id)
         if ticket_status[0] == True:
             await user.send("Ya cuentas con un ticket pendiente, debes **cancelarlo o terminarlo** antes de solicitarlo uno nuevo." +"\n" + "Ticket ID pendiente es > **"+str(ticket_status[1])+"**")
-            #Funcion para ver status de ticket pendiente y enviarlo al usuario
             return
         else:
             #Flujo creación de Ticket para venta privada
@@ -57,6 +56,9 @@ async def ps(ctx,axie_ID,price):
                 "358375624294924289",#timestamp
                 user_id
             ]
+            #Modificar user_status el ticket_last y ticket_status
+            system_db.update_ticket_last_status(user_id,ticket_vec[0])
+            #Crear Ticket
             system_db.create_ticket_PS(ticket_vec)
             #pendiente para casos de huevos
             ps_msg_template=ES_msg_templates.ps_msg(ticket_vec)

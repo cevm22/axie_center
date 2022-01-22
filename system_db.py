@@ -48,7 +48,14 @@ def user_ticket_opened(user_ID):
     collection=db['user'] # Collection     
     data=collection.find_one({"discord_id":user_ID},{"ticket_open":1, "ticket_last":1}) 
     return [data["ticket_open"],data["ticket_last"]]
-
+#======================================================================
+# UPDATE  ticket_last y ticket_status
+#======================================================================
+def update_ticket_last_status(user,ticket_id):
+    db=client['users_data'] # DB
+    collection=db['user'] # Collection
+    data=collection.update_one({'discord_id':user},{"$set":{"ticket_open":1, "ticket_last":ticket_id}})
+    return True
 #======================================================================
 # DB ENROLL new users
 #======================================================================
@@ -63,7 +70,7 @@ def enroll_new(vec):
                 "ban_alltime": 0,
                 "num_tickets": 0,
                 "num_commands": 0,
-                "ticket_open": False,
+                "ticket_open": 0,
                 "ticket_last":"0",
                 "language": "EN"
                 })
@@ -115,4 +122,4 @@ def user_ban_count(user_ID):
 #vector=["PS-000001",765432,100,2,1642617963] #private sale func
 
 #print(validate_user(164252739))
-#print(user_ticket_open_last("358375624294924289"))
+#print(update_ticket_last_status("358375624294924289","PS-2221"))
