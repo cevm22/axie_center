@@ -31,6 +31,9 @@ async def ps(ctx,axie_ID,price):
     user = await bot.fetch_user(user_id)
     #Verificar que se encuentre registrado
     verify=system_db.validate_user(user_id)
+    if not verify:
+            await user.send("**NO** estas registrado, usa el comando : **_enroll** para ingresar a Axie Center.")
+            return
     #verificacion numeros enteros y menores a 1000
     try:
         comision=aux_func.comision_calc(int(price))
@@ -48,9 +51,6 @@ async def ps(ctx,axie_ID,price):
         await user.send("Solo se pueden hacer ventas privadas por menos de **$" + str(price_limit) + "** USDC")
         return
     
-    if not verify:
-            await user.send("**NO** estas registrado, usa el comando : **_enroll** para ingresar a Axie Center.")
-            return
     #Verificar que no tenga BAN
     banned=aux_func.ban_validation(user_id)
     if banned==True:
