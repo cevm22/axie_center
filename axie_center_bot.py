@@ -109,6 +109,26 @@ async def ticket(ctx):
     return
 
 #=======================
+#Ticket cancel
+@bot.command()
+async def cancel(ctx, ticket):
+    user_id=str(ctx.message.author.id)
+    user = await bot.fetch_user(user_id)
+    verify=system_db.validate_user(user_id)
+    if not verify:
+            await user.send("**NO** estas registrado, usa el comando : **_enroll** para ingresar a Axie Center.")
+            return
+    #Revisar que el usuario no tenga ticket abierto o pendiente
+    ticket_status=system_db.user_ticket_opened(user_id)
+    if ticket_status[0] == False:
+        await user.send("No cuentas con tickets abiertos ")
+        return
+    #actualizando user db ticket_open=false
+    system_db.update_cancel_ticket(user_id,ticket)
+    await user.send("TICKET CANCELADO")
+    return
+
+#=======================
 #Axie Trade 
 @bot.command()
 async def trade(ctx):

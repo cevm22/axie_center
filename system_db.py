@@ -57,6 +57,14 @@ def update_ticket_last_status(user,ticket_id):
     data=collection.update_one({'discord_id':user},{"$set":{"ticket_open":True, "ticket_last":ticket_id}})
     return True
 #======================================================================
+# UPDATE  to cancel tickets in user DB
+#======================================================================
+def update_cancel_ticket(user,ticket):
+    db=client['users_data'] # DB
+    collection=db['user'] # Collection
+    data=collection.update_one({'discord_id':user},{"$set":{"ticket_open":False}})
+    return True
+#======================================================================
 # DB ENROLL new users
 #======================================================================
 def enroll_new(vec):
