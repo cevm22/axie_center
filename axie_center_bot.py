@@ -48,12 +48,12 @@ async def ps(ctx,axie_ID,price):
         return
     
     if not verify:
-            await ctx.send("**NO** estas registrado, usa el comando : **_enroll** para ingresar a Axie Center.")
+            await user.send("**NO** estas registrado, usa el comando : **_enroll** para ingresar a Axie Center.")
             return
     #Verificar que no tenga BAN
     banned=aux_func.ban_validation(user_id)
     if banned==True:
-            await ctx.send("BANNED")
+            await user.send("BANNED")
             return
     else:   
         #Revisar que el usuario no tenga ticket abierto o pendiente
