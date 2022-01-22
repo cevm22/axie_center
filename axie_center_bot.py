@@ -11,6 +11,8 @@ import blockchain_func
 bot = commands.Bot(command_prefix='_',help_command=None)
 client=discord.Client(activity=discord.Game(name='Axie Center'))
 
+price_limit=1000
+
 @bot.command()
 async def test(ctx):    
     user = await bot.fetch_user(358375624294924289)
@@ -26,10 +28,25 @@ async def test(ctx):
 @bot.command()
 async def ps(ctx,axie_ID,price):
     user_id=str(ctx.message.author.id)
-    comision=aux_func.comision_calc(int(price))
     user = await bot.fetch_user(user_id)
     #Verificar que se encuentre registrado
     verify=system_db.validate_user(user_id)
+    #verificacion numeros enteros y menores a 1000
+    try:
+        comision=aux_func.comision_calc(int(price))
+    except:
+        await user.send("Ingresar SOLO valores decimales")
+        return
+    #verificar numeros positivos
+    if int(price)<1:
+        await user.send("Ingresar SOLO valores decimales POSITIVOS")
+        return
+    
+    #limite de venta de acuerdo al price_limit
+    if int(price) > int(price_limit):
+        await user.send("Solo se pueden hacer ventas privadas por menos de **$" + str(price_limit) + "** USDC")
+        return
+    
     if not verify:
             await ctx.send("**NO** estas registrado, usa el comando : **_enroll** para ingresar a Axie Center.")
             return
