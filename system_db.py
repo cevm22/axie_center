@@ -158,6 +158,18 @@ def pull_tickets_stats_total(user_ID):
     data=collection.find_one({"stats_db":"stats"},{"total":1})
     return data['total']
 #======================================================================
+# FIND tickets stats
+#======================================================================
+def pull_ticket_id(ticket):
+    db=client['tx_db'] # DB
+    collection=db['tickets'] # Collection 
+    exist_item=  collection.count_documents({"ticket":ticket})  
+    if exist_item == 1:
+        data=collection.find_one({"ticket":ticket},{"ticket_stat":1})
+        return [True,data['ticket_stat']]
+    else:
+        return [False]
+#======================================================================
 # CREATE tickets DB stats
 #======================================================================
 def create_tickets_stats_db():
@@ -171,7 +183,7 @@ def create_tickets_stats_db():
                 })
     return True
 #======================================================================
-# UPDATE  ticket_last y ticket_status
+# UPDATE   ticket_status - Total +1
 #======================================================================
 def update_tickets_stats():
     db=client['tx_db'] # DB
@@ -179,7 +191,14 @@ def update_tickets_stats():
     data=collection.update_one({'stats_db':"stats"},{"$inc":{"total":+1}})
     return True
 
-
+#======================================================================
+# UPDATE  ticket_status -  Cancelled +1 
+#======================================================================
+def update_tickets_stats_cancelled():
+    db=client['tx_db'] # DB
+    collection=db['tickets_stats'] # Collection
+    data=collection.update_one({'stats_db':"stats"},{"$inc":{"cancelled":+1}})
+    return True
 
 #print(create_tickets_stats_db())
 #vector=[1642527399,'ronin:1bsdu3s8fnfd7823hdfsfv9'] #enroll func
