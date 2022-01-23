@@ -158,7 +158,7 @@ def pull_tickets_stats_total(user_ID):
     data=collection.find_one({"stats_db":"stats"},{"total":1})
     return data['total']
 #======================================================================
-# FIND tickets stats
+# FIND tickets id status
 #======================================================================
 def pull_ticket_id(ticket):
     db=client['tx_db'] # DB
@@ -169,6 +169,16 @@ def pull_ticket_id(ticket):
         return [True,data['ticket_stat']]
     else:
         return [False]
+#======================================================================
+# FIND tickets discords ID for user 1 and 2
+#======================================================================
+def pull_discords_ID_on_ticket(ticket):
+    db=client['tx_db'] # DB
+    collection=db['tickets'] # Collection 
+    data=collection.find_one({"ticket":ticket},{"discord_id_1":1})
+    ID_2=collection.find_one({"ticket":ticket},{"discord_id_2":1})
+    return [data['discord_id_1'],ID_2["discord_id_2"]]
+
 #======================================================================
 # CREATE tickets DB stats
 #======================================================================
