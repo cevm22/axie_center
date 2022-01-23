@@ -91,7 +91,14 @@ def update_cancel_ticket_ID(ticket):
     collection=db['tickets'] # Collection
     data=collection.update_one({'ticket':ticket},{"$set":{"ticket_stat":0}})
     return True
-
+#======================================================================
+# UPDATE  tickets status and discord_id_2
+#======================================================================
+def update_ticket_status_discordID2_ronin(ticket_id,discord_id_2,ronin):
+    db=client['tx_db'] # DB
+    collection=db['tickets'] # Collection
+    data=collection.update_one({'ticket':ticket_id},{"$set":{"ticket_stat":2, "discord_id_2":discord_id_2, "ronin_2":ronin}})
+    return True
 #======================================================================
 # validate_user2 if ticket was accepted by USER 2
 #======================================================================

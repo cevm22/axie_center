@@ -209,9 +209,11 @@ async def accept(ctx, ticket, password):
         #####flujo de aceptacion de ticket por parte del comprador
         #verificar contrasena del ticket
         ticket_pass=system_db.pull_ticket_password(ticket)
+        buyer_wallet=system_db.pull_ronin_wallet(user_id)
         if password ==ticket_pass:
             #actualizar el ticket a estatus incompleto y agregar discord_id_2
-            
+            actualizar=system_db.update_ticket_status_discordID2_ronin(ticket,user_id,buyer_wallet)
+            print("Se ha actualizado ticket status y discord ID")
             #actualizar estatus del comprador con el mismo ticket ID y en ticket abierto
             #enviar mensaje al comprador y vendedor de que ha sido aceptado
             #enviar mensaje al comprador donde enviar sus tokens USDC
