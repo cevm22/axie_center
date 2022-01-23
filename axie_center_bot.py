@@ -66,6 +66,7 @@ async def ps(ctx,axie_ID,price,password):
         else:
             #Flujo creación de Ticket para venta privada
             new_id=int(system_db.pull_tickets_stats_total(user_id))+1
+            ronin_wallet=system_db.pull_ronin_wallet(user_id)
             ticket_vec=[
                 str('PS-'+ str(new_id)),#"PS-0000001", ticket id
                 int(axie_ID), #axie ID
@@ -73,7 +74,8 @@ async def ps(ctx,axie_ID,price,password):
                 comision,#comision #pendiente hacer func comision
                 "358375624294924289",#timestamp
                 user_id,
-                str(password)
+                str(password),
+                str(ronin_wallet)
             ]
             #Modificar user_status el ticket_last y ticket_status
             system_db.update_ticket_last_status(user_id,ticket_vec[0])
@@ -200,22 +202,25 @@ async def accept(ctx, ticket, password):
         await user.send("Este ticket ya ha sido cancelado previamente")
         return    
     #verificar ticket no ha sido aceptado por alguien mas
-    #
+    if find_ticket_id[1]==2: 
+        await user.send("Este ticket ya ha sido aceptado ")
+        return
     else:
         #####flujo de aceptacion de ticket por parte del comprador
         #verificar contrasena del ticket
         ticket_pass=system_db.pull_ticket_password(ticket)
         if password ==ticket_pass:
-            await user.send("TODO OK")
+            #actualizar el ticket a estatus incompleto y agregar discord_id_2
+            
+            #actualizar estatus del comprador con el mismo ticket ID y en ticket abierto
+            #enviar mensaje al comprador y vendedor de que ha sido aceptado
+            #enviar mensaje al comprador donde enviar sus tokens USDC
+            #enviar mensaje al vendedor donde enviar su AXIE
             return
         else:
-            await user.send("contrasena incorrecta")
+            await user.send("La contraseña del ticket es **incorrecta**")
             return
-        #actualizar el ticket a estatus incompleto 
-        #actualizar estatus del comprador con el mismo ticket ID y en ticket abierto
-        #enviar mensaje al comprador y vendedor de que ha sido aceptado
-        #enviar mensaje al comprador donde enviar sus tokens USDC
-        #enviar mensaje al vendedor donde enviar su AXIE
+
         return
     
 

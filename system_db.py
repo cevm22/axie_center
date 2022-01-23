@@ -21,7 +21,7 @@ def create_ticket_PS(vec):
                 "discord_id_1":vec[5],
                 "discord_id_2":0,
                 "log": "comentarios",
-                "ronin_1": "ronin:1ba2228e2c90bc6cc4fd7c3fe62e796c4321356f",
+                "ronin_1": vec[7],
                 "ronin_2": "0",
                 "tx_hash_1": "0x1",
                 "tx_hash_2": "0x2",
@@ -41,6 +41,16 @@ def create_ticket_PS(vec):
                 "password":vec[6]
                 })
     return
+
+#======================================================================
+# FIND USER ronin wallet
+#======================================================================
+def pull_ronin_wallet(discord_id):
+    db=client['users_data'] # DB
+    collection=db['user'] # Collection     
+    data=collection.find_one({"discord_id":discord_id},{"ronin":1})
+    return data['ronin']
+
 #======================================================================
 # VALIDATE USERS_TICKET in pending/opened
 #======================================================================
@@ -73,6 +83,15 @@ def update_cancel_ticket_ID(ticket):
     collection=db['tickets'] # Collection
     data=collection.update_one({'ticket':ticket},{"$set":{"ticket_stat":0}})
     return True
+#======================================================================
+# UPDATE  to accept ticket ID, add discord_ID_2 and ronin_2
+#======================================================================
+def update_cancel_ticket_ID(ticket):
+    db=client['tx_db'] # DB
+    collection=db['tickets'] # Collection
+    data=collection.update_one({'ticket':ticket},{"$set":{"ticket_stat":0}})
+    return True
+
 #======================================================================
 # validate_user2 if ticket was accepted by USER 2
 #======================================================================

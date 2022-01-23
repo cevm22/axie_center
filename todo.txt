@@ -29,3 +29,4 @@ TODO:
 Pendientes
 - Agregar identificacion de axies en huevo o baneados
 - Agregar captura de errores por no ingresar bien el comando
+- Hacer una libreria para reducir codigo con referente a la verificacion de status de tickets en una sola funcion
