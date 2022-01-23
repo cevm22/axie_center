@@ -27,7 +27,7 @@ async def test(ctx):
 #=======================
 #Private Sale 
 @bot.command()
-async def ps(ctx,axie_ID,price):
+async def ps(ctx,axie_ID,price,password):
     user_id=str(ctx.message.author.id)
     user = await bot.fetch_user(user_id)
     #Verificar que se encuentre registrado
@@ -72,7 +72,8 @@ async def ps(ctx,axie_ID,price):
                 int(price), #price
                 comision,#comision #pendiente hacer func comision
                 "358375624294924289",#timestamp
-                user_id
+                user_id,
+                str(password)
             ]
             #Modificar user_status el ticket_last y ticket_status
             system_db.update_ticket_last_status(user_id,ticket_vec[0])

@@ -5,8 +5,6 @@ Ideas general para Axie Center:
 TODO:
 - Crear flujo de venta privada
     -Func aceptacion ticket
-    -Func cancelacion ticket
-        -Func un tercer NO pueda cancelar ticket (hacer verificacion por discord ID)
     -Func Bloqueo de terceros a acceder a ticket
     -Func verificacion de tokens en hotwallet
     -Func envío de tokens a los users
@@ -29,3 +27,4 @@ TODO:
 ###############
 Pendientes
 - Agregar identificacion de axies en huevo o baneados
+- Agregar captura de errores por no ingresar bien el comando

@@ -38,6 +38,7 @@ def create_ticket_PS(vec):
                 "type": "Private Sale",
                 "value_1": vec[1], #AXIE id
                 "value_2": vec[2], #USDC token
+                "password":vec[6]
                 })
     return
 #======================================================================
