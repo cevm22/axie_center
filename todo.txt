@@ -10,6 +10,7 @@ TODO:
     -Func envío de tokens a los users
     -Func status tickets
         --Func no pueda verse ticket status por un tercero
+    -Func de envios de hash 
 
 
 - Crear flujo de intercambio de Axies

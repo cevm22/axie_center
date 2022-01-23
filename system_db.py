@@ -179,6 +179,14 @@ def pull_discords_ID_on_ticket(ticket):
     data=collection.find_one({"ticket":ticket},{"discord_id_1":1})
     ID_2=collection.find_one({"ticket":ticket},{"discord_id_2":1})
     return [data['discord_id_1'],ID_2["discord_id_2"]]
+#======================================================================
+# FIND ticket password
+#======================================================================
+def pull_ticket_password(ticket):
+    db=client['tx_db'] # DB
+    collection=db['tickets'] # Collection   
+    data=collection.find_one({"ticket":ticket},{"password":1})
+    return data['password']
 
 #======================================================================
 # CREATE tickets DB stats

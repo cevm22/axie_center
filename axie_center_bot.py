@@ -167,6 +167,58 @@ async def cancel(ctx, ticket):
             await user.send("**NO** puedes cancelar tickets de otros usuarios. Solo puedes cancelar tus propios tickets.")
             return
 
+
+#=======================
+#Ticket accept
+@bot.command()
+async def accept(ctx, ticket, password):
+    user_id=str(ctx.message.author.id)
+    user = await bot.fetch_user(user_id)
+    verify=system_db.validate_user(user_id)
+    
+    #Verificar que no tenga BAN
+    banned=aux_func.ban_validation(user_id)
+    if banned==True:
+            await user.send("BANNED")
+            return
+    #verificar que este registrado
+    if not verify:
+            await user.send("**NO** estas registrado, usa el comando : **_enroll** para ingresar a Axie Center.")
+            return
+    #Revisar que el usuario no tenga ticket abierto o pendiente
+    ticket_status=system_db.user_ticket_opened(user_id)
+    if ticket_status[0] == True:
+        await user.send("Ya cuentas con un ticket pendiente, debes **cancelarlo o terminarlo** antes de solicitarlo uno nuevo." +"\n" + "Ticket ID pendiente es > **"+str(ticket_status[1])+"**")
+        return
+    #Revisar que exista el ticket ID
+    find_ticket_id=system_db.pull_ticket_id(ticket)
+    if find_ticket_id[0]==False:
+        await user.send("**NO** existe un ticket con este ID")
+        return
+    #revisar que el ticket NO se ha cancelado antes
+    if find_ticket_id[1]==0:
+        await user.send("Este ticket ya ha sido cancelado previamente")
+        return    
+    #verificar ticket no ha sido aceptado por alguien mas
+    #
+    else:
+        #####flujo de aceptacion de ticket por parte del comprador
+        #verificar contrasena del ticket
+        ticket_pass=system_db.pull_ticket_password(ticket)
+        if password ==ticket_pass:
+            await user.send("TODO OK")
+            return
+        else:
+            await user.send("contrasena incorrecta")
+            return
+        #actualizar el ticket a estatus incompleto 
+        #actualizar estatus del comprador con el mismo ticket ID y en ticket abierto
+        #enviar mensaje al comprador y vendedor de que ha sido aceptado
+        #enviar mensaje al comprador donde enviar sus tokens USDC
+        #enviar mensaje al vendedor donde enviar su AXIE
+        return
+    
+
 #=======================
 #Axie Trade 
 @bot.command()
