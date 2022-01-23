@@ -115,6 +115,14 @@ def pull_user2(ticket):
     collection=db['tickets'] # Collection     
     data=collection.find_one({"ticket":ticket},{"discord_id_2":1})
     return data['discord_id_2']
+#======================================================================
+# FIND USER 1 in ongoing ticket, after accepted the private sale
+#======================================================================
+def pull_user_seller(ticket):
+    db=client['tx_db'] # DB
+    collection=db['tickets'] # Collection     
+    data=collection.find_one({"ticket":ticket},{"discord_id_1":1})
+    return data['discord_id_1']
 
 #======================================================================
 # DB ENROLL new users

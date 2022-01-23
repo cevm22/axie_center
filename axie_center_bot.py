@@ -214,8 +214,11 @@ async def accept(ctx, ticket, password):
             actualizar=system_db.update_ticket_status_discordID2_ronin(ticket,user_id,buyer_wallet)
             #actualizar estatus del comprador con el mismo ticket ID y en ticket abierto
             actualizar_user=system_db.update_ticket_last_status(user_id,ticket)
-            print("actualizar user data base")
             #enviar mensaje al comprador y vendedor de que ha sido aceptado
+            vendedor=system_db.pull_user_seller(ticket)
+            user_2 = await bot.fetch_user(vendedor)
+            await user.send("Ticket aceptado")
+            await user_2.send("Ticket aceptado USER 2")
             #enviar mensaje al comprador donde enviar sus tokens USDC
             #enviar mensaje al vendedor donde enviar su AXIE
             return
