@@ -10,7 +10,6 @@ TODO:
     -Func verificacion de tokens en hotwallet
     -Func envío de tokens a los users
     -Func status tickets
-    -Func para incremento de ID de tickets sin saturar server
 
 - Crear flujo de intercambio de Axies
 - Crear script para el caso de NO cumplir con el trato, regrese el Axie o Token a sus respectivos owners

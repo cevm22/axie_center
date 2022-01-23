@@ -73,6 +73,23 @@ def update_cancel_ticket_ID(ticket):
     data=collection.update_one({'ticket':ticket},{"$set":{"ticket_stat":0}})
     return True
 #======================================================================
+# validate_user2 if ticket was accepted by USER 2
+#======================================================================
+def validate_user2_accepted(ticket):
+    db=client['tx_db'] # DB
+    collection=db['tickets'] # Collection
+    data=collection.find_one({'ticket':ticket},{"ticket_stat":1})
+    return data["ticket_stat"]
+#======================================================================
+# FIND USER 2 in ongoing ticket, after accepted the private sale
+#======================================================================
+def pull_user2(ticket):
+    db=client['tx_db'] # DB
+    collection=db['tickets'] # Collection     
+    data=collection.find_one({"ticket":ticket},{"discord_id_2":1})
+    return data['discord_id_2']
+
+#======================================================================
 # DB ENROLL new users
 #======================================================================
 def enroll_new(vec):
