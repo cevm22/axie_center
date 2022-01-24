@@ -217,10 +217,12 @@ async def accept(ctx, ticket, password):
             #enviar mensaje al comprador y vendedor de que ha sido aceptado
             vendedor=system_db.pull_user_seller(ticket)
             user_2 = await bot.fetch_user(vendedor)
-            await user.send("Ticket aceptado")
-            await user_2.send("Ticket aceptado USER 2")
-            #enviar mensaje al comprador donde enviar sus tokens USDC
             #enviar mensaje al vendedor donde enviar su AXIE
+            msg_1=ES_msg_templates.accept_msg_user_1(ticket)
+            msg_2=ES_msg_templates.accept_msg_user_2(ticket)
+            await user.send(embed=msg_1)
+            #enviar mensaje al comprador donde enviar sus tokens USDC
+            await user_2.send(embed=msg_2)
             return
         else:
             await user.send("La contraseña del ticket es **incorrecta**")

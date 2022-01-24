@@ -4,6 +4,8 @@ import datetime
 axie_url="https://marketplace.axieinfinity.com/axie/"
 owner_url="https://marketplace.axieinfinity.com/profile/"
 tx_url="https://explorer.roninchain.com/tx/"
+wallet_axie='ronin:1ba2228e2c90bc6cc4fd7c3fe62e796c4321356f'
+wallet_usdc='ronin:1ba2228e2c90bc6cc4fd7c3fe62e796c4321356f'
 def ps_msg(msg):
     marketplace=str('[Marketplace]'+'('+str(axie_url+str(msg[1])+')'))
     
@@ -84,4 +86,24 @@ def trade_msg_2(msg):
     embed.add_field(name="Closed",value=msg[12],inline=True)    
     embed.add_field(name="Notes",value=msg[13],inline=False)    
     embed.set_footer(text="AXIE TRADE") 
+    return embed
+
+def accept_msg_user_1(ticket_id):
+    embed = discord.Embed(title=('**ACEPTADO POR COMPRADOR**'),
+                description=("**TICKET ID:** "  + str(ticket_id) + "\n"
+                + " Favor enviar tu **AXIE** a la wallet: **" + str(wallet_axie.lower()) + "** \n"
+                + " Una vez de aceptada la transaccion, comparte el comprobante hash con el comando:  COMPROBANTE" #pendiente comando envio de hash
+                ),
+                timestamp=datetime.datetime.utcnow(),
+                color=discord.Color.blue())
+    return embed
+
+def accept_msg_user_2(ticket_id):
+    embed = discord.Embed(title=('**ACEPTADO POR COMPRADOR**'),
+                description=("**TICKET ID:**  "  + str(ticket_id) + "\n"
+                + " Favor enviar el **TOTAL** del precio de venta  en **USDC** tokens a la wallet: **" + str(wallet_usdc.lower()) + "** \n"
+                + " Una vez de aceptada la transaccion, comparte el comprobante hash con el comando:  COMPROBANTE" #pendiente comando envio de hash
+                ),
+                timestamp=datetime.datetime.utcnow(),
+                color=discord.Color.blue())
     return embed
