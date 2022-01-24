@@ -202,11 +202,19 @@ async def proof(ctx,ticket, proof_hash):
         return
     else:
         #funcion enviar hash
+        #revisar que el usuario se encuentre en un ticket
+        discord_users_IDS=system_db.pull_discords_ID_on_ticket(ticket)
+        if discord_users_IDS[0]==user_id: #usuario 1 - vendedor
+            #revisar que el hash no ha sido entregado antes en una BD de solo hash completos
+            #actualizar ticket hash DB
+            system_db.update_hash_user_1(ticket,proof_hash)
+            return
+        if discord_users_IDS[1]==user_id: #usuario 2 - comprador
+            system_db.update_hash_user_2(ticket,proof_hash)
+            return
         #funcion comprobante válido
         #funcion revisar wallet que los assets lleguen
         #en caso de valido, actualizar ticket
-        
-        return
 
     return
 

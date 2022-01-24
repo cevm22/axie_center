@@ -260,6 +260,25 @@ def update_tickets_stats_cancelled():
     data=collection.update_one({'stats_db':"stats"},{"$inc":{"cancelled":+1}})
     return True
 
+#======================================================================
+# UPDATE  proof hash discord_ID_1
+#======================================================================
+def update_hash_user_1(ticket,proof_hash):
+    db=client['tx_db'] # DB
+    collection=db['tickets_stats'] # Collection
+    data=collection.update_one({'ticket':ticket},{"$set":{"tx_hash_1":proof_hash}})
+    return True
+
+#======================================================================
+# UPDATE  proof hash discord_ID_2
+#======================================================================
+def update_hash_user_2(ticket,proof_hash):
+    db=client['tx_db'] # DB
+    collection=db['tickets_stats'] # Collection
+    data=collection.update_one({'ticket':ticket},{"$set":{"tx_hash_2":proof_hash}})
+    return True
+
+
 #print(create_tickets_stats_db())
 #vector=[1642527399,'ronin:1bsdu3s8fnfd7823hdfsfv9'] #enroll func
 #vector=["PS-000001",765432,100,2,1642617963] #private sale func
