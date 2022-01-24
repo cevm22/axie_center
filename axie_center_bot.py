@@ -52,7 +52,7 @@ async def ps(ctx,axie_ID,price,password):
     if int(price)<1 or int(verify_axie_ID)<1:
         await user.send("Ingresar SOLO valores decimales POSITIVOS")
         return
-     #limite de venta de acuerdo al price_limit
+    #limite de venta de acuerdo al price_limit
     if int(price) > int(price_limit):
         await user.send("Solo se pueden hacer ventas privadas por menos de **$" + str(price_limit) + "** USDC")
         return
@@ -164,6 +164,51 @@ async def ticket(ctx,ticket):
     else:
         await user.send("**NO** puedes ver tickets de otros usuarios.")
         return
+
+
+#=======================
+#Ticket send hash
+@bot.command()
+async def proof(ctx,ticket, proof_hash):
+    user_id=str(ctx.message.author.id)
+    user = await bot.fetch_user(user_id)
+    #Verificar que se encuentre registrado
+    verify=system_db.validate_user(user_id)
+    if not verify:
+            await user.send("**NO** estas registrado, usa el comando : **_enroll** para ingresar a Axie Center.")
+            return
+    #Verificar que no tenga BAN
+    banned=aux_func.ban_validation(user_id)
+    if banned==True:
+            await user.send("BANNED")
+            return
+    #Revisar que el usuario no tenga ticket abierto o pendiente
+    ticket_status=system_db.user_ticket_opened(user_id)
+    if ticket_status[0] == False:
+        await user.send("No cuentas con tickets abiertos ")
+        return
+    #Revisar que exista el ticket ID
+    find_ticket_id=system_db.pull_ticket_id(ticket)
+    if find_ticket_id[0]==False:
+        await user.send("**NO** existe un ticket con este ID")
+        return
+    #revisar que el ticket NO se ha cancelado antes
+    if find_ticket_id[1]==0:
+        await user.send("Este ticket ya ha sido cancelado previamente")
+        return
+    #revisar que el ticket se encuentre FINALIZADO
+    if find_ticket_id[1]==5:
+        await user.send("Este ticket ya ha sido COMPLETADO previamente")
+        return
+    else:
+        #funcion enviar hash
+        #funcion comprobante válido
+        #funcion revisar wallet que los assets lleguen
+        #en caso de valido, actualizar ticket
+        
+        return
+
+    return
 
 #=======================
 #Ticket cancel
