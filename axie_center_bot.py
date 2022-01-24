@@ -91,22 +91,27 @@ async def ps(ctx,axie_ID,price,password):
 @bot.command()
 async def ticket(ctx,ticket):
     #Proceso para mostrar ticket
-    #verificar 
-    ticket_id="PS-105"
-    ticket_status= 2
-    axie_id=852852
-    price=100
+    #pull data from ticket
+    data=system_db.pull_ticket_allinfo(ticket)
+    ticket_id=data['ticket']
+    ticket_status= data['ticket_stat']
+    axie_id=data['value_1']
+    price=data['value_2']
     #template MSG TICKET
-    seller_proof_hash="0x1"#"0xcea4ced35f6e5d8ce647099f46d0706ddee5a3d521d169ee3cfbfafa098275c8"
-    buyer_proof_hash="0x2"#"0xd1fa214b3e920c8d50ab83e502e4237b8de472cb3b3e2a4189d8830fcccedd65"
-    AC_to_seller_proof_hash="ac1"#"0xcea4ced35f6e5d8ce647099f46d0706ddee5a3d521d169ee3cfbfafa098275c8"
-    AC_to_buyer_proof_hash="ac2"#"0xd1fa214b3e920c8d50ab83e502e4237b8de472cb3b3e2a4189d8830fcccedd65"
+    seller_proof_hash=data['tx_hash_1']
+    buyer_proof_hash=data['tx_hash_2']
+    AC_to_seller_proof_hash=data['ac_txhash_1']
+    AC_to_buyer_proof_hash=data["ac_txhash_2"]
     #marks 
-    seller_mark=False #":white_check_mark:"
-    buyer_mark=False #":x:"
-    assets_ready=False #":x:"
-    ticket_closed=False #":x:"
-    timestamp_to_date=datetime.datetime.utcnow().strftime("%m/%d/%Y, %H:%M:%S")
+    seller_mark=data['status_hash_1'] 
+    buyer_mark=data['status_hash_2'] 
+    if seller_mark==False and buyer_mark ==False:
+        assets_ready=False 
+    else:
+        assets_ready=True
+    ticket_closed=data['ticket_stat'] 
+    logs=data['log']
+    timestamp_to_date=data['init_time'].strftime("%m/%d/%Y, %H:%M:%S")#datetime.datetime.utcnow().strftime("%m/%d/%Y, %H:%M:%S")
     vec=[
         ticket_id,#Ticket ID:
         ticket_status,#Ticket Status:
@@ -121,7 +126,7 @@ async def ticket(ctx,ticket):
         AC_to_seller_proof_hash,#AxieCenter to Seller Hash:
         AC_to_buyer_proof_hash,#AxieCenter to Buyer Hash:
         ticket_closed,#Closed:
-        "notas varias en caso de cancelar o error" #Notes
+        logs #Notes
     ]
     ticket_msg=ES_msg_templates.ticket_msg(vec)
     await ctx.send(embed=ticket_msg)

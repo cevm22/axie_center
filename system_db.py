@@ -123,7 +123,14 @@ def pull_user_seller(ticket):
     collection=db['tickets'] # Collection     
     data=collection.find_one({"ticket":ticket},{"discord_id_1":1})
     return data['discord_id_1']
-
+#======================================================================
+# FIND ticket and pull all data for ticket review
+#======================================================================
+def pull_ticket_allinfo(ticket):
+    db=client['tx_db'] # DB
+    collection=db['tickets'] # Collection     
+    data=collection.find_one({"ticket":ticket})
+    return data
 #======================================================================
 # DB ENROLL new users
 #======================================================================
