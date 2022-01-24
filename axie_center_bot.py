@@ -29,11 +29,17 @@ async def test(ctx):
 async def ps(ctx,axie_ID,price,password):
     user_id=str(ctx.message.author.id)
     user = await bot.fetch_user(user_id)
-    #Verificar que se encuentre registrado
+    #Verificar que no tenga BAN
+
     verify=system_db.validate_user(user_id)
     if not verify:
             await user.send("**NO** estas registrado, usa el comando : **_enroll** para ingresar a Axie Center.")
             return
+    banned=aux_func.ban_validation(user_id)
+    if banned==True:
+            await user.send("BANNED")
+            return
+            #Verificar que se encuentre registrado
     #verificacion numeros enteros y menores a 1000
     try:
         comision=aux_func.comision_calc(int(price))
@@ -45,17 +51,10 @@ async def ps(ctx,axie_ID,price,password):
     if int(price)<1 or int(verify_axie_ID)<1:
         await user.send("Ingresar SOLO valores decimales POSITIVOS")
         return
-    
-    #limite de venta de acuerdo al price_limit
+     #limite de venta de acuerdo al price_limit
     if int(price) > int(price_limit):
         await user.send("Solo se pueden hacer ventas privadas por menos de **$" + str(price_limit) + "** USDC")
         return
-    
-    #Verificar que no tenga BAN
-    banned=aux_func.ban_validation(user_id)
-    if banned==True:
-            await user.send("BANNED")
-            return
     else:   
         #Revisar que el usuario no tenga ticket abierto o pendiente
         ticket_status=system_db.user_ticket_opened(user_id)
@@ -142,6 +141,11 @@ async def cancel(ctx, ticket):
     if not verify:
             await user.send("**NO** estas registrado, usa el comando : **_enroll** para ingresar a Axie Center.")
             return
+    #Verificar que no tenga BAN
+    banned=aux_func.ban_validation(user_id)
+    if banned==True:
+            await user.send("BANNED")
+            return
     #Revisar que el usuario no tenga ticket abierto o pendiente
     ticket_status=system_db.user_ticket_opened(user_id)
     if ticket_status[0] == False:
@@ -197,15 +201,14 @@ async def accept(ctx, ticket, password):
     user_id=str(ctx.message.author.id)
     user = await bot.fetch_user(user_id)
     verify=system_db.validate_user(user_id)
-    
+    #verificar que este registrado
+    if not verify:
+            await user.send("**NO** estas registrado, usa el comando : **_enroll** para ingresar a Axie Center.")
+            return
     #Verificar que no tenga BAN
     banned=aux_func.ban_validation(user_id)
     if banned==True:
             await user.send("BANNED")
-            return
-    #verificar que este registrado
-    if not verify:
-            await user.send("**NO** estas registrado, usa el comando : **_enroll** para ingresar a Axie Center.")
             return
     #Revisar que el usuario no tenga ticket abierto o pendiente
     ticket_status=system_db.user_ticket_opened(user_id)
@@ -318,6 +321,11 @@ async def enroll(ctx,ronin):
     user_exist=system_db.validate_user(user_ID)
     if not user_exist:
             #Addres no validada por el nodo
+                #Verificar que no tenga BAN
+            banned=aux_func.ban_validation(user_ID)
+            if banned==True:
+                await ctx.send("BANNED")
+                return
             valid_address=blockchain_func.validate_ronin(ronin)
             if valid_address == True:
                 #Verificar que el Wallet YA esta registrado
