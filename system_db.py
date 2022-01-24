@@ -33,8 +33,8 @@ def create_ticket_PS(vec):
                 "ticket_stat": 1,
                 "token_1": "AXIE",
                 "token_2": "USDC",
-                "ac_txhash_1": "0",
-                "ac_txhash_2": "0",
+                "ac_txhash_1": "ac1",
+                "ac_txhash_2": "ac2",
                 "type": "Private Sale",
                 "value_1": vec[1], #AXIE id
                 "value_2": vec[2], #USDC token

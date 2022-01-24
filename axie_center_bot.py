@@ -71,7 +71,7 @@ async def ps(ctx,axie_ID,price,password):
                 int(axie_ID), #axie ID
                 int(price), #price
                 comision,#comision #pendiente hacer func comision
-                "358375624294924289",#timestamp
+                datetime.datetime.utcnow(),#timestamp
                 user_id,
                 str(password),
                 str(ronin_wallet)
@@ -89,22 +89,38 @@ async def ps(ctx,axie_ID,price,password):
 #=======================
 #Ticket 
 @bot.command()
-async def ticket(ctx):
+async def ticket(ctx,ticket):
+    #Proceso para mostrar ticket
+    #verificar 
+    ticket_id="PS-105"
+    ticket_status= 2
+    axie_id=852852
+    price=100
     #template MSG TICKET
+    seller_proof_hash="0x1"#"0xcea4ced35f6e5d8ce647099f46d0706ddee5a3d521d169ee3cfbfafa098275c8"
+    buyer_proof_hash="0x2"#"0xd1fa214b3e920c8d50ab83e502e4237b8de472cb3b3e2a4189d8830fcccedd65"
+    AC_to_seller_proof_hash="ac1"#"0xcea4ced35f6e5d8ce647099f46d0706ddee5a3d521d169ee3cfbfafa098275c8"
+    AC_to_buyer_proof_hash="ac2"#"0xd1fa214b3e920c8d50ab83e502e4237b8de472cb3b3e2a4189d8830fcccedd65"
+    #marks 
+    seller_mark=False #":white_check_mark:"
+    buyer_mark=False #":x:"
+    assets_ready=False #":x:"
+    ticket_closed=False #":x:"
+    timestamp_to_date=datetime.datetime.utcnow().strftime("%m/%d/%Y, %H:%M:%S")
     vec=[
-        "PS-0000001",#Ticket ID:
-        "PENDING",#Ticket Status:
-        "2022-01-19 00:00:50",#str(datetime.datetime.utcnow()),#Opened:
-        654321,#Axie ID:
-        100,#Price:
-        "0xcea4ced35f6e5d8ce647099f46d0706ddee5a3d521d169ee3cfbfafa098275c8",#Seller Proof Hash:
-        ":white_check_mark:",#Seller Status Hash:
-        "0xd1fa214b3e920c8d50ab83e502e4237b8de472cb3b3e2a4189d8830fcccedd65",#Buyer Proof Hash:
-        ":x:",#Buyer Status Hash:
-        ":x:",#Assets in AxieCenter: 
-        "0xcea4ced35f6e5d8ce647099f46d0706ddee5a3d521d169ee3cfbfafa098275c8",#AxieCenter to Seller Hash:
-        "0xd1fa214b3e920c8d50ab83e502e4237b8de472cb3b3e2a4189d8830fcccedd65",#AxieCenter to Buyer Hash:
-        ":x:",#Closed:
+        ticket_id,#Ticket ID:
+        ticket_status,#Ticket Status:
+        str(timestamp_to_date),#Opened:
+        axie_id,#Axie ID:
+        price,#Price:
+        seller_proof_hash,#Seller Proof Hash:
+        seller_mark,#Seller Status Hash:
+        buyer_proof_hash,#Buyer Proof Hash:
+        buyer_mark,#Buyer Status Hash:
+        assets_ready,#Assets in AxieCenter: 
+        AC_to_seller_proof_hash,#AxieCenter to Seller Hash:
+        AC_to_buyer_proof_hash,#AxieCenter to Buyer Hash:
+        ticket_closed,#Closed:
         "notas varias en caso de cancelar o error" #Notes
     ]
     ticket_msg=ES_msg_templates.ticket_msg(vec)
