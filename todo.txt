@@ -3,13 +3,12 @@ Ideas general para Axie Center:
 - Intercambio de Axies
 
 TODO:
+### Trabajar con comando para agregar Proof_Hash del vendedor y comprador
 - Crear flujo de venta privada
-    -Func Bloqueo de terceros a acceder a ticket
     -Func verificacion de tokens en hotwallet
     -Func envío de tokens a los users
-    -Func status tickets
-        --Func no pueda verse ticket status por un tercero
-    -Func de envios de hash 
+    -agregar func ticket mensaje correspondiente del wallet a donde enviar los tokens y axies
+
 
 
 - Crear flujo de intercambio de Axies
