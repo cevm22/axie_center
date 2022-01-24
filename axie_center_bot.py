@@ -29,17 +29,18 @@ async def test(ctx):
 async def ps(ctx,axie_ID,price,password):
     user_id=str(ctx.message.author.id)
     user = await bot.fetch_user(user_id)
-    #Verificar que no tenga BAN
-
+    
+    #Verificar que se encuentre registrado
     verify=system_db.validate_user(user_id)
     if not verify:
             await user.send("**NO** estas registrado, usa el comando : **_enroll** para ingresar a Axie Center.")
             return
+    #Verificar que no tenga BAN
     banned=aux_func.ban_validation(user_id)
     if banned==True:
             await user.send("BANNED")
             return
-            #Verificar que se encuentre registrado
+            
     #verificacion numeros enteros y menores a 1000
     try:
         comision=aux_func.comision_calc(int(price))
@@ -89,47 +90,80 @@ async def ps(ctx,axie_ID,price,password):
 #Ticket 
 @bot.command()
 async def ticket(ctx,ticket):
-    #Proceso para mostrar ticket
-    #pull data from ticket
-    data=system_db.pull_ticket_allinfo(ticket)
-    ticket_id=data['ticket']
-    ticket_status= data['ticket_stat']
-    axie_id=data['value_1']
-    price=data['value_2']
-    #template MSG TICKET
-    seller_proof_hash=data['tx_hash_1']
-    buyer_proof_hash=data['tx_hash_2']
-    AC_to_seller_proof_hash=data['ac_txhash_1']
-    AC_to_buyer_proof_hash=data["ac_txhash_2"]
-    #marks 
-    seller_mark=data['status_hash_1'] 
-    buyer_mark=data['status_hash_2'] 
-    if seller_mark==False and buyer_mark ==False:
-        assets_ready=False 
+    user_id=str(ctx.message.author.id)
+    user = await bot.fetch_user(user_id)
+    #Verificar que se encuentre registrado
+    verify=system_db.validate_user(user_id)
+    if not verify:
+            await user.send("**NO** estas registrado, usa el comando : **_enroll** para ingresar a Axie Center.")
+            return
+    #Verificar que no tenga BAN
+    banned=aux_func.ban_validation(user_id)
+    if banned==True:
+            await user.send("BANNED")
+            return
+    #Revisar que el usuario no tenga ticket abierto o pendiente
+    ticket_status=system_db.user_ticket_opened(user_id)
+    if ticket_status[0] == False:
+        await user.send("No cuentas con tickets abiertos ")
+        return
+    #Revisar que exista el ticket ID
+    find_ticket_id=system_db.pull_ticket_id(ticket)
+    if find_ticket_id[0]==False:
+        await user.send("**NO** existe un ticket con este ID")
+        return
+    #revisar que el ticket NO se ha cancelado antes
+    if find_ticket_id[1]==0:
+        await user.send("Este ticket ya ha sido cancelado previamente")
+        return
+ 
+    #revisar que el usuario se encuentre en un ticket
+    discord_users_IDS=system_db.pull_discords_ID_on_ticket(ticket)
+    if discord_users_IDS[0]==user_id or discord_users_IDS[1]==user_id:
+        #Proceso para mostrar ticket
+        #pull data from ticket
+        data=system_db.pull_ticket_allinfo(ticket)
+        ticket_id=data['ticket']
+        ticket_status= data['ticket_stat']
+        axie_id=data['value_1']
+        price=data['value_2']
+        #template MSG TICKET
+        seller_proof_hash=data['tx_hash_1']
+        buyer_proof_hash=data['tx_hash_2']
+        AC_to_seller_proof_hash=data['ac_txhash_1']
+        AC_to_buyer_proof_hash=data["ac_txhash_2"]
+        #marks 
+        seller_mark=data['status_hash_1'] 
+        buyer_mark=data['status_hash_2'] 
+        if seller_mark==False and buyer_mark ==False:
+            assets_ready=False 
+        else:
+            assets_ready=True
+        ticket_closed=data['ticket_stat'] 
+        logs=data['log']
+        timestamp_to_date=data['init_time'].strftime("%m/%d/%Y, %H:%M:%S")#datetime.datetime.utcnow().strftime("%m/%d/%Y, %H:%M:%S")
+        vec=[
+            ticket_id,#Ticket ID:
+            ticket_status,#Ticket Status:
+            str(timestamp_to_date),#Opened:
+            axie_id,#Axie ID:
+            price,#Price:
+            seller_proof_hash,#Seller Proof Hash:
+            seller_mark,#Seller Status Hash:
+            buyer_proof_hash,#Buyer Proof Hash:
+            buyer_mark,#Buyer Status Hash:
+            assets_ready,#Assets in AxieCenter: 
+            AC_to_seller_proof_hash,#AxieCenter to Seller Hash:
+            AC_to_buyer_proof_hash,#AxieCenter to Buyer Hash:
+            ticket_closed,#Closed:
+            logs #Notes
+        ]
+        ticket_msg=ES_msg_templates.ticket_msg(vec)
+        await user.send(embed=ticket_msg)
+        return
     else:
-        assets_ready=True
-    ticket_closed=data['ticket_stat'] 
-    logs=data['log']
-    timestamp_to_date=data['init_time'].strftime("%m/%d/%Y, %H:%M:%S")#datetime.datetime.utcnow().strftime("%m/%d/%Y, %H:%M:%S")
-    vec=[
-        ticket_id,#Ticket ID:
-        ticket_status,#Ticket Status:
-        str(timestamp_to_date),#Opened:
-        axie_id,#Axie ID:
-        price,#Price:
-        seller_proof_hash,#Seller Proof Hash:
-        seller_mark,#Seller Status Hash:
-        buyer_proof_hash,#Buyer Proof Hash:
-        buyer_mark,#Buyer Status Hash:
-        assets_ready,#Assets in AxieCenter: 
-        AC_to_seller_proof_hash,#AxieCenter to Seller Hash:
-        AC_to_buyer_proof_hash,#AxieCenter to Buyer Hash:
-        ticket_closed,#Closed:
-        logs #Notes
-    ]
-    ticket_msg=ES_msg_templates.ticket_msg(vec)
-    await ctx.send(embed=ticket_msg)
-    return
+        await user.send("**NO** puedes ver tickets de otros usuarios.")
+        return
 
 #=======================
 #Ticket cancel
