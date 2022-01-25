@@ -265,7 +265,7 @@ def update_tickets_stats_cancelled():
 #======================================================================
 def update_hash_user_1(ticket,proof_hash):
     db=client['tx_db'] # DB
-    collection=db['tickets_stats'] # Collection
+    collection=db['tickets'] # Collection
     data=collection.update_one({'ticket':ticket},{"$set":{"tx_hash_1":proof_hash}})
     return True
 
@@ -274,7 +274,7 @@ def update_hash_user_1(ticket,proof_hash):
 #======================================================================
 def update_hash_user_2(ticket,proof_hash):
     db=client['tx_db'] # DB
-    collection=db['tickets_stats'] # Collection
+    collection=db['tickets'] # Collection
     data=collection.update_one({'ticket':ticket},{"$set":{"tx_hash_2":proof_hash}})
     return True
 
