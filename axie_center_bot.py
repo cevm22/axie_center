@@ -208,6 +208,7 @@ async def proof(ctx,ticket, proof_hash):
             #revisar que el hash no ha sido entregado antes en una BD de solo hash completos
             #actualizar ticket hash DB
             system_db.update_hash_user_1(ticket,proof_hash)
+            system_db.create_proof_hash_db(ticket,proof_hash)
             print("1 Hash discord 1")
             return
         if discord_users_IDS[1]==user_id: #usuario 2 - comprador

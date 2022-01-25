@@ -245,7 +245,7 @@ def create_tickets_stats_db():
 #======================================================================
 # CREATE hash DB on tickets completed
 #======================================================================
-def create_proof_hash_db(hash,ticket):
+def create_proof_hash_db(ticket,hash):
     db=client['tx_db'] # DB
     collection=db['proof_hash'] # Collection
     collection.insert_one({
