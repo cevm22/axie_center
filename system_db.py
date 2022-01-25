@@ -228,7 +228,14 @@ def pull_ticket_password(ticket):
     collection=db['tickets'] # Collection   
     data=collection.find_one({"ticket":ticket},{"password":1})
     return data['password']
-
+#======================================================================
+# FIND hash repeated before 
+#======================================================================
+def pull_hash_db(proof_hash):
+    db=client['tx_db'] # DB
+    collection=db['proof_hash'] # Collection   
+    data=collection.find_one({"hash":proof_hash})
+    return data
 #======================================================================
 # CREATE tickets DB stats
 #======================================================================
