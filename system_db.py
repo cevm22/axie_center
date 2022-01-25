@@ -243,6 +243,17 @@ def create_tickets_stats_db():
                 })
     return True
 #======================================================================
+# CREATE hash DB on tickets completed
+#======================================================================
+def create_proof_hash_db(hash,ticket):
+    db=client['tx_db'] # DB
+    collection=db['proof_hash'] # Collection
+    collection.insert_one({
+                    "hash":hash,
+                    "ticket":ticket
+                })
+    return True
+#======================================================================
 # UPDATE   ticket_status - Total +1
 #======================================================================
 def update_tickets_stats():
