@@ -22,4 +22,20 @@ def create_explorer_stats_db():
                 })
     return True
 
-create_explorer_stats_db()
+#======================================================================
+# UPDATE   explorer_stats - ERC20_tx new total_tx
+#======================================================================
+def update_explorer_ERC20_tx(total_tx):
+    db=client['tx_db'] # DB
+    collection=db['explorer_stats'] # Collection
+    data=collection.update_one({'txs':"txs"},{"$set":{"ERC20_tx":total_tx}})
+    return True
+
+#======================================================================
+# UPDATE   explorer_stats - ERC721_tx new total_tx
+#======================================================================
+def update_explorer_ERC721_tx(total_tx):
+    db=client['tx_db'] # DB
+    collection=db['explorer_stats'] # Collection
+    data=collection.update_one({'txs':"txs"},{"$set":{"ERC721_tx":total_tx}})
+    return True
