@@ -39,3 +39,44 @@ def update_explorer_ERC721_tx(total_tx):
     collection=db['explorer_stats'] # Collection
     data=collection.update_one({'txs':"txs"},{"$set":{"ERC721_tx":total_tx}})
     return True
+
+#======================================================================
+# ADD txs explorer ERC721
+#======================================================================
+def add_ERC721_tx(vec):
+    db=client['tx_db'] # DB
+    collection=db['ERC721'] # Collection
+    collection.insert_one({
+                "from":str(vec[0]),
+                "to":str(vec[1]),
+                "value":str(vec[2]),
+                "log_index":str(vec[3]),
+                "tx_hash":str(vec[4]),
+                "block_number":str(vec[5]),
+                "timestamp":str(vec[6]),
+                "token_address":str(vec[7]),
+                "token_symbol":str(vec[8]),
+                "ticket_id":0,
+                "status":"STAND_BY", #STAND_BY, DONE #faltan agregar otros status para control
+                })
+    return True
+#======================================================================
+# ADD txs explorer ERC20
+#======================================================================
+def add_ERC20_tx(vec):
+    db=client['tx_db'] # DB
+    collection=db['ERC20'] # Collection
+    collection.insert_one({
+                "from":str(vec[0]),
+                "to":str(vec[1]),
+                "value":str(vec[2]),
+                "log_index":str(vec[3]),
+                "tx_hash":str(vec[4]),
+                "block_number":str(vec[5]),
+                "timestamp":str(vec[6]),
+                "token_address":str(vec[7]),
+                "token_symbol":str(vec[8]),
+                "ticket_id":0,
+                "status":"STAND_BY", #STAND_BY, DONE #faltan agregar otros status para control
+                })
+    return True
