@@ -118,4 +118,4 @@ def TOKEN_tx(ctr,tx__input,tx__contract,tx__from):
 #print(get_tx('0x1124b6011f9b0014fc956e3b6debff7916551cf2b7a96430b27a99f45c84ede9'))
 #print("tx aceptada")
 #print(get_tx('0xeffc9c0d2f0e7ef7cc96d85aa1eda34efbda8f4a7245a2a793bda51c6f518095'))
-test("ronin:1ba2228e2c90bc6cc4fd7c3fe62e796c4321356f")
+#test("ronin:1ba2228e2c90bc6cc4fd7c3fe62e796c4321356f")
