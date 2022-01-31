@@ -1,4 +1,3 @@
-from operator import truediv
 from pymongo import MongoClient
 import datetime
 import time
