@@ -1,8 +1,10 @@
+from operator import truediv
 from pymongo import MongoClient
 import datetime
 import time
 import datetime 
 import json
+
 #======================================================================
 #parametros de base de datos
 #======================================================================
@@ -79,3 +81,12 @@ def add_ERC20_tx(vec):
                 "status":"STAND_BY", #STAND_BY, DONE #faltan agregar otros status para control
                 })
     return True
+
+def test_duplicate(tx_hash):
+    db=client['tx_db'] # DB
+    collection=db['ERC721'] # Collection     
+    data=collection.find_one({"tx_hash":tx_hash})
+    if not data:
+        return False
+    else:
+        return True
