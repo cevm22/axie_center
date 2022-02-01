@@ -123,6 +123,8 @@ def store_tx(vec):
                                 pull_cycle(ASSET,hotwallet,ind,100)
                                 delta=delta-100
                                 ind=ind+100
+                        ############################3
+                        # Funcion para contar documentos y actualizar el status
                 else:                    
                     for i in range(delta):
                         #agegar funcion para guardar los documentos
@@ -144,6 +146,8 @@ def store_tx(vec):
                         
                         print(i)
                     print("terminado")
+                    ############################3
+                    # Funcion para contar documentos y actualizar el status
                     #agregar funcion actualizar stats en ERC_20 o ERC721
                     return
     except Exception as e:
