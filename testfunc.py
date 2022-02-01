@@ -1,6 +1,7 @@
 import requests
 import json
-
+import explorer_tx_db
+import math     
 headers = {
         'user-agent': 'Mozilla/5.0 ( Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.121 Safari/537.36'
     }
@@ -48,21 +49,47 @@ def store_tx(vec):
                 print("Hay diferencia de > "+str(delta))
                 erc20_vec=vec[2]
                 size=delta#len(erc20_vec)
-                for i in range(size):
-                    #agegar funcion para guardar los documentos
-                    #print(erc20_vec[i])
-                    print(i)
-                print("terminado")
-                #agregar funcion actualizar stats en ERC_20 o ERC721
+                if delta > 100:
+                    if delta % 100 == 0:
+                        pag= int(delta/100)
+                    else:
+                        pag=math.floor(delta/100) + 1
+                else:
+                    pag=0
+                    #agregar ciclo FOR para las paginas y un delay de 2 segundos
+                    #agregar 2 funciones para paginacion, uno para ERC 20 y otro ERC721
+                    for i in range(size):
+                        #agegar funcion para guardar los documentos
+                        vec_info=[
+                            erc20_vec[i]['from'],
+                            erc20_vec[i]['to'],
+                            erc20_vec[i]['value'],
+                            erc20_vec[i]['log_index'],
+                            erc20_vec[i]['tx_hash'],
+                            erc20_vec[i]['block_number'],
+                            erc20_vec[i]['timestamp'],
+                            erc20_vec[i]['token_address'],
+                            erc20_vec[i]['token_symbol'],
+                            ]
+                        explorer_tx_db.add_ERC20_tx(vec_info)
+                        print(i)
+                    print("terminado")
+                    #agregar funcion actualizar stats en ERC_20 o ERC721
 
-                return
+                    return
         return True
     except Exception as e:
         print(e)
         return False
 
-pull_erc20(hotwallet)
+def test():
+    if 800 % 100 == 0:
+        print("par")
+    else:
+        print("impar")
 
+#pull_erc20(hotwallet)
+test()
 #estructurar base de datos para guardar las transacciones ERC20 y ERC721
 #base de datos para resumen estadisticas del hotwallet
 #funcion en caso de que haya mas de 100 txs
