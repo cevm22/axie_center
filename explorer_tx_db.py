@@ -1,4 +1,3 @@
-from operator import truediv
 from pymongo import MongoClient
 import datetime
 import time
@@ -81,6 +80,22 @@ def add_ERC20_tx(vec):
                 "status":"STAND_BY", #STAND_BY, DONE #faltan agregar otros status para control
                 })
     return True
+#======================================================================
+# PULL total docs in ERC721
+#======================================================================
+def pull_docs_erc721():
+    db=client['tx_db'] # DB
+    collection=db['explorer_stats'] # Collection     
+    data=collection.find_one({"txs":"txs"},{"ERC721_tx":1})
+    return data["ERC721_tx"]
+#======================================================================
+# PULL total docs in ERC20
+#======================================================================
+def pull_docs_erc20():
+    db=client['tx_db'] # DB
+    collection=db['explorer_stats'] # Collection     
+    data=collection.find_one({"txs":"txs"},{"ERC20_tx":1})
+    return data["ERC20_tx"]
 #======================================================================
 # search for Duplications in TX_HASH ERC721
 #======================================================================

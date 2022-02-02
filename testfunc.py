@@ -85,11 +85,15 @@ def pull_cycle(tech,ronin,ind,size):
 
 def store_tx(vec):
     try:
-            total=0 #func para pull ERC20_Tx status
+            if vec[0] == "ERC20":
+                total=int(explorer_tx_db.pull_docs_erc20())
+            if vec[0] == "ERC721":
+                total=int(explorer_tx_db.pull_docs_erc721())
+
             stats_erc20=int(vec[1])
             if total == stats_erc20:
-                print("NO HAY CAMBIOS")
-                return 
+                #print("NO HAY CAMBIOS")
+                return False
             else:
                 delta=stats_erc20-total
                 print("Hay diferencia de > "+str(delta))
@@ -179,7 +183,7 @@ def test():
     else:
         print("impar")
 
-pull_erc20(hotwallet)
+#pull_erc20(hotwallet)
 #pull_erc721(hotwallet)
 #test()
 #estructurar base de datos para guardar las transacciones ERC20 y ERC721
