@@ -81,7 +81,9 @@ def add_ERC20_tx(vec):
                 "status":"STAND_BY", #STAND_BY, DONE #faltan agregar otros status para control
                 })
     return True
-
+#======================================================================
+# search for Duplications in TX_HASH
+#======================================================================
 def test_duplicate(tx_hash):
     db=client['tx_db'] # DB
     collection=db['ERC721'] # Collection     
@@ -90,3 +92,19 @@ def test_duplicate(tx_hash):
         return False
     else:
         return True
+#======================================================================
+# COUNT ALL DOCS ERC721
+#======================================================================
+def count_docs_ERC721():
+    db=client['tx_db'] # DB
+    collection=db['ERC721'] # Collection     
+    data=collection.count_documents({}) 
+    return (data) 
+#======================================================================
+# COUNT ALL DOCS ERC20
+#======================================================================
+def count_docs_ERC721():
+    db=client['tx_db'] # DB
+    collection=db['ERC20'] # Collection     
+    data=collection.count_documents({}) 
+    return (data) 
