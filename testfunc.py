@@ -67,21 +67,17 @@ def pull_cycle(tech,ronin,ind,size):
                             lista[i]['token_symbol'],
                             ]
                         if asset =="ERC20":
-                                explorer_tx_db.add_ERC20_tx(vec_info)
+                                #buscar por duplicado
+                                duplicated=str(lista[i]['tx_hash'])
+                                check_Tx=explorer_tx_db.find_duplicate_erc20(duplicated)
+                                if check_Tx == False:
+                                    explorer_tx_db.add_ERC20_tx(vec_info)
                         if asset =="ERC721":
-                                explorer_tx_db.add_ERC721_tx(vec_info)
-                        #
-                        #revisar duplicidad
-                        #duplicated=str(lista[i]['tx_hash'])
-                        #check_Tx=explorer_tx_db.test_duplicate(duplicated)
-                        #if check_Tx == False:
-                        #    if asset =="ERC20":
-                        #        explorer_tx_db.add_ERC20_tx(vec_info)
-                        #    if asset =="ERC721":
-                        #        explorer_tx_db.add_ERC721_tx(vec_info)
-                        #if check_Tx == True:
-                        #    explorer_tx_db.add_ERC20_tx(vec_info)
-                        #    print("REPETIDO > " + str(duplicated))
+                                #buscar por duplicado
+                                duplicated=str(lista[i]['tx_hash'])
+                                check_Tx=explorer_tx_db.find_duplicate_erc721(duplicated)
+                                if check_Tx == False:
+                                    explorer_tx_db.add_ERC721_tx(vec_info)
         return 
     except Exception as e:
         print(e)
@@ -112,19 +108,29 @@ def store_tx(vec):
                         for a in range(pag):
                             #caso cuando se necesiten los 100 items 
                             if delta < 101:
-                                print("pagina " + str(a))
-                                print("Delta > "+str(delta))
+                                #print("pagina " + str(a))
+                                #print("Delta > "+str(delta))
                                 pull_cycle(ASSET,hotwallet,ind,int(delta))
                                 delta=delta-100
                                 ind=ind+100
                             if delta > 100:
-                                print("pagina " + str(a))                           
-                                print("Delta > "+str(delta))
+                                #print("pagina " + str(a))                           
+                                #print("Delta > "+str(delta))
                                 pull_cycle(ASSET,hotwallet,ind,100)
                                 delta=delta-100
                                 ind=ind+100
                         ############################3
                         # Funcion para contar documentos y actualizar el status
+                        ############################3
+                        # Funcion para contar documentos y actualizar el status ERC_20 o ERC721
+                        if vec[0] == "ERC20":
+                            total_erc20=explorer_tx_db.count_docs_ERC20()
+                            explorer_tx_db.update_explorer_ERC20_tx(str(total_erc20))
+                        if vec[0] == "ERC721":
+                            total_erc721=explorer_tx_db.count_docs_ERC721()
+                            explorer_tx_db.update_explorer_ERC721_tx(str(total_erc721))
+                        #print("terminado")
+                        return
                 else:                    
                     for i in range(delta):
                         #agegar funcion para guardar los documentos
@@ -140,15 +146,28 @@ def store_tx(vec):
                             erc20_vec[i]['token_symbol'],
                             ]
                         if vec[0] == "ERC20":
-                            explorer_tx_db.add_ERC20_tx(vec_info)
+                            #buscar por duplicado
+                            duplicated=str(erc20_vec[i]['tx_hash'])
+                            check_Tx=explorer_tx_db.find_duplicate_erc20(duplicated)
+                            if check_Tx == False:
+                                #guardar docs a db
+                                explorer_tx_db.add_ERC20_tx(vec_info)
                         if vec[0] == "ERC721":
-                            explorer_tx_db.add_ERC721_tx(vec_info)
-                        
-                        print(i)
-                    print("terminado")
+                            #buscar por duplicado
+                            duplicated=str(erc20_vec[i]['tx_hash'])
+                            check_Tx=explorer_tx_db.find_duplicate_erc721(duplicated)
+                            if check_Tx == False:
+                                #guardar docs a db
+                                explorer_tx_db.add_ERC721_tx(vec_info)
                     ############################3
-                    # Funcion para contar documentos y actualizar el status
-                    #agregar funcion actualizar stats en ERC_20 o ERC721
+                    # Funcion para contar documentos y actualizar el status ERC_20 o ERC721
+                    if vec[0] == "ERC20":
+                        total_erc20=explorer_tx_db.count_docs_ERC20()
+                        explorer_tx_db.update_explorer_ERC20_tx(str(total_erc20))
+                    if vec[0] == "ERC721":
+                        total_erc721=explorer_tx_db.count_docs_ERC721()
+                        explorer_tx_db.update_explorer_ERC721_tx(str(total_erc721))
+                    #print("terminado")
                     return
     except Exception as e:
         print(e)
@@ -160,8 +179,8 @@ def test():
     else:
         print("impar")
 
-#pull_erc20(hotwallet)
-pull_erc721(hotwallet)
+pull_erc20(hotwallet)
+#pull_erc721(hotwallet)
 #test()
 #estructurar base de datos para guardar las transacciones ERC20 y ERC721
 #base de datos para resumen estadisticas del hotwallet

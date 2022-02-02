@@ -82,11 +82,22 @@ def add_ERC20_tx(vec):
                 })
     return True
 #======================================================================
-# search for Duplications in TX_HASH
+# search for Duplications in TX_HASH ERC721
 #======================================================================
-def test_duplicate(tx_hash):
+def find_duplicate_erc721(tx_hash):
     db=client['tx_db'] # DB
     collection=db['ERC721'] # Collection     
+    data=collection.find_one({"tx_hash":tx_hash})
+    if not data:
+        return False
+    else:
+        return True
+#======================================================================
+# search for Duplications in TX_HASH ERC20
+#======================================================================
+def find_duplicate_erc20(tx_hash):
+    db=client['tx_db'] # DB
+    collection=db['ERC20'] # Collection     
     data=collection.find_one({"tx_hash":tx_hash})
     if not data:
         return False
@@ -103,7 +114,7 @@ def count_docs_ERC721():
 #======================================================================
 # COUNT ALL DOCS ERC20
 #======================================================================
-def count_docs_ERC721():
+def count_docs_ERC20():
     db=client['tx_db'] # DB
     collection=db['ERC20'] # Collection     
     data=collection.count_documents({}) 
