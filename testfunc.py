@@ -92,6 +92,9 @@ def pull_cycle(tech,ronin,ind,size):
         print(e)
         return False
 
+#======================================================================
+# Store items ERC721 & ERC20 to DB
+#======================================================================
 def store_tx(vec):
     try:
             if vec[0] == "ERC20":
