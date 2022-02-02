@@ -8,7 +8,10 @@ headers = {
     }
 hotwallet='0x1ba2228e2c90bc6cc4fd7c3fe62e796c4321356f'
 
-def pull_erc721(ronin):
+#======================================================================
+# PULL ERC721 data from api
+#======================================================================
+def pull_erc721_api(ronin):
     try:
         url = 'https://explorer.roninchain.com/api/tokentxs?addr='+str(ronin)+'&from=0&size=100&token=ERC721'
         r = requests.get(url, headers=headers)
@@ -24,7 +27,10 @@ def pull_erc721(ronin):
         print(e)
         return False
 
-def pull_erc20(ronin):
+#======================================================================
+# PULL ERC721 data from api
+#======================================================================
+def pull_erc20_api(ronin):
     try:
         url = 'https://explorer.roninchain.com/api/tokentxs?addr='+str(ronin)+'&from=0&size=100&token=ERC20'
         r = requests.get(url, headers=headers)
@@ -39,6 +45,9 @@ def pull_erc20(ronin):
         print(e)
         return False
 
+#======================================================================
+# PULL ERC721 & ERC20 data from api in case delta > 100 items
+#======================================================================
 def pull_cycle(tech,ronin,ind,size):
     try:
         time.sleep(5)
@@ -185,8 +194,5 @@ def test():
 
 #pull_erc20(hotwallet)
 #pull_erc721(hotwallet)
-#test()
-#estructurar base de datos para guardar las transacciones ERC20 y ERC721
-#base de datos para resumen estadisticas del hotwallet
-#funcion en caso de que haya mas de 100 txs
-#funcion para guardar txs 
+
+
