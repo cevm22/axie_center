@@ -1,10 +1,15 @@
-import system_db
+from dis import disco
 import math     
 import system_db
 import explorer_tx_db
+import blockchain_func
+import config
 #parametros
 comision=0.02
 limit_user_ban=10
+AXIE_CONTRACT = "0x32950db2a7164ae833121501c797d79e7b79d74c"
+USDC_CONTRACT = "0x0b7007c13325c48911f73a2dad5fa5dcbf808adc"
+hotwallet=config.hotwallet
 def ban_validation(discordID):
     ban_flag=system_db.user_gotban(discordID)
     if ban_flag == True:
@@ -25,10 +30,7 @@ def comision_calc(price):
             #   -Actualizar el hash con el ticket
             #   -Actualizar la marca de la venta privada
             
-            # Caso de no encontrar el hash actualizado
-            #   -Buscar que el hash sea valido
-            #   -Buscar el input del hash venga el wallet del usuario, monto/axie correcto con PS
-            #   -Actualizar status mark venta privada
+
 
 def store_hash_flow(discord_ID,proof_hash,seller_or_buyer,ticket):
     
@@ -100,4 +102,49 @@ def store_hash_flow(discord_ID,proof_hash,seller_or_buyer,ticket):
                 else: #caso en que NO este registrado el ronin o NO corresponda al usuario de la venta privada
                     return "USER_NOT_EXIST"
 
-#print("Estatus de Baneo > "+str(ban_validation(1642527399)))
+###########################################################################################
+            # Caso de no encontrar el hash actualizado
+            #   -Buscar que el hash sea valido
+            #   -Buscar el input del hash venga el wallet del usuario, monto/axie correcto con PS
+            #   -Actualizar status mark venta privada
+
+def no_hash_in_DB(proof_hash,ticket,discord_ID):
+    verify_hash=blockchain_func.get_tx(proof_hash)
+    contrato=verify_hash[0] #contrato del asset
+    tx_from=verify_hash[1]
+    tx_to=verify_hash[2]
+    value=verify_hash[3]
+    ticket_info=system_db.pull_ticket_allinfo(ticket)    
+
+    if tx_to == hotwallet:
+        if verify_hash == "TX_FAIL":
+            return "TX_FAIL"
+        if verify_hash == "NOT_FOUND":
+            return "NOT_FOUND"
+        if contrato== AXIE_CONTRACT:
+            #flow en caso de que sea un axie asset
+            if str(ticket_info["value_1"]) == str(value):
+                validate_user_ID=system_db.validate_ronin(tx_from.replace("0x", "ronin:"))
+
+                if str(discord_ID) == validate_user_ID["discord_id"]:
+                    explorer_tx_db.update_ERC721_tx_ticket_status_pass(ticket,proof_hash) #update to add ticketid and status = PASS
+                    return
+            else:
+                return "WRONG_AXIE_ID"
+        if contrato == USDC_CONTRACT:
+            #flow en caso de que sea USDC token
+            usdc_value=math.floor(int(value/1000000))
+            if str(ticket_info["value_2"]) == str(usdc_value):
+                validate_user_ID=system_db.validate_ronin(tx_from.replace("0x", "ronin:"))
+                if str(discord_ID) == validate_user_ID["discord_id"]:
+                    explorer_tx_db.update_ERC20_tx_ticket_status_pass(ticket,proof_hash) #update to add ticketid and status = PASS
+                    return
+            else:
+                return "INCORRECT_AMOUNT"
+        else:
+            return "CONTRACT_UNDEFINED"
+    else:
+        return "HOTWALLET_INCORRECT"
+
+##########################################
+# falta por probar no_hash_in_DB(proof_hash,ticket,discord_ID)

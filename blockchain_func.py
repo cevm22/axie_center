@@ -21,3 +21,47 @@ def validate_ronin(address):
                                 "user-agent": USER_AGENT}}))
     tx = w3.isAddress(ronin.replace("ronin:", "0x")) #regres True si es un address valido 
     return tx
+
+def get_tx(tx_hash):
+    try:
+        w3 = Web3(
+                Web3.HTTPProvider(
+                    RONIN_PROVIDER_FREE,
+                    request_kwargs={
+                        "headers": {"content-type": "application/json",
+                                    "user-agent": USER_AGENT}}))
+        tx = w3.eth.get_transaction(tx_hash)
+        tx_confirm = w3.eth.get_transaction_receipt(tx_hash)
+        #print(tx_confirm)
+        if int(tx_confirm.status) == 1:
+            tx_contract=str(tx['to'])
+            tx_from=str(tx['from'])
+            tx_coded=(tx.input)
+            # Agregar filtros por contratos para poder identificar en caso de que hagan un envio de otro asset 
+            if tx_contract.lower() == AXIE_CONTRACT.lower():
+                ctr = w3.eth.contract(address=Web3.toChecksumAddress(tx_contract), abi=AXIE_ABI)
+                vector=AXIE_tx(ctr,tx_coded,tx_contract.lower())
+                return vector
+            else:
+                ctr = w3.eth.contract(address=Web3.toChecksumAddress(tx_contract), abi=SLP_ABI)
+                vector=TOKEN_tx(ctr,tx_coded,tx_contract.lower(),tx_from.lower())
+                return vector
+        else:
+            return 'TX_FAIL'
+    except Exception as e:
+        return "NOT_FOUND"
+
+def AXIE_tx(ctr,tx__input,tx__contract):
+    decoded=ctr.decode_function_input(tx__input)
+    tx_from=str(decoded[1]['_from']).lower()
+    tx_to=str(decoded[1]['_to']).lower()
+    tx_tokenID=str(decoded[1]['_tokenId'])
+    vector=[tx__contract,tx_from,tx_to,tx_tokenID]
+    return vector
+
+def TOKEN_tx(ctr,tx__input,tx__contract,tx__from):
+    decoded=ctr.decode_function_input(tx__input)
+    tx_to=str(decoded[1]['_to']).lower()
+    tx_value=str(decoded[1]['_value']).lower()
+    vector=[tx__contract,tx__from,tx_to,tx_value]
+    return vector   

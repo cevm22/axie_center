@@ -1,5 +1,3 @@
-from base64 import decode
-import logging
 from datetime import datetime
 from json.decoder import JSONDecodeError
 

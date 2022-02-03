@@ -35,3 +35,8 @@ TICKETS STATUS
 0 - cancelado
 1 - pending
 2 - ongoing (un usuario de los 2, ya a ingresado un proof hash valido)
+
+#######################
+config parameters
+#######################
+hotwallet="0x1ba2228e2c90bc6cc4fd7c3fe62e796c4321356f"

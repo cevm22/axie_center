@@ -195,6 +195,6 @@ def test():
     else:
         print("impar")
 
-pull_erc20_api(hotwallet)
+#pull_erc20_api(hotwallet)
 
 
