@@ -84,12 +84,28 @@ def update_cancel_ticket_ID(ticket):
     data=collection.update_one({'ticket':ticket},{"$set":{"ticket_stat":0}})
     return True
 #======================================================================
-# UPDATE  to accept ticket ID, add discord_ID_2 and ronin_2
+# UPDATE  to ONGOING ticket ID in ticket DB
 #======================================================================
-def update_cancel_ticket_ID(ticket):
+def update_ongoing_ticket_ID(ticket):
     db=client['tx_db'] # DB
     collection=db['tickets'] # Collection
-    data=collection.update_one({'ticket':ticket},{"$set":{"ticket_stat":0}})
+    data=collection.update_one({'ticket':ticket},{"$set":{"ticket_stat":2}})
+    return True
+#======================================================================
+# UPDATE mark TRUE for discordID
+#======================================================================
+def update_mark_discordID_1(ticket):
+    db=client['tx_db'] # DB
+    collection=db['tickets'] # Collection
+    data=collection.update_one({'ticket':ticket},{"$set":{"status_hash_1":True}})
+    return True
+#======================================================================
+# UPDATE mark TRUE for discordID_2
+#======================================================================
+def update_mark_discordID_2(ticket):
+    db=client['tx_db'] # DB
+    collection=db['tickets'] # Collection
+    data=collection.update_one({'ticket':ticket},{"$set":{"status_hash_2":True}})
     return True
 #======================================================================
 # UPDATE  tickets status and discord_id_2
@@ -229,14 +245,6 @@ def pull_ticket_password(ticket):
     data=collection.find_one({"ticket":ticket},{"password":1})
     return data['password']
 #======================================================================
-# FIND hash repeated before 
-#======================================================================
-def pull_hash_db(proof_hash):
-    db=client['tx_db'] # DB
-    collection=db['proof_hash'] # Collection   
-    data=collection.find_one({"hash":proof_hash})
-    return data
-#======================================================================
 # CREATE tickets DB stats
 #======================================================================
 def create_tickets_stats_db():
@@ -247,17 +255,6 @@ def create_tickets_stats_db():
                     "total":0,
                     "cancelled":0,
                     "done":0
-                })
-    return True
-#======================================================================
-# CREATE hash DB on tickets completed
-#======================================================================
-def create_proof_hash_db(ticket,hash):
-    db=client['tx_db'] # DB
-    collection=db['proof_hash'] # Collection
-    collection.insert_one({
-                    "hash":hash,
-                    "ticket":ticket
                 })
     return True
 #======================================================================

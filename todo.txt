@@ -28,3 +28,10 @@ Pendientes
 - Agregar identificacion de axies en huevo o baneados
 - Agregar captura de errores por no ingresar bien el comando
 - Hacer una libreria para reducir codigo con referente a la verificacion de status de tickets en una sola funcion
+
+
+####################
+TICKETS STATUS 
+0 - cancelado
+1 - pending
+2 - ongoing (un usuario de los 2, ya a ingresado un proof hash valido)

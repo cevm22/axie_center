@@ -40,6 +40,22 @@ def update_explorer_ERC721_tx(total_tx):
     return True
 
 #======================================================================
+# UPDATE   ERC721_tx  ticket info and status = PASS
+#======================================================================
+def update_ERC721_tx_ticket_status_pass(ticket,proof_hash):
+    db=client['tx_db'] # DB
+    collection=db['ERC721'] # Collection
+    data=collection.update_one({'tx_hash':proof_hash},{"$set":{"ticket_id":ticket, "status":'PASS'}})
+    return True
+#======================================================================
+# UPDATE   ERC20_tx  ticket info and status = PASS
+#======================================================================
+def update_ERC20_tx_ticket_status_pass(ticket,proof_hash):
+    db=client['tx_db'] # DB
+    collection=db['ERC20'] # Collection
+    data=collection.update_one({'tx_hash':proof_hash},{"$set":{"ticket_id":ticket, "status":'PASS'}})
+    return True
+#======================================================================
 # ADD txs explorer ERC721
 #======================================================================
 def add_ERC721_tx(vec):
@@ -95,6 +111,29 @@ def pull_docs_erc20():
     collection=db['explorer_stats'] # Collection     
     data=collection.find_one({"txs":"txs"},{"ERC20_tx":1})
     return data["ERC20_tx"]
+
+#======================================================================
+# PULL TX_HASH ERC721 info
+#======================================================================
+def pull_erc721_info(tx_hash):
+    db=client['tx_db'] # DB
+    collection=db['ERC721'] # Collection     
+    data=collection.find_one({"tx_hash":tx_hash})
+    if not data:
+        return False
+    else:
+        return data
+#======================================================================
+# PULL TX_HASH ERC20 info
+#======================================================================
+def pull_erc20_info(tx_hash):
+    db=client['tx_db'] # DB
+    collection=db['ERC20'] # Collection     
+    data=collection.find_one({"tx_hash":tx_hash})
+    if not data:
+        return False
+    else:
+        return data
 #======================================================================
 # search for Duplications in TX_HASH ERC721
 #======================================================================

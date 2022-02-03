@@ -207,7 +207,7 @@ async def proof(ctx,ticket, proof_hash):
         if discord_users_IDS[0]==user_id: #usuario 1 - vendedor
 
             #Validacion de Hash no sea repetido
-            verify_hash=system_db.pull_hash_db(proof_hash)
+            verify_hash= aux_func.store_hash_flow(user_id,proof_hash,"SELLER",ticket)
             
             # Primero buscar el hash en el historial (en caso de EXISTIR)
             #   -Comparar el hash coincida que usuario discord lo envio
