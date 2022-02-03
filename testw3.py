@@ -1,3 +1,4 @@
+from base64 import decode
 import logging
 from datetime import datetime
 from json.decoder import JSONDecodeError
@@ -81,10 +82,12 @@ def get_tx(tx_hash):
                                     "user-agent": USER_AGENT}}))
         tx = w3.eth.get_transaction(tx_hash)
         tx_confirm = w3.eth.get_transaction_receipt(tx_hash)
+        #print(tx_confirm)
         if int(tx_confirm.status) == 1:
             tx_contract=str(tx['to'])
             tx_from=str(tx['from'])
             tx_coded=(tx.input)
+            # Agregar filtros por contratos para poder identificar en caso de que hagan un envio de otro asset que no se tiene contemplado
             if tx_contract.lower() == AXIE_CONTRACT.lower():
                 ctr = w3.eth.contract(address=Web3.toChecksumAddress(tx_contract), abi=AXIE_ABI)
                 vector=AXIE_tx(ctr,tx_coded,tx_contract.lower())

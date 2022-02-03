@@ -205,13 +205,21 @@ async def proof(ctx,ticket, proof_hash):
         #revisar que el usuario se encuentre en un ticket
         discord_users_IDS=system_db.pull_discords_ID_on_ticket(ticket)
         if discord_users_IDS[0]==user_id: #usuario 1 - vendedor
-            #revisar que el hash no ha sido entregado antes en una BD de solo hash completos
-            #funcion comprobante válido
-            #funcion revisar wallet que los assets lleguen
-            #en caso de valido, actualizar ticket
 
             #Validacion de Hash no sea repetido
             verify_hash=system_db.pull_hash_db(proof_hash)
+            
+            # Primero buscar el hash en el historial (en caso de EXISTIR)
+            #   -Comparar el hash coincida que usuario discord lo envio
+            #   -Comparar que los assets coincidan con los terminos de la venta privada (en caso que NO, usar status INCORRECTO)
+            #   -Actualizar el hash con el ticket
+            #   -Actualizar la marca de la venta privada
+            
+            # Caso de no encontrar el hash actualizado
+            #   -Buscar que el hash sea valido
+            #   -Buscar el input del hash venga el wallet del usuario, monto/axie correcto con PS
+            #   -Actualizar status mark venta privada
+            
             if not verify_hash:
                 #actualizar ticket hash DB
                 system_db.update_hash_user_1(ticket,proof_hash)

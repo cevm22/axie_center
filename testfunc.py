@@ -195,7 +195,6 @@ def test():
     else:
         print("impar")
 
-#pull_erc20(hotwallet)
-#pull_erc721(hotwallet)
+pull_erc20_api(hotwallet)
 
 
