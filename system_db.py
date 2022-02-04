@@ -304,10 +304,11 @@ def verify_assets_in_hotwallet():
     return True
     
 
-print(verify_assets_in_hotwallet())
-#print(create_tickets_stats_db())
-#vector=[1642527399,'ronin:1bsdu3s8fnfd7823hdfsfv9'] #enroll func
-#vector=["PS-000001",765432,100,2,1642617963] #private sale func
-
-#print(validate_user(164252739))
-#print(update_ticket_last_status("358375624294924289","PS-2221"))
+# Buscar por ticket_stat 3 y regresar ticket ID
+# Funcion para enviar assets a los owners correspondientes (quitando la comision)
+# Funcion enviar comision a otra wallet
+# Funcion guardar proof hash en ticket status
+# Funcion actualizar mark status_ac_hash_1 y 2 a TRUE
+# Funcion actualizar all ticket status
+# Funcion cerrar ticket
+# Funcion Enviar mensaje a los dos Owners de que sus assets se han enviado
