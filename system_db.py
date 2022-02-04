@@ -293,7 +293,18 @@ def update_hash_user_2(ticket,proof_hash):
     data=collection.update_one({'ticket':ticket},{"$set":{"tx_hash_2":proof_hash}})
     return True
 
+#======================================================================
+# VERIFY owners send proof_hash correct and change ticket_stat = 3
+#======================================================================
+def verify_assets_in_hotwallet():
+    db=client['tx_db'] # DB
+    collection=db['tickets'] # Collection
+    data=collection.update_many({"$and":[{"ticket_stat":2},{"status_hash_1":True},{"status_hash_2":True}]},
+                                  { "$set": { "ticket_stat":3 } })
+    return True
+    
 
+print(verify_assets_in_hotwallet())
 #print(create_tickets_stats_db())
 #vector=[1642527399,'ronin:1bsdu3s8fnfd7823hdfsfv9'] #enroll func
 #vector=["PS-000001",765432,100,2,1642617963] #private sale func
