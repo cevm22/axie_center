@@ -157,7 +157,31 @@ def find_duplicate_erc20(tx_hash):
     else:
         return True
 #======================================================================
-# COUNT ALL DOCS ERC721
+# search  in TX_HASH ERC721 and pull status PASS
+#======================================================================
+def pull_status_pass_erc721(tx_hash):
+    db=client['tx_db'] # DB
+    collection=db['ERC721'] # Collection     
+    data=collection.find_one({"tx_hash":tx_hash},{"status":1})
+    if not data:
+        return False
+    else:
+        return data["status"]
+
+#======================================================================
+# search  TX_HASH ERC20 - and pull status PASS
+#======================================================================
+def pull_status_pass_erc20(tx_hash):
+    db=client['tx_db'] # DB
+    collection=db['ERC20'] # Collection     
+    data=collection.find_one({"tx_hash":tx_hash},{"status":1})
+    if not data:
+        return False
+    else:
+        return data["status"]
+
+#======================================================================
+# COUNT ALL DOCS ERC721 
 #======================================================================
 def count_docs_ERC721():
     db=client['tx_db'] # DB

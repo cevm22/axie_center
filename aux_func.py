@@ -67,7 +67,8 @@ def store_hash_flow(discord_ID,proof_hash,seller_or_buyer,ticket):
                     ticket_info=system_db.pull_ticket_allinfo(ticket)
                     token_amount=str(ticket_info['value_2'])
                     token_amount_hash=str(hash_info['value'])
-                    if token_amount == token_amount_hash:
+                    usdc_value=math.floor(int(int(token_amount_hash)/1000000))
+                    if token_amount == str(usdc_value):
                         #hacer flujo para actualizar la marca y el hash ticket con la informacion de la PS
                         system_db.update_mark_discordID_2(ticket) #mark TRUE 
                         system_db.update_hash_user_2(ticket,proof_hash) #update proof hash in ticket status

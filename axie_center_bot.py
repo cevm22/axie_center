@@ -7,6 +7,7 @@ import ES_msg_templates
 import system_db
 import aux_func
 import blockchain_func
+import explorer_tx_db
 #El bot es activado con el prefijo '_' + comando en la funcion
 bot = commands.Bot(command_prefix='_',help_command=None)
 client=discord.Client(activity=discord.Game(name='Axie Center'))
@@ -201,7 +202,12 @@ async def proof(ctx,ticket, proof_hash):
         await user.send("Este ticket ya ha sido COMPLETADO previamente")
         return
     else:
-
+        
+        search_erc20=explorer_tx_db.pull_status_pass_erc20(proof_hash)
+        search_erc721=explorer_tx_db.pull_status_pass_erc721(proof_hash)
+        if search_erc721== "PASS" or search_erc20=="PASS" or search_erc721== "REFUND" or search_erc20=="REFUND"  or search_erc721== "CANCEL" or search_erc20=="CANCEL" :
+            await user.send("Este HASH ya ha sido entregado anteriormente")
+            return
         #revisar que el usuario se encuentre en un ticket
         discord_users_IDS=system_db.pull_discords_ID_on_ticket(ticket)
         
@@ -217,14 +223,13 @@ async def proof(ctx,ticket, proof_hash):
             
         if discord_users_IDS[1]==user_id: #usuario 2 - comprador
             #funcion enviar hash
-            verify_hash= aux_func.store_hash_flow(user_id,proof_hash,"SELLER",ticket)
+            verify_hash= aux_func.store_hash_flow(user_id,proof_hash,"BUYER",ticket)
             if verify_hash == True:
                 await user.send("Proof Hash, Verificado.")
                 return
             else:
                 await user.send(verify_hash)
                 return
-            return
         
 
 
