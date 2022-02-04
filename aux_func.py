@@ -30,7 +30,6 @@ def store_hash_flow(discord_ID,proof_hash,seller_or_buyer,ticket):
     if seller_or_buyer == 'SELLER':
         #obtener info del hash en DB (en caso de existir)   
         hash_info=explorer_tx_db.pull_erc721_info(proof_hash)
-        print("obtener hash info")
         if hash_info == False:
             status=no_hash_in_DB(proof_hash,ticket,discord_ID)
             return status
@@ -57,10 +56,7 @@ def store_hash_flow(discord_ID,proof_hash,seller_or_buyer,ticket):
         if seller_or_buyer == 'BUYER':
         #obtener info del hash en DB (en caso de existir)   
             hash_info=explorer_tx_db.pull_erc20_info(proof_hash)
-            print("obtener hash info")
             if hash_info == False:
-                ########################################################################
-                #crear funcion para en caso de que sea falso para buyer########################################################################
                 status=(no_hash_in_DB(proof_hash,ticket,discord_ID))
                 return status
             else: #flow cuando se tenga la informacion
@@ -86,7 +82,6 @@ def store_hash_flow(discord_ID,proof_hash,seller_or_buyer,ticket):
 
 
 def no_hash_in_DB(proof_hash,ticket,discord_ID):
-    print("HASH NO ENCONTRADO, inicia proceso de verificacion")
     verify_hash=blockchain_func.get_tx(proof_hash)
     contrato=verify_hash[0] #contrato del asset
     tx_from=verify_hash[1]
@@ -106,7 +101,6 @@ def no_hash_in_DB(proof_hash,ticket,discord_ID):
                 if not validate_user_ID:
                     return "USER_NOT_EXIST" 
                 if str(discord_ID) == str(validate_user_ID["discord_id"]):
-                    print("actualizando MARK")
                     system_db.update_mark_discordID_1(ticket) #mark TRUE 
                     system_db.update_hash_user_1(ticket,proof_hash) #update proof hash in ticket status
                     system_db.update_ongoing_ticket_ID(ticket) #update ticket status to 2 - ONGOING
