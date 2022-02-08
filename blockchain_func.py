@@ -219,4 +219,4 @@ def TOKEN_tx(ctr,tx__input,tx__contract,tx__from):
 ronin='0x1ba2228e2c90bc6cc4fd7c3fe62e796c4321356f'
 from_wallet='0xcb0e8315633348f559bc0edf781f53b48c97ebca'
 
-print(USDC_transfer(from_wallet,ronin,1))
+#print(USDC_transfer(from_wallet,ronin,1))

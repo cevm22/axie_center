@@ -300,9 +300,26 @@ def verify_assets_in_hotwallet():
     db=client['tx_db'] # DB
     collection=db['tickets'] # Collection
     data=collection.update_many({"$and":[{"ticket_stat":2},{"status_hash_1":True},{"status_hash_2":True}]},
-                                  { "$set": { "ticket_stat":3 } })
+                                { "$set": { "ticket_stat":3 } })
     return True
-    
+
+#======================================================================
+# PULL total of tickets in status PENDING = 3
+#======================================================================
+def tickets_pending():
+    db=client['tx_db'] # DB
+    collection=db['tickets'] # Collection 
+    data = collection.count_documents({"ticket_stat":3})  
+    return data
+#======================================================================
+# FIND one ticket with ticket_stat = 3 and pull info to send assets
+#======================================================================
+def pull_ticket_ready():
+    db=client['tx_db'] # DB
+    collection=db['tickets'] # Collection 
+    data = collection.find_one({"ticket_stat":3})  
+    return [data["ronin_1"],data["ronin_2"],data["value_1"],data["value_2"]]
+#  
 
 # Buscar por ticket_stat 3 y regresar ticket ID
 # Funcion para enviar assets a los owners correspondientes (quitando la comision)
