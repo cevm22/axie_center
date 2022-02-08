@@ -92,6 +92,14 @@ def update_ongoing_ticket_ID(ticket):
     data=collection.update_one({'ticket':ticket},{"$set":{"ticket_stat":2}})
     return True
 #======================================================================
+# UPDATE to PASS ticket ID in ticket DB
+#======================================================================
+def update_pass_ticket_ID(ticket):
+    db=client['tx_db'] # DB
+    collection=db['tickets'] # Collection
+    data=collection.update_one({'ticket':ticket},{"$set":{"ticket_stat":9}})
+    return True
+#======================================================================
 # UPDATE mark TRUE for discordID
 #======================================================================
 def update_mark_discordID_1(ticket):
@@ -318,8 +326,16 @@ def pull_ticket_ready():
     db=client['tx_db'] # DB
     collection=db['tickets'] # Collection 
     data = collection.find_one({"ticket_stat":3})  
-    return [data["ronin_1"],data["ronin_2"],data["value_1"],data["value_2"]]
-#  
+    return [data["ticket"],data["ronin_1"],data["ronin_2"],data["value_1"],data["value_2"]]
+#======================================================================
+# Reset all tickets with errors to pending again
+#======================================================================
+def reset_ticket_stat_to_pending():
+    db=client['tx_db'] # DB
+    collection=db['tickets'] # Collection
+    data=collection.update_many({"$and":[{"ticket_stat":9},{"status_hash_1":True},{"status_hash_2":True}]},
+                                { "$set": { "ticket_stat":3 } })
+    return True
 
 # Buscar por ticket_stat 3 y regresar ticket ID
 # Funcion para enviar assets a los owners correspondientes (quitando la comision)
