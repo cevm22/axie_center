@@ -27,10 +27,10 @@ def USDC_transfer(from_wallet,to_wallet, value):
     
         # Get Nonce
         print("get nonce")
-        nonce = get_nonce(from_wallet)#get nonce from wallet ronin 
+        nonce = get_nonce(str(from_wallet))#get nonce from wallet ronin 
         # Build transaction
         transaction = contract.functions.transfer(
-            Web3.toChecksumAddress(to_wallet),
+            Web3.toChecksumAddress(str(to_wallet)),
             amount
         ).buildTransaction({
             "chainId": 2020,
@@ -53,8 +53,10 @@ def USDC_transfer(from_wallet,to_wallet, value):
         print(hash)
         # Wait for transaction to finish or timeout
         start_time = datetime.now()
+        tries=0
         while True:
             print("waiting to hash")
+            tries= tries+1
             # We will wait for max 5minutes for this tx to respond, if it does not, we will re-try
             if datetime.now() - start_time > timedelta(minutes=5):
                 success = False
@@ -73,6 +75,8 @@ def USDC_transfer(from_wallet,to_wallet, value):
                 # Sleep 10s while waiting
                 sleep(delay_send)
                 print("Waiting for transaction  to finish (Nonce:)... " + str(nonce))
+                if tries == 5:
+                    return "TIME_OUT"
 
         if success:
             return hash
@@ -122,8 +126,10 @@ def AXIE_transfer(from_wallet,to_wallet, axie_id):
         print(hash)
         # Wait for transaction to finish or timeout
         start_time = datetime.now()
+        tries=0
         while True:
             print("waiting to hash")
+            tries= tries+1
             # We will wait for max 5minutes for this tx to respond, if it does not, we will re-try
             if datetime.now() - start_time > timedelta(minutes=5):
                 success = False
@@ -139,14 +145,15 @@ def AXIE_transfer(from_wallet,to_wallet, axie_id):
                     success = False
                 break
             except exceptions.TransactionNotFound:
-                # Sleep 10s while waiting
-                sleep(10)
+                sleep(delay_send)
                 print("Waiting for transaction  to finish (Nonce:)... " + str(nonce))
+                if tries == 5:
+                    return "TIME_OUT"
 
         if success:
-            print("Transaction  completed! Hash: - " + "Explorer: https://explorer.roninchain.com/tx/"+str(hash) )
+            return hash
         else:
-            print("Transaction failed. Trying to replace it with a 0 value tx and re-try.")
+            return False
 
 
 def get_nonce(from_wallet):

@@ -91,6 +91,15 @@ def update_ongoing_ticket_ID(ticket):
     collection=db['tickets'] # Collection
     data=collection.update_one({'ticket':ticket},{"$set":{"ticket_stat":2}})
     return True
+
+#======================================================================
+# UPDATE  to DONE ticket ID in ticket DB
+#======================================================================
+def update_done_ticket_ID(ticket):
+    db=client['tx_db'] # DB
+    collection=db['tickets'] # Collection
+    data=collection.update_one({'ticket':ticket},{"$set":{"ticket_stat":4}})
+    return True
 #======================================================================
 # UPDATE to PASS ticket ID in ticket DB
 #======================================================================
@@ -302,6 +311,40 @@ def update_hash_user_2(ticket,proof_hash):
     return True
 
 #======================================================================
+# UPDATE  proof hash status_ac_hash_1 to False or True
+#======================================================================
+def update_ac_hash_1_stat(ticket,stat):
+    db=client['tx_db'] # DB
+    collection=db['tickets'] # Collection3
+    data=collection.update_one({'ticket':ticket},{"$set":{"status_ac_hash_1":stat}})
+    return True
+#======================================================================
+# UPDATE  proof hash status_ac_hash_2 False or True
+#======================================================================
+def update_ac_hash_2_stat(ticket,stat):
+    db=client['tx_db'] # DB
+    collection=db['tickets'] # Collection
+    data=collection.update_one({'ticket':ticket},{"$set":{"status_ac_hash_2":stat}})
+    return True
+
+#======================================================================
+# UPDATE  proof hash ac_txhash_1 
+#======================================================================
+def update_ac_txhash_1(ticket,proof_hash):
+    db=client['tx_db'] # DB
+    collection=db['tickets'] # Collection3
+    data=collection.update_one({'ticket':ticket},{"$set":{"ac_txhash_1":proof_hash}})
+    return True
+#======================================================================
+# UPDATE  proof hash ac_txhash_2
+#======================================================================
+def update_ac_txhash_2(ticket,proof_hash):
+    db=client['tx_db'] # DB
+    collection=db['tickets'] # Collection
+    data=collection.update_one({'ticket':ticket},{"$set":{"ac_txhash_2":proof_hash}})
+    return True
+
+#======================================================================
 # VERIFY owners send proof_hash correct and change ticket_stat = 3
 #======================================================================
 def verify_assets_in_hotwallet():
@@ -328,19 +371,26 @@ def pull_ticket_ready():
     data = collection.find_one({"ticket_stat":3})  
     return [data["ticket"],data["ronin_1"],data["ronin_2"],data["value_1"],data["value_2"]]
 #======================================================================
+# FIND status_ac_hash_1 and 2 status
+#======================================================================
+def pull_ticket_status_ac(ticket):
+    db=client['tx_db'] # DB
+    collection=db['tickets'] # Collection 
+    data = collection.find_one({"ticket":ticket})  
+    return [data["status_ac_hash_1"],data["status_ac_hash_2"]]
+#======================================================================
 # Reset all tickets with errors to pending again
 #======================================================================
 def reset_ticket_stat_to_pending():
     db=client['tx_db'] # DB
     collection=db['tickets'] # Collection
-    data=collection.update_many({"$and":[{"ticket_stat":9},{"status_hash_1":True},{"status_hash_2":True}]},
+    data=collection.update_many({"ticket_stat":9},
                                 { "$set": { "ticket_stat":3 } })
     return True
 
 # Funcion para enviar assets a los owners correspondientes (quitando la comision)
 # Funcion enviar comision a otra wallet
 # Funcion guardar proof hash en ticket status
-# Funcion actualizar mark status_ac_hash_1 y 2 a TRUE
 # Funcion actualizar all ticket status
 # Funcion cerrar ticket
 # Funcion Enviar mensaje a los dos Owners de que sus assets se han enviado
