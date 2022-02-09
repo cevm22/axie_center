@@ -1,4 +1,4 @@
-import sys
+from operator import truediv
 import blockchain_func
 import system_db
 import config
@@ -63,6 +63,11 @@ def send_assets():
                 
     print("ready count > "+str(ready))
     return
+
+def prepare_ticket_stat_2_to_3():
+    system_db.verify_assets_in_hotwallet()
+    return True
 #reset ticket
+#print(prepare_ticket_stat_2_to_3())
 #system_db.reset_ticket_stat_to_pending()
 #send_assets()

@@ -215,6 +215,7 @@ async def proof(ctx,ticket, proof_hash):
             #funcion enviar hash
             verify_hash= aux_func.store_hash_flow(user_id,proof_hash,"SELLER",ticket)
             if verify_hash == True:
+                system_db.verify_assets_in_hotwallet()
                 await user.send("Proof Hash, Verificado.")
                 return
             else:
@@ -225,6 +226,7 @@ async def proof(ctx,ticket, proof_hash):
             #funcion enviar hash
             verify_hash= aux_func.store_hash_flow(user_id,proof_hash,"BUYER",ticket)
             if verify_hash == True:
+                system_db.verify_assets_in_hotwallet()
                 await user.send("Proof Hash, Verificado.")
                 return
             else:
