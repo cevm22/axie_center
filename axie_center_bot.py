@@ -274,15 +274,25 @@ async def cancel(ctx, ticket):
             user2_accepted=system_db.validate_user2_accepted(ticket)
             if user2_accepted == 2:
                 #obtener ID del comprador
-                user_discord_id_2=system_db.pull_user2(ticket)
+                #user_discord_id_2=system_db.pull_user2(ticket)##############################
                 #funcion para actualizar ticket status en users DB del comprador
-                status_user_2=system_db.update_cancel_ticket(user_discord_id_2)
+                #user_1_ID=system_db.pull_user_seller(ticket)#################################
+                status_user_1=system_db.update_cancel_ticket(discord_users_IDS[0])
+                status_user_2=system_db.update_cancel_ticket(discord_users_IDS[1])
                 #buscar el ticket en tickets DB por ticket ID y actualizar ticket status a 0
                 cancel_ticketID=system_db.update_cancel_ticket_ID(ticket)
                 #agregar al contador de tickets cancelados
                 system_db.update_tickets_stats_cancelled()
-                await user.send("Ticket fue aceptado por el comprador")
-                return
+                if discord_users_IDS[0]== user_id:
+                    user_2=await bot.fetch_user(discord_users_IDS[1])
+                    await user.send("Ticket fue CANCELADO por el VENDEDOR")
+                    await user_2.send("Ticket fue CANCELADO por el VENDEDOR")
+                    return
+                if discord_users_IDS[1]== user_id:
+                    user_1=await bot.fetch_user(discord_users_IDS[0])
+                    await user.send("Ticket fue CANCELADO por el COMPRADOR")
+                    await user_1.send("Ticket fue CANCELADO por el COMPRADOR")
+                    return
             #update ticket cancel
             #buscar el ticket en tickets DB por ticket ID y actualizar ticket status a 0
 
