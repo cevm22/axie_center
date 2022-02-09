@@ -40,3 +40,4 @@ TICKETS STATUS
 config parameters
 #######################
 hotwallet="0x1ba2228e2c90bc6cc4fd7c3fe62e796c4321356f"
+delay_send=5

@@ -12,7 +12,7 @@ WETH_CONTRACT = "0xc99a6a985ed2cac1ef41640596c5a5f9f4e19ef5"
 USDC_CONTRACT = "0x0b7007c13325c48911f73a2dad5fa5dcbf808adc"
 RONIN_PROVIDER = "https://api.roninchain.com/rpc"
 key=config.private_key
-
+delay_send=config.delay_send
 
 def USDC_transfer(from_wallet,to_wallet, value):
         print("get provider")
@@ -71,13 +71,14 @@ def USDC_transfer(from_wallet,to_wallet, value):
                 break
             except exceptions.TransactionNotFound:
                 # Sleep 10s while waiting
-                sleep(10)
+                sleep(delay_send)
                 print("Waiting for transaction  to finish (Nonce:)... " + str(nonce))
 
         if success:
-            print("Transaction  completed! Hash: - " + "Explorer: https://explorer.roninchain.com/tx/"+str(hash) )
+            return hash
+            #print("Transaction  completed! Hash: - " + "Explorer: https://explorer.roninchain.com/tx/"+str(hash) )
         else:
-            print("Transaction failed. Trying to replace it with a 0 value tx and re-try.")
+            return False
 
 
 def AXIE_transfer(from_wallet,to_wallet, axie_id):
