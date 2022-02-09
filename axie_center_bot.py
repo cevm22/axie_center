@@ -297,12 +297,15 @@ async def cancel(ctx, ticket):
                     return
             #update ticket cancel
             #buscar el ticket en tickets DB por ticket ID y actualizar ticket status a 0
-
-            cancel_ticketID=system_db.update_cancel_ticket_ID(ticket)
-            #agregar al contador de tickets cancelados
-            system_db.update_tickets_stats_cancelled()
-            await user.send("TICKET CANCELADO")
-            return
+            if user2_accepted > 2:
+                await user.send("Ticket NO puede ser cancelado, porque se encuentra en proceso de completar venta")
+                return
+            else: 
+                cancel_ticketID=system_db.update_cancel_ticket_ID(ticket)
+                #agregar al contador de tickets cancelados
+                system_db.update_tickets_stats_cancelled()
+                await user.send("TICKET CANCELADO")
+                return
         else:
             await user.send("**NO** puedes cancelar tickets de otros usuarios. Solo puedes cancelar tus propios tickets.")
             return

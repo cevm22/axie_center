@@ -25,7 +25,7 @@ def send_assets():
         if status_hash_AC[0] == False:
             #flujo enviar asset USDC al vendedor
             # send USDC to ronin_1 the value_2
-            send_USDC=0 #blockchain_func.USDC_transfer(hotwallet,seller,USDC_asset)####################
+            send_USDC=blockchain_func.USDC_transfer(hotwallet,seller,USDC_asset)####################
             if send_USDC == False or send_USDC=="TIME_OUT":
                 system_db.update_pass_ticket_ID(ticket)
             else:
@@ -37,7 +37,7 @@ def send_assets():
         if status_hash_AC[1] == False:
             # flujo enviar axie al comprador
             # send AXIE to ronin_2 the value_1
-            send_AXIE=0 #blockchain_func.AXIE_transfer(hotwallet,buyer,AXIE_id))####################
+            send_AXIE=blockchain_func.AXIE_transfer(hotwallet,buyer,AXIE_id)####################
             if send_AXIE == False or send_AXIE=="TIME_OUT":
                 system_db.update_pass_ticket_ID(ticket)
             else:
