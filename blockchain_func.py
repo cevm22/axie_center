@@ -34,7 +34,7 @@ def USDC_transfer(from_wallet,to_wallet, value):
             amount
         ).buildTransaction({
             "chainId": 2020,
-            "gas": 50000, #39020
+            "gas": 60000, #39020
             "gasPrice":  w3.toWei("1.5", "gwei"),
             "nonce": nonce
         })
@@ -224,7 +224,7 @@ def TOKEN_tx(ctr,tx__input,tx__contract,tx__from):
 
 #axie_id_1=4116684
 #axie_id_2=32817
-ronin='0x1ba2228e2c90bc6cc4fd7c3fe62e796c4321356f'
-from_wallet='0xcb0e8315633348f559bc0edf781f53b48c97ebca'
+#ronin='0x1ba2228e2c90bc6cc4fd7c3fe62e796c4321356f'
+#from_wallet='0xcb0e8315633348f559bc0edf781f53b48c97ebca'
 
 #print(USDC_transfer(from_wallet,ronin,1))
