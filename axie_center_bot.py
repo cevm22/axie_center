@@ -344,8 +344,8 @@ async def accept(ctx, ticket, password):
             vendedor=system_db.pull_user_seller(ticket)
             user_2 = await bot.fetch_user(vendedor)
             #enviar mensaje al vendedor donde enviar su AXIE
-            msg_1=ES_msg_templates.accept_msg_user_1(ticket)
-            msg_2=ES_msg_templates.accept_msg_user_2(ticket)
+            msg_1=ES_msg_templates.accept_msg_user_2(ticket)
+            msg_2=ES_msg_templates.accept_msg_user_1(ticket)
             await user.send(embed=msg_1)
             #enviar mensaje al comprador donde enviar sus tokens USDC
             await user_2.send(embed=msg_2)
@@ -424,10 +424,10 @@ async def enroll(ctx,ronin):
     if not user_exist:
             #Addres no validada por el nodo
                 #Verificar que no tenga BAN
-            banned=aux_func.ban_validation(user_ID)
-            if banned==True:
-                await ctx.send("BANNED")
-                return
+            #banned=aux_func.ban_validation(user_ID)
+            #if banned==True:
+                #await ctx.send("BANNED")
+                #return
             valid_address=blockchain_func.validate_ronin(ronin)
             if valid_address == True:
                 #Verificar que el Wallet YA esta registrado

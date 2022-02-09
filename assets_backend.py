@@ -65,4 +65,4 @@ def send_assets():
     return
 #reset ticket
 #system_db.reset_ticket_stat_to_pending()
-send_assets()
+#send_assets()
