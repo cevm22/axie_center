@@ -6,14 +6,13 @@ TODO:
 - Crear flujo de venta privada
     -Func envío de tokens a los users
 - Crear sistema devolucion de Axies y/o tokens a sus owners (hash no reconocidos) del hotwallet  (revisar previamente que no haya un ticket abierto)
-
+- Crear sistema de duplicidad de comprobantes hash. (primero filtrar por ronin y despues hash) en caso que haya enviado previamente un hash con el mismo valor de AXIE o USDC
 
 - Crear flujo de intercambio de Axies
 - Crear script para el caso de NO cumplir con el trato, regrese el Axie o Token a sus respectivos owners
 - Crear script para el caso de SI cumplir con el trato, enviar el axie y el token a sus nuevos owners
 - Crear sistema para baneo de usuarios por muchas solicitudes
 - Crear sistema de tickets de soporte
-- Crear sistema de duplicidad de comprobantes hash. (primero filtrar por ronin y despues hash)
 - Crear sistema de duplicidad de venta de axies(filtrar por axie y revisar que ticket esta en proceso)
 
 
