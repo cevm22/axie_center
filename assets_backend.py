@@ -59,9 +59,9 @@ def send_assets():
             # Cambiar a status PASS = 9, para CASO DE NO COMPLETARSE EL ENVIO DE AC -> OWNERS
             system_db.update_pass_ticket_ID(item[0])
             print("ERROR")
-           
     print("ready count > "+str(ready))
     # agregar funcion para registrar tx desde los tickets a los logs ERC20 y ERC721 
+    cross_tickets_to_api()
     return
 
 
@@ -92,6 +92,8 @@ def close_ticket():
     for i in range(total_done):
         data=system_db.pull_ticket_done()
         ticket=data['ticket']
+        seller=data['discord_id_1']
+        buyer=data['discord_id_2']
         tx_hash_1=verify_pass(data['tx_hash_1'])
         tx_hash_2=verify_pass(data['tx_hash_2'])
         ac_txhash_1=verify_pass(data['ac_txhash_1'])
@@ -100,6 +102,9 @@ def close_ticket():
         if tx_hash_1 == True and tx_hash_2 == True and ac_txhash_1 == True and ac_txhash_2 == True:
             #funcion para cerrar ticket
             system_db.update_close_ticket_ID(ticket)
+            #cerrando ticket en los usuarios
+            system_db.update_cancel_ticket(seller)
+            system_db.update_cancel_ticket(buyer)
             print("cerrando ticket > " + str(ticket))
             return
     return
@@ -123,4 +128,5 @@ def prepare_ticket_stat_2_to_3():
 #send_assets()
 
 ######
+#system_db.update_done_ticket_ID('PS-11')
 cross_tickets_to_api()

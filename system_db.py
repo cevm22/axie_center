@@ -380,7 +380,7 @@ def tickets_pending():
     data = collection.count_documents({"ticket_stat":3})  
     return data
 #======================================================================
-# PULL total of tickets in status PENDING = 4
+# PULL total of tickets in status DONE = 4
 #======================================================================
 def tickets_done():
     db=client['tx_db'] # DB
