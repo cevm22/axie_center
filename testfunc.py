@@ -2,11 +2,12 @@ import requests
 import json
 import explorer_tx_db
 import math
-import time     
-headers = {
-        'user-agent': 'Mozilla/5.0 ( Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.121 Safari/537.36'
-    }
-hotwallet='0x1ba2228e2c90bc6cc4fd7c3fe62e796c4321356f'
+import time
+import config     
+headers = {'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.82 Safari/537.36'}
+
+
+hotwallet=config.hotwallet
 
 #======================================================================
 # PULL ERC721 data from api
@@ -195,6 +196,6 @@ def test():
     else:
         print("impar")
 
-#pull_erc20_api(hotwallet)
-
+pull_erc20_api(hotwallet)
+pull_erc721_api(hotwallet)
 

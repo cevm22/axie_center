@@ -101,7 +101,7 @@ def accept_msg_user_1(ticket_id):
     embed = discord.Embed(title=('**ACEPTADO POR COMPRADOR**'),
                 description=("**TICKET ID:** "  + str(ticket_id) + "\n"
                 + " Favor enviar tu **AXIE** a la wallet: **" + str(wallet_axie.lower().replace("0x", "ronin:")) + "** \n"
-                + " Una vez de aceptada la transaccion, comparte el comprobante hash con el comando:  COMPROBANTE" #pendiente comando envio de hash
+                + " Una vez de aceptada la transaccion, comparte el comprobante hash con el comando:  **_proof** [ticket_ID] [proof_hash]" #pendiente comando envio de hash
                 ),
                 timestamp=datetime.datetime.utcnow(),
                 color=discord.Color.blue())

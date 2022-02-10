@@ -1,5 +1,4 @@
 from pymongo import MongoClient
-import datetime
 import time
 import datetime 
 import json
@@ -46,7 +45,10 @@ def update_ERC721_tx_ticket_status_pass(ticket,proof_hash):
     db=client['tx_db'] # DB
     collection=db['ERC721'] # Collection
     data=collection.update_one({'tx_hash':proof_hash},{"$set":{"ticket_id":ticket, "status":'PASS'}})
-    return True
+    if not data:
+        return False
+    else:
+        return True
 #======================================================================
 # UPDATE   ERC20_tx  ticket info and status = PASS
 #======================================================================
@@ -54,7 +56,10 @@ def update_ERC20_tx_ticket_status_pass(ticket,proof_hash):
     db=client['tx_db'] # DB
     collection=db['ERC20'] # Collection
     data=collection.update_one({'tx_hash':proof_hash},{"$set":{"ticket_id":ticket, "status":'PASS'}})
-    return True
+    if not data:
+        return False
+    else:
+        return True
 #======================================================================
 # ADD txs explorer ERC721
 #======================================================================
@@ -196,3 +201,36 @@ def count_docs_ERC20():
     collection=db['ERC20'] # Collection     
     data=collection.count_documents({}) 
     return (data) 
+
+#======================================================================
+# COUNT  ERC721 in STAND_BY
+#======================================================================
+def count_docs_ERC721():
+    db=client['tx_db'] # DB
+    collection=db['ERC721'] # Collection     
+    data=collection.count_documents({"status":"STAND_BY"}) 
+    return data 
+#======================================================================
+# COUNT  ERC20 in STAND_BY
+#======================================================================
+def count_docs_ERC20():
+    db=client['tx_db'] # DB
+    collection=db['ERC20'] # Collection     
+    data=collection.count_documents({"status":"STAND_BY"}) 
+    return data
+#======================================================================
+# pull  TX_HASH ERC20 - and pull data
+#======================================================================
+def pull_txhash_standby_erc20():
+    db=client['tx_db'] # DB
+    collection=db['ERC20'] # Collection     
+    data=collection.find_one({"status":"STAND_BY"})
+    return data['tx_hash']
+#======================================================================
+# pull  TX_HASH ERC721 - and pull data
+#======================================================================
+def pull_txhash_standby_erc721():
+    db=client['tx_db'] # DB
+    collection=db['ERC721'] # Collection     
+    data=collection.find_one({"status":"STAND_BY"})
+    return data['tx_hash']

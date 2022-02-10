@@ -100,6 +100,16 @@ def update_done_ticket_ID(ticket):
     collection=db['tickets'] # Collection
     data=collection.update_one({'ticket':ticket},{"$set":{"ticket_stat":4}})
     return True
+
+#======================================================================
+# UPDATE  to CLOSE ticket ID in ticket DB
+#======================================================================
+def update_close_ticket_ID(ticket):
+    db=client['tx_db'] # DB
+    collection=db['tickets'] # Collection
+    data=collection.update_one({'ticket':ticket},{"$set":{"ticket_stat":5}})
+    return True
+
 #======================================================================
 # UPDATE to PASS ticket ID in ticket DB
 #======================================================================
@@ -353,7 +363,14 @@ def verify_assets_in_hotwallet():
     data=collection.update_many({"$and":[{"ticket_stat":2},{"status_hash_1":True},{"status_hash_2":True}]},
                                 { "$set": { "ticket_stat":3 } })
     return True
-
+#======================================================================
+# VERIFY tx hash is IN TICKET db
+#======================================================================
+def verify_hash_in_ticket(hash):
+    db=client['tx_db'] # DB
+    collection=db['tickets'] # Collection
+    data=collection.find_one({"$or":[{"tx_hash_1":hash},{"tx_hash_2":hash},{"ac_txhash_1":hash},{"ac_txhash_2":hash}]})
+    return data
 #======================================================================
 # PULL total of tickets in status PENDING = 3
 #======================================================================
@@ -361,6 +378,22 @@ def tickets_pending():
     db=client['tx_db'] # DB
     collection=db['tickets'] # Collection 
     data = collection.count_documents({"ticket_stat":3})  
+    return data
+#======================================================================
+# PULL total of tickets in status PENDING = 4
+#======================================================================
+def tickets_done():
+    db=client['tx_db'] # DB
+    collection=db['tickets'] # Collection 
+    data = collection.count_documents({"ticket_stat":4})  
+    return data
+#======================================================================
+# FIND one ticket with ticket_stat = 4 and pull info to send assets
+#======================================================================
+def pull_ticket_done():
+    db=client['tx_db'] # DB
+    collection=db['tickets'] # Collection 
+    data = collection.find_one({"ticket_stat":4})  
     return data
 #======================================================================
 # FIND one ticket with ticket_stat = 3 and pull info to send assets
