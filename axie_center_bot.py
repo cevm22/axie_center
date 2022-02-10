@@ -467,5 +467,20 @@ async def enroll(ctx,ronin):
         await ctx.send("You are already registered!")
         return
 
+
+
+#==================================================
+#Routine to send Ticket closed to Buyer and Seller
+#@bot.task
+async def close_msg(ctx):
+    #buscar tickets DONE = 5
+    ticket=system_db.pull_ticket_closed()
+    seller = await bot.fetch_user(ticket['discord_id_1'])
+    buyer = await bot.fetch_user(ticket['discord_id_2'])
+    #cambiar tickets CLOSED = 6
+    system_db.update_send_msg_ticket_ID(ticket)
+    
+
+
 print("bot started")
 bot.run(config.token)
