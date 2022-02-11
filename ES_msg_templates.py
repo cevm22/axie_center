@@ -98,7 +98,7 @@ def trade_msg_2(msg):
     return embed
 
 def accept_msg_user_1(ticket_id):
-    embed = discord.Embed(title=('**ACEPTADO POR COMPRADOR**'),
+    embed = discord.Embed(title=('**ACCEPTED BY BUYER**'),
                 description=("**TICKET ID:** "  + str(ticket_id) + "\n"
                 + " Please send your pretty **AXIE** to this wallet: **" + str(wallet_axie.lower().replace("0x", "ronin:")) + "** \n"
                 + " Once the transaction is accepted, share the hash receipt with the command:  **_proof** [ticket_ID] [proof_hash]" #pendiente comando envio de hash
@@ -108,7 +108,7 @@ def accept_msg_user_1(ticket_id):
     return embed
 
 def accept_msg_user_2(ticket_id):
-    embed = discord.Embed(title=('**ACEPTADO POR COMPRADOR**'),
+    embed = discord.Embed(title=('**ACCEPTED BY BUYER**'),
                 description=("**TICKET ID:**  "  + str(ticket_id) + "\n"
                 + " Please send the **TOTAL** of the sale price in **USDC** tokens to the wallet: **" + str(wallet_usdc.lower().replace("0x", "ronin:")) + "** \n"
                 + " Once the transaction is accepted, share the hash receipt with the command: **_proof** [ticket_ID] [proof_hash]" #pendiente comando envio de hash
