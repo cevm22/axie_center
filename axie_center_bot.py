@@ -34,7 +34,7 @@ async def ps(ctx,axie_ID,price,password):
     #Verificar que se encuentre registrado
     verify=system_db.validate_user(user_id)
     if not verify:
-            await user.send("**NO** estas registrado, usa el comando : **_enroll** para ingresar a Axie Center.")
+            await user.send("You are **NOT** registered, use the command : **_enroll** [ronin_wallet]")
             return
     #Verificar que no tenga BAN
     banned=aux_func.ban_validation(user_id)
@@ -47,21 +47,21 @@ async def ps(ctx,axie_ID,price,password):
         comision=aux_func.comision_calc(int(price))
         verify_axie_ID=int(axie_ID)
     except:
-        await user.send("Ingresar SOLO valores decimales")
+        await user.send("**ONLY** decimal values")
         return
     #verificar numeros positivos
     if int(price)<1 or int(verify_axie_ID)<1:
-        await user.send("Ingresar SOLO valores decimales POSITIVOS")
+        await user.send("**ONLY** Positive decimal")
         return
     #limite de venta de acuerdo al price_limit
     if int(price) > int(price_limit):
-        await user.send("Solo se pueden hacer ventas privadas por menos de **$" + str(price_limit) + "** USDC")
+        await user.send("Only private sales can be made for less than **$" + str(price_limit) + "** USDC")
         return
     else:   
         #Revisar que el usuario no tenga ticket abierto o pendiente
         ticket_status=system_db.user_ticket_opened(user_id)
         if ticket_status[0] == True:
-            await user.send("Ya cuentas con un ticket pendiente, debes **cancelarlo o terminarlo** antes de solicitarlo uno nuevo." +"\n" + "Ticket ID pendiente es > **"+str(ticket_status[1])+"**")
+            await user.send("You already have a pending ticket, you must **cancel or finish** it before requesting a new one." +"\n" + "Your pending ticket ID is > **"+str(ticket_status[1])+"**")
             return
         else:
             #Flujo creación de Ticket para venta privada
@@ -96,7 +96,7 @@ async def ticket(ctx,ticket):
     #Verificar que se encuentre registrado
     verify=system_db.validate_user(user_id)
     if not verify:
-            await user.send("**NO** estas registrado, usa el comando : **_enroll** para ingresar a Axie Center.")
+            await user.send("You are **NOT** registered, use the command : **_enroll** [ronin_wallet]")
             return
     #Verificar que no tenga BAN
     banned=aux_func.ban_validation(user_id)
@@ -106,16 +106,16 @@ async def ticket(ctx,ticket):
     #Revisar que el usuario no tenga ticket abierto o pendiente
     ticket_status=system_db.user_ticket_opened(user_id)
     if ticket_status[0] == False:
-        await user.send("No cuentas con tickets abiertos ")
+        await user.send("You dont have OPENED tickets")
         return
     #Revisar que exista el ticket ID
     find_ticket_id=system_db.pull_ticket_id(ticket)
     if find_ticket_id[0]==False:
-        await user.send("**NO** existe un ticket con este ID")
+        await user.send("There is **NOT** ticket with this ID")
         return
     #revisar que el ticket NO se ha cancelado antes
     if find_ticket_id[1]==0:
-        await user.send("Este ticket ya ha sido cancelado previamente")
+        await user.send("This ticket has been previously canceled")
         return
  
     #revisar que el usuario se encuentre en un ticket
@@ -163,7 +163,7 @@ async def ticket(ctx,ticket):
         await user.send(embed=ticket_msg)
         return
     else:
-        await user.send("**NO** puedes ver tickets de otros usuarios.")
+        await user.send("You cannot see tickets from other users.")
         return
 
 
@@ -176,7 +176,7 @@ async def proof(ctx,ticket, proof_hash):
     #Verificar que se encuentre registrado
     verify=system_db.validate_user(user_id)
     if not verify:
-            await user.send("**NO** estas registrado, usa el comando : **_enroll** para ingresar a Axie Center.")
+            await user.send("You are **NOT** registered, use the command : **_enroll** [ronin_wallet]")
             return
     #Verificar que no tenga BAN
     banned=aux_func.ban_validation(user_id)
@@ -186,27 +186,27 @@ async def proof(ctx,ticket, proof_hash):
     #Revisar que el usuario no tenga ticket abierto o pendiente
     ticket_status=system_db.user_ticket_opened(user_id)
     if ticket_status[0] == False:
-        await user.send("No cuentas con tickets abiertos ")
+        await user.send("You dont have OPENED tickets")
         return
     #Revisar que exista el ticket ID
     find_ticket_id=system_db.pull_ticket_id(ticket)
     if find_ticket_id[0]==False:
-        await user.send("**NO** existe un ticket con este ID")
+        await user.send("There is **NOT** ticket with this ID")
         return
     #revisar que el ticket NO se ha cancelado antes
     if find_ticket_id[1]==0:
-        await user.send("Este ticket ya ha sido cancelado previamente")
+        await user.send("This ticket has been previously canceled")
         return
     #revisar que el ticket se encuentre FINALIZADO
     if find_ticket_id[1]==5:
-        await user.send("Este ticket ya ha sido COMPLETADO previamente")
+        await user.send("This ticket has been previously completed")
         return
     else:
         
         search_erc20=explorer_tx_db.pull_status_pass_erc20(proof_hash)
         search_erc721=explorer_tx_db.pull_status_pass_erc721(proof_hash)
         if search_erc721== "PASS" or search_erc20=="PASS" or search_erc721== "REFUND" or search_erc20=="REFUND"  or search_erc721== "CANCEL" or search_erc20=="CANCEL" :
-            await user.send("Este HASH ya ha sido entregado anteriormente")
+            await user.send("This HASH has already been delivered before")
             return
         #revisar que el usuario se encuentre en un ticket
         discord_users_IDS=system_db.pull_discords_ID_on_ticket(ticket)
@@ -216,7 +216,7 @@ async def proof(ctx,ticket, proof_hash):
             verify_hash= aux_func.store_hash_flow(user_id,proof_hash,"SELLER",ticket)
             if verify_hash == True:
                 system_db.verify_assets_in_hotwallet()
-                await user.send("Proof Hash, Verificado.")
+                await user.send("Proof Hash, verified.")
                 return
             else:
                 await user.send(verify_hash)
@@ -227,7 +227,7 @@ async def proof(ctx,ticket, proof_hash):
             verify_hash= aux_func.store_hash_flow(user_id,proof_hash,"BUYER",ticket)
             if verify_hash == True:
                 system_db.verify_assets_in_hotwallet()
-                await user.send("Proof Hash, Verificado.")
+                await user.send("Proof Hash, verified.")
                 return
             else:
                 await user.send(verify_hash)
@@ -243,7 +243,7 @@ async def cancel(ctx, ticket):
     user = await bot.fetch_user(user_id)
     verify=system_db.validate_user(user_id)
     if not verify:
-            await user.send("**NO** estas registrado, usa el comando : **_enroll** para ingresar a Axie Center.")
+            await user.send("You are **NOT** registered, use the command : **_enroll** [ronin_wallet]")
             return
     #Verificar que no tenga BAN
     banned=aux_func.ban_validation(user_id)
@@ -253,16 +253,16 @@ async def cancel(ctx, ticket):
     #Revisar que el usuario no tenga ticket abierto o pendiente
     ticket_status=system_db.user_ticket_opened(user_id)
     if ticket_status[0] == False:
-        await user.send("No cuentas con tickets abiertos ")
+        await user.send("You dont have OPENED tickets")
         return
     #Revisar que exista el ticket ID
     find_ticket_id=system_db.pull_ticket_id(ticket)
     if find_ticket_id[0]==False:
-        await user.send("**NO** existe un ticket con este ID")
+        await user.send("There is **NOT** ticket with this ID")
         return
     #revisar que el ticket NO se ha cancelado antes
     if find_ticket_id[1]==0:
-        await user.send("Este ticket ya ha sido cancelado previamente")
+        await user.send("This ticket has been previously canceled")
         return
 #revisar que el usuario se encuentre involucrado en la venta privada
     else:
@@ -287,27 +287,27 @@ async def cancel(ctx, ticket):
                 system_db.update_tickets_stats_cancelled()
                 if discord_users_IDS[0]== user_id:
                     user_2=await bot.fetch_user(discord_users_IDS[1])
-                    await user.send("Ticket fue CANCELADO por el VENDEDOR")
-                    await user_2.send("Ticket fue CANCELADO por el VENDEDOR")
+                    await user.send("Ticket was CANCELED by the SELLER")
+                    await user_2.send("Ticket was CANCELED by the SELLER")
                     return
                 if discord_users_IDS[1]== user_id:
                     user_1=await bot.fetch_user(discord_users_IDS[0])
-                    await user.send("Ticket fue CANCELADO por el COMPRADOR")
-                    await user_1.send("Ticket fue CANCELADO por el COMPRADOR")
+                    await user.send("Ticket was CANCELED by the BUYER")
+                    await user_1.send("Ticket was CANCELED by the BUYER")
                     return
             #update ticket cancel
             #buscar el ticket en tickets DB por ticket ID y actualizar ticket status a 0
             if user2_accepted > 2:
-                await user.send("Ticket NO puede ser cancelado, porque se encuentra en proceso de completar venta")
+                await user.send("Ticket can NOT be canceled, because it is in the process of completing sale")
                 return
             else: 
                 cancel_ticketID=system_db.update_cancel_ticket_ID(ticket)
                 #agregar al contador de tickets cancelados
                 system_db.update_tickets_stats_cancelled()
-                await user.send("TICKET CANCELADO")
+                await user.send("TICKET CANCELED")
                 return
         else:
-            await user.send("**NO** puedes cancelar tickets de otros usuarios. Solo puedes cancelar tus propios tickets.")
+            await user.send("You can **NOT** cancel tickets from other users. You can only cancel your own tickets.")
             return
 
 
@@ -320,7 +320,7 @@ async def accept(ctx, ticket, password):
     verify=system_db.validate_user(user_id)
     #verificar que este registrado
     if not verify:
-            await user.send("**NO** estas registrado, usa el comando : **_enroll** para ingresar a Axie Center.")
+            await user.send("You are **NOT** registered, use the command : **_enroll** [ronin_wallet]")
             return
     #Verificar que no tenga BAN
     banned=aux_func.ban_validation(user_id)
@@ -330,20 +330,20 @@ async def accept(ctx, ticket, password):
     #Revisar que el usuario no tenga ticket abierto o pendiente
     ticket_status=system_db.user_ticket_opened(user_id)
     if ticket_status[0] == True:
-        await user.send("Ya cuentas con un ticket pendiente, debes **cancelarlo o terminarlo** antes de solicitarlo uno nuevo." +"\n" + "Ticket ID pendiente es > **"+str(ticket_status[1])+"**")
+        await user.send("You already have a pending ticket, you must **cancel it or finish it** before requesting a new one." +"\n" + "Your pending Ticket ID is > **"+str(ticket_status[1])+"**")
         return
     #Revisar que exista el ticket ID
     find_ticket_id=system_db.pull_ticket_id(ticket)
     if find_ticket_id[0]==False:
-        await user.send("**NO** existe un ticket con este ID")
+        await user.send("There is **NOT** ticket with this ID")
         return
     #revisar que el ticket NO se ha cancelado antes
     if find_ticket_id[1]==0:
-        await user.send("Este ticket ya ha sido cancelado previamente")
+        await user.send("This ticket has been previously canceled")
         return    
     #verificar ticket no ha sido aceptado por alguien mas
     if find_ticket_id[1]==2: 
-        await user.send("Este ticket ya ha sido aceptado ")
+        await user.send("This ticket has already been accepted")
         return
     else:
         #####flujo de aceptacion de ticket por parte del comprador
@@ -366,7 +366,7 @@ async def accept(ctx, ticket, password):
             await user_2.send(embed=msg_2)
             return
         else:
-            await user.send("La contraseña del ticket es **incorrecta**")
+            await user.send("The ticket password is **incorrect**")
             return
 
         return
@@ -403,31 +403,6 @@ async def trade(ctx):
     await ctx.send(embed=trade_msg_2)
     return
 
-
-#=======================
-#Change Idiom 
-@bot.command()
-async def ch(ctx,languaje):
-    user_id=str(ctx.message.author.id)
-    #Verificar que se encuentre registrado
-    verify=system_db.validate_user(user_id)
-    if not verify:
-            await ctx.send("**NO** estas registrado, usa el comando : **_enroll** para ingresar a Axie Center.")
-            return
-    #Verificar que no tenga BAN
-    banned=aux_func.ban_validation(user_id)
-    if banned==True:
-            await ctx.send("BANNED")
-            return
-    else:
-            if languaje.lower()=='es':
-                system_db.change_language(user_id,'es')
-                await ctx.send("Has cambiado a ESPAÑOL :flag_es:")
-
-            if languaje.lower()=='en':
-                system_db.change_language(user_id,'en')
-                await ctx.send("You Changed to ENGLISH :flag_us:")
-            return
 
 #=======================
 #Change enrol 
