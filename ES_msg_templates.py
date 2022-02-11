@@ -100,8 +100,8 @@ def trade_msg_2(msg):
 def accept_msg_user_1(ticket_id):
     embed = discord.Embed(title=('**ACEPTADO POR COMPRADOR**'),
                 description=("**TICKET ID:** "  + str(ticket_id) + "\n"
-                + " Favor enviar tu **AXIE** a la wallet: **" + str(wallet_axie.lower().replace("0x", "ronin:")) + "** \n"
-                + " Una vez de aceptada la transaccion, comparte el comprobante hash con el comando:  **_proof** [ticket_ID] [proof_hash]" #pendiente comando envio de hash
+                + " Please send your pretty **AXIE** to this wallet: **" + str(wallet_axie.lower().replace("0x", "ronin:")) + "** \n"
+                + " Once the transaction is accepted, share the hash receipt with the command:  **_proof** [ticket_ID] [proof_hash]" #pendiente comando envio de hash
                 ),
                 timestamp=datetime.datetime.utcnow(),
                 color=discord.Color.blue())
@@ -110,8 +110,8 @@ def accept_msg_user_1(ticket_id):
 def accept_msg_user_2(ticket_id):
     embed = discord.Embed(title=('**ACEPTADO POR COMPRADOR**'),
                 description=("**TICKET ID:**  "  + str(ticket_id) + "\n"
-                + " Favor enviar el **TOTAL** del precio de venta  en **USDC** tokens a la wallet: **" + str(wallet_usdc.lower().replace("0x", "ronin:")) + "** \n"
-                + " Una vez de aceptada la transaccion, comparte el comprobante hash con el comando:  **_proof** [ticket_ID] [proof_hash]" #pendiente comando envio de hash
+                + " Please send the **TOTAL** of the sale price in **USDC** tokens to the wallet: **" + str(wallet_usdc.lower().replace("0x", "ronin:")) + "** \n"
+                + " Once the transaction is accepted, share the hash receipt with the command: **_proof** [ticket_ID] [proof_hash]" #pendiente comando envio de hash
                 ),
                 timestamp=datetime.datetime.utcnow(),
                 color=discord.Color.blue())
