@@ -40,4 +40,7 @@ hotwallet="0xe3c94fb5ba3a356c8953e76bc53bc19baa57e0ee"
 private_key=#private_key hotwallet
 delay_send=5
 token=#token pruebas discord
-
+gaslimit_axie_transfer = 200000
+gaslimit_usdc_transfer = 100000
+gasprice=1.2
+price_limit=1000

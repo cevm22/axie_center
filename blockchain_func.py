@@ -11,8 +11,12 @@ SLP_CONTRACT = "0xa8754b9fa15fc18bb59458815510e40a12cd2014"
 WETH_CONTRACT = "0xc99a6a985ed2cac1ef41640596c5a5f9f4e19ef5"
 USDC_CONTRACT = "0x0b7007c13325c48911f73a2dad5fa5dcbf808adc"
 RONIN_PROVIDER = "https://api.roninchain.com/rpc"
+
 key=config.private_key
 delay_send=config.delay_send
+gaslimit_axie_transfer = config.gaslimit_axie_transfer
+gaslimit_usdc_transfer = config.gaslimit_usdc_transfer
+gasprice=config.gasprice
 
 def USDC_transfer(from_wallet,to_wallet, value):
         print("get provider")
@@ -34,8 +38,8 @@ def USDC_transfer(from_wallet,to_wallet, value):
             amount
         ).buildTransaction({
             "chainId": 2020,
-            "gas": 60000, #39020
-            "gasPrice":  w3.toWei("1.5", "gwei"),
+            "gas": gaslimit_usdc_transfer, #39020
+            "gasPrice":  w3.toWei(str(gasprice), "gwei"),
             "nonce": nonce
         })
         # Sign Transaction
@@ -105,9 +109,9 @@ def AXIE_transfer(from_wallet,to_wallet, axie_id):
             axie_id
         ).buildTransaction({
             "chainId": 2020,
-            "gas": 130000,
+            "gas": gaslimit_axie_transfer,
             "from": Web3.toChecksumAddress(from_wallet),
-            "gasPrice": w3.toWei("1.5", "gwei"),
+            "gasPrice": w3.toWei(str(gasprice), "gwei"),
             "value": 0,
             "nonce": nonce
         })

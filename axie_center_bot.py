@@ -12,7 +12,7 @@ import explorer_tx_db
 bot = commands.Bot(command_prefix='_',help_command=None)
 client=discord.Client(activity=discord.Game(name='Axie Center'))
 
-price_limit=1000
+price_limit=config.price_limit
 
 @bot.command()
 async def test(ctx):    
