@@ -8,6 +8,7 @@ import system_db
 import aux_func
 import blockchain_func
 import explorer_tx_db
+import assets_backend
 #El bot es activado con el prefijo '_' + comando en la funcion
 bot = commands.Bot(command_prefix='_',help_command=None)
 client=discord.Client(activity=discord.Game(name='Axie Center'))
@@ -15,9 +16,13 @@ client=discord.Client(activity=discord.Game(name='Axie Center'))
 price_limit=config.price_limit
 
 @bot.command()
-async def test(ctx):    
-    user = await bot.fetch_user(358375624294924289)
-    await user.send('hi my name is *bot name here* and i am a bot!') 
+async def test(ctx): 
+    user_id=str(ctx.message.author.id) 
+    user = await bot.fetch_user(user_id) 
+    assets_backend.test_backend()
+    await user.send("TODO EN ORDEN") 
+    #user = await bot.fetch_user(358375624294924289)
+    #await user.send('hi my name is *bot name here* and i am a bot!') 
     #await ctx.message.author.send('hi, i am a bot!')#enviar DM tomando el mensaje del autor
     #await ctx.send(f"se han agregado 200 puntos a <@{a}>")
     #await ctx.send("Test")
@@ -65,7 +70,7 @@ async def ps(ctx,axie_ID,price,password):
             return
         else:
             #Flujo creación de Ticket para venta privada
-            new_id=int(system_db.pull_tickets_stats_total(user_id))+1
+            new_id=int(system_db.pull_tickets_stats_total())+1
             ronin_wallet=system_db.pull_ronin_wallet(user_id)
             ticket_vec=[
                 str('PS-'+ str(new_id)),#"PS-0000001", ticket id
@@ -478,15 +483,59 @@ async def enroll(ctx,ronin):
 
 #==================================================
 #Routine to send Ticket closed to Buyer and Seller
-#@bot.task
-async def close_msg(ctx):
-    #buscar tickets DONE = 5
-    ticket=system_db.pull_ticket_closed()
-    seller = await bot.fetch_user(ticket['discord_id_1'])
-    buyer = await bot.fetch_user(ticket['discord_id_2'])
-    #cambiar tickets CLOSED = 6
-    system_db.update_send_msg_ticket_ID(ticket)
-    
+@bot.command()
+async def closeticket(ctx):
+        #buscar tickets DONE = 5
+        data=system_db.pull_ticket_closed()
+        if not data:
+            print("no hay ticket")
+            return
+        else:
+            #print(ticket)
+            seller = await bot.fetch_user(data['discord_id_1'])
+            buyer = await bot.fetch_user(data['discord_id_2'])
+            #Proceso para mostrar ticket
+            #pull data from ticket
+            #data=system_db.pull_ticket_closed()
+            ticket_id=data['ticket']
+            ticket_status= data['ticket_stat']
+            axie_id=data['value_1']
+            price=data['value_2']
+            #template MSG TICKET
+            seller_proof_hash=data['tx_hash_1']
+            buyer_proof_hash=data['tx_hash_2']
+            AC_to_seller_proof_hash=data['ac_txhash_1']
+            AC_to_buyer_proof_hash=data["ac_txhash_2"]
+            #marks 
+            seller_mark=data['status_hash_1'] 
+            buyer_mark=data['status_hash_2'] 
+            if seller_mark==False and buyer_mark ==False:
+                assets_ready=False 
+            else:
+                assets_ready=True
+            logs=data['log']
+            timestamp_to_date=data['init_time'].strftime("%m/%d/%Y, %H:%M:%S")#datetime.datetime.utcnow().strftime("%m/%d/%Y, %H:%M:%S")
+            vec=[
+                ticket_id,#Ticket ID:
+                ticket_status,#Ticket Status:
+                str(timestamp_to_date),#Opened:
+                axie_id,#Axie ID:
+                price,#Price:
+                seller_proof_hash,#Seller Proof Hash:
+                seller_mark,#Seller Status Hash:
+                buyer_proof_hash,#Buyer Proof Hash:
+                buyer_mark,#Buyer Status Hash:
+                assets_ready,#Assets in AxieCenter: 
+                AC_to_seller_proof_hash,#AxieCenter to Seller Hash:
+                AC_to_buyer_proof_hash,#AxieCenter to Buyer Hash:
+                True,#Closed:
+                logs #Notes
+            ]
+            ticket_msg=ES_msg_templates.ticket_msg(vec)
+            #cambiar tickets CLOSED = 6
+            system_db.update_send_msg_ticket_ID(data['ticket'])
+            await seller.send(embed=ticket_msg)
+            await buyer.send(embed=ticket_msg)
 
 
 print("bot started")

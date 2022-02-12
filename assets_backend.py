@@ -123,10 +123,21 @@ def verify_pass(tx_hash):
 def prepare_ticket_stat_2_to_3():
     system_db.verify_assets_in_hotwallet()
     return True
+
+def test_backend():
+    import testfunc
+    try:
+        testfunc.test()
+        send_assets()
+        cross_tickets_to_api()
+        return
+    except Exception as e:
+        print(e)
+        return
 #reset ticket
 #print(prepare_ticket_stat_2_to_3())
 #system_db.reset_ticket_stat_to_pending()
 #send_assets()
 
 ######
-cross_tickets_to_api()
+#cross_tickets_to_api()

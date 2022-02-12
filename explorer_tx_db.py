@@ -189,19 +189,19 @@ def pull_status_pass_erc20(tx_hash):
 #======================================================================
 # COUNT ALL DOCS ERC721 
 #======================================================================
-def count_docs_ERC721():
+def count_all_docs_ERC721():
     db=client['tx_db'] # DB
     collection=db['ERC721'] # Collection     
     data=collection.count_documents({}) 
-    return (data) 
+    return data
 #======================================================================
 # COUNT ALL DOCS ERC20
 #======================================================================
-def count_docs_ERC20():
+def count_all_docs_ERC20():
     db=client['tx_db'] # DB
     collection=db['ERC20'] # Collection     
     data=collection.count_documents({}) 
-    return (data) 
+    return data 
 
 #======================================================================
 # COUNT  ERC721 in STAND_BY

@@ -144,10 +144,10 @@ def store_tx(vec):
                         ############################3
                         # Funcion para contar documentos y actualizar el status ERC_20 o ERC721
                         if vec[0] == "ERC20":
-                            total_erc20=explorer_tx_db.count_docs_ERC20()
+                            total_erc20=explorer_tx_db.count_all_docs_ERC20()
                             explorer_tx_db.update_explorer_ERC20_tx(str(total_erc20))
                         if vec[0] == "ERC721":
-                            total_erc721=explorer_tx_db.count_docs_ERC721()
+                            total_erc721=explorer_tx_db.count_all_docs_ERC721()
                             explorer_tx_db.update_explorer_ERC721_tx(str(total_erc721))
                         #print("terminado")
                         return
@@ -182,10 +182,14 @@ def store_tx(vec):
                     ############################3
                     # Funcion para contar documentos y actualizar el status ERC_20 o ERC721
                     if vec[0] == "ERC20":
-                        total_erc20=explorer_tx_db.count_docs_ERC20()
+                        print("actualizando ERC20")
+                        total_erc20=explorer_tx_db.count_all_docs_ERC20()
+                        print(total_erc20)
                         explorer_tx_db.update_explorer_ERC20_tx(str(total_erc20))
                     if vec[0] == "ERC721":
-                        total_erc721=explorer_tx_db.count_docs_ERC721()
+                        print("actualizando ERC721")
+                        total_erc721=explorer_tx_db.count_all_docs_ERC721()
+                        print(total_erc721)
                         explorer_tx_db.update_explorer_ERC721_tx(str(total_erc721))
                     #print("terminado")
                     return
@@ -194,11 +198,11 @@ def store_tx(vec):
         return False
 
 def test():
-    if 800 % 100 == 0:
-        print("par")
-    else:
-        print("impar")
+    pull_erc20_api(hotwallet)
+    pull_erc721_api(hotwallet)
+    return
 
-pull_erc20_api(hotwallet)
-pull_erc721_api(hotwallet)
-
+#pull_erc20_api(hotwallet)
+#pull_erc721_api(hotwallet)
+print(explorer_tx_db.count_docs_ERC721())
+#test()
