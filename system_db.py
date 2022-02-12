@@ -444,9 +444,3 @@ def reset_ticket_stat_to_pending():
                                 { "$set": { "ticket_stat":3 } })
     return True
 
-# Funcion para enviar assets a los owners correspondientes (quitando la comision)
-# Funcion enviar comision a otra wallet
-# Funcion guardar proof hash en ticket status
-# Funcion actualizar all ticket status
-# Funcion cerrar ticket
-# Funcion Enviar mensaje a los dos Owners de que sus assets se han enviado

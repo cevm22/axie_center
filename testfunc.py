@@ -204,5 +204,3 @@ def test():
 
 #pull_erc20_api(hotwallet)
 #pull_erc721_api(hotwallet)
-print(explorer_tx_db.count_docs_ERC721())
-#test()
