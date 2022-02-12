@@ -60,6 +60,28 @@ def update_ERC20_tx_ticket_status_pass(ticket,proof_hash):
     else:
         return True
 #======================================================================
+# UPDATE   ERC721_tx  ticket info and status = REFUND
+#======================================================================
+def update_ERC721_tx_ticket_status_refund(ticket,proof_hash,refund_hash):
+    db=client['tx_db'] # DB
+    collection=db['ERC721'] # Collection
+    data=collection.update_one({'tx_hash':proof_hash},{"$set":{"ticket_id":ticket, "status":'REFUND','refund_hash':refund_hash}})
+    if not data:
+        return False
+    else:
+        return True
+#======================================================================
+# UPDATE   ERC20_tx  ticket info and status = REFUND
+#======================================================================
+def update_ERC20_tx_ticket_status_refund(ticket,proof_hash,refund_hash):
+    db=client['tx_db'] # DB
+    collection=db['ERC20'] # Collection
+    data=collection.update_one({'tx_hash':proof_hash},{"$set":{"ticket_id":ticket, "status":'REFUND','refund_hash':refund_hash}})
+    if not data:
+        return False
+    else:
+        return True
+#======================================================================
 # ADD txs explorer ERC721
 #======================================================================
 def add_ERC721_tx(vec):

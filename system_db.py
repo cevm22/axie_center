@@ -117,6 +117,16 @@ def update_send_msg_ticket_ID(ticket):
     collection=db['tickets'] # Collection
     data=collection.update_one({'ticket':ticket},{"$set":{"ticket_stat":6}})
     return True
+
+#======================================================================
+# UPDATE  to SEND_MSG_TICKET_CLOSED ID in ticket DB
+#======================================================================
+def update_cancel_process_ticket_ID(ticket):
+    db=client['tx_db'] # DB
+    collection=db['tickets'] # Collection
+    data=collection.update_one({'ticket':ticket},{"$set":{"ticket_stat":7}})
+    return True
+
 #======================================================================
 # UPDATE to PASS ticket ID in ticket DB
 #======================================================================
@@ -403,6 +413,14 @@ def tickets_done():
     data = collection.count_documents({"ticket_stat":4})  
     return data
 #======================================================================
+# PULL total of tickets in status DONE = 7
+#======================================================================
+def tickets_cancel_pending():
+    db=client['tx_db'] # DB
+    collection=db['tickets'] # Collection 
+    data = collection.count_documents({"ticket_stat":7})  
+    return data
+#======================================================================
 # FIND one ticket with ticket_stat = 4 and pull info to send assets
 #======================================================================
 def pull_ticket_done():
@@ -417,6 +435,14 @@ def pull_ticket_closed():
     db=client['tx_db'] # DB
     collection=db['tickets'] # Collection 
     data = collection.find_one({"ticket_stat":5})  
+    return data
+#======================================================================
+# FIND one ticket with ticket_stat = 7 and pull info 
+#======================================================================
+def pull_ticket_cancel_pending():
+    db=client['tx_db'] # DB
+    collection=db['tickets'] # Collection 
+    data = collection.find_one({"ticket_stat":7})  
     return data
 #======================================================================
 # FIND one ticket with ticket_stat = 3 and pull info to send assets
