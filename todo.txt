@@ -3,14 +3,31 @@ Ideas general para Axie Center:
 - Intercambio de Axies
 
 TODO:
-- Crear flujo de venta privada
-    -Func envío de tokens a los users
+- Crear script para el caso de NO cumplir con el trato, regrese el Axie o Token a sus respectivos owners
+    - script que compare que ha pasado 1 hora, antes de hacer devolucion y cambiarle el status a "PENDING_TO_TRACK"
+    - tomar data del blockchain por medio del hash
+    - revisar que el hash no se encuentre en un ticket abierto o cerrado
+    - filtrar en caso de USDC token, no reenviar nada y holdearlo cuando sea menor a 5 USDC. cambiando status a "HOLD_ASSET"
+    - reenviar el token a la misma wallet donde lo enviaron en caso de que sea USDC y AXIE
+    - guardar en otra base datos como "REFUND_TX" para guardar el hash que llego el asset y el hash con el reembolso.
+    - identificar el hash de Axie_Center que reembolsa el asset y marcarlo como "REFUND"
+        -considerar enviar msg en caso que el wallet ya este en la base de datos de que ha sido reembolsado
+
+- Crear funcion para el flujo de cancelacion
+    - Cambiar status del ticket a "CANCEL_PROCESS = 7"
+    - tomar data del ticket cancelado y revisar si alguien hizo un enviado
+        -en caso de haber recibido algo, hacer el reenvio al wallet de origen
+    - cambiar status de los compradores a FALSE en ticket_open
+
+- Crear Script en caso de recibir un asset diferente al AXIE y USDC
+    - en caso de que el asset sea de un contrato diferente al USDC y AXIE, cambiar status "INVALID_CONTRACT" y no hacer nada
+
+    
+
+=========================================================================================================================================
 - Crear sistema devolucion de Axies y/o tokens a sus owners (hash no reconocidos) del hotwallet  (revisar previamente que no haya un ticket abierto)
 - Crear sistema de duplicidad de comprobantes hash. (primero filtrar por ronin y despues hash) en caso que haya enviado previamente un hash con el mismo valor de AXIE o USDC
-
 - Crear flujo de intercambio de Axies
-- Crear script para el caso de NO cumplir con el trato, regrese el Axie o Token a sus respectivos owners
-- Crear script para el caso de SI cumplir con el trato, enviar el axie y el token a sus nuevos owners
 - Crear sistema para baneo de usuarios por muchas solicitudes
 - Crear sistema de tickets de soporte
 - Crear sistema de duplicidad de venta de axies(filtrar por axie y revisar que ticket esta en proceso)
