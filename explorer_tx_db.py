@@ -1,8 +1,7 @@
 from pymongo import MongoClient
 import time
-import datetime 
 import json
-
+from datetime import datetime
 #======================================================================
 #parametros de base de datos
 #======================================================================
@@ -78,6 +77,7 @@ def add_ERC721_tx(vec):
                 "token_symbol":str(vec[8]),
                 "ticket_id":0,
                 "status":"STAND_BY", #STAND_BY, DONE #faltan agregar otros status para control
+                'created':str(int(datetime.timestamp(datetime.utcnow())))
                 })
     return True
 #======================================================================
@@ -98,6 +98,7 @@ def add_ERC20_tx(vec):
                 "token_symbol":str(vec[8]),
                 "ticket_id":0,
                 "status":"STAND_BY", #STAND_BY, DONE #faltan agregar otros status para control
+                'created':str(int(datetime.timestamp(datetime.utcnow())))
                 })
     return True
 #======================================================================
