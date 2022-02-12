@@ -53,6 +53,7 @@ def send_assets():
             # Enviar Msg al buyer y seller que todo esta correcto
             print(item)
             system_db.update_done_ticket_ID(ticket)
+            system_db.update_tickets_stats_done()
             print("COMPLETADO")
         else:
             print(item)
@@ -128,5 +129,4 @@ def prepare_ticket_stat_2_to_3():
 #send_assets()
 
 ######
-#system_db.update_done_ticket_ID('PS-11')
 cross_tickets_to_api()
