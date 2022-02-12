@@ -87,6 +87,38 @@ async def ps(ctx,axie_ID,price,password):
             ps_msg_template=ES_msg_templates.ps_msg(ticket_vec)
             await user.send(embed=ps_msg_template)
             return
+
+#=======================
+#review ticket
+@bot.command()
+async def review(ctx,ticket):
+    user_id=str(ctx.message.author.id)
+    user = await bot.fetch_user(user_id)
+    #Verificar que se encuentre registrado
+    verify=system_db.validate_user(user_id)
+    if not verify:
+            await user.send("You are **NOT** registered, use the command : **_enroll** [ronin_wallet]")
+            return
+    #Verificar que no tenga BAN
+    banned=aux_func.ban_validation(user_id)
+    if banned==True:
+            await user.send("BANNED")
+            return
+    data=system_db.pull_ticket_allinfo(ticket)
+    pending=data['ticket_stat']
+    if pending == 1:
+        ticket_vec=[
+                ticket,#str('PS-'+ str(new_id)),#"PS-0000001", ticket id
+                int(data['value_1']),#int(axie_ID), #axie ID
+                int(data['value_2'])#int(price), #price
+                ]
+        ps_msg_template=ES_msg_templates.ps_msg(ticket_vec)
+        await user.send(embed=ps_msg_template)
+        return
+    else:
+        await user.send("This ticket was accepted or canceled")
+        return
+
 #=======================
 #Ticket 
 @bot.command()
