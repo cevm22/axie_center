@@ -244,7 +244,7 @@ def user_ban_count(user_ID):
 #======================================================================
 # FIND tickets stats
 #======================================================================
-def pull_tickets_stats_total(user_ID):
+def pull_tickets_stats_total():
     db=client['tx_db'] # DB
     collection=db['tickets_stats'] # Collection     
     data=collection.find_one({"stats_db":"stats"},{"total":1})
@@ -287,7 +287,7 @@ def create_tickets_stats_db():
     collection.insert_one({
                     "stats_db":"stats",
                     "total":0,
-                    "cancelled":0,
+                    "canceled":0,
                     "done":0
                 })
     return True
@@ -306,9 +306,17 @@ def update_tickets_stats():
 def update_tickets_stats_cancelled():
     db=client['tx_db'] # DB
     collection=db['tickets_stats'] # Collection
-    data=collection.update_one({'stats_db':"stats"},{"$inc":{"cancelled":+1}})
+    data=collection.update_one({'stats_db':"stats"},{"$inc":{"canceled":+1}})
     return True
 
+#======================================================================
+# UPDATE  ticket_status -  DONE +1 
+#======================================================================
+def update_tickets_stats_done():
+    db=client['tx_db'] # DB
+    collection=db['tickets_stats'] # Collection
+    data=collection.update_one({'stats_db':"stats"},{"$inc":{"done":+1}})
+    return True
 #======================================================================
 # UPDATE  proof hash discord_ID_1
 #======================================================================
