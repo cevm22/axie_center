@@ -257,6 +257,27 @@ def add_ERC20_tx(vec):
                 })
     return True
 #======================================================================
+# ADD txs explorer ERC20
+#======================================================================
+def add_ERC20_tx_profits(vec):
+    db=client['tx_db'] # DB
+    collection=db['ERC20'] # Collection
+    collection.insert_one({
+                "from":str(vec[0]),
+                "to":str(vec[1]),
+                "value":str(vec[2]),
+                "log_index":str(vec[3]),
+                "tx_hash":str(vec[4]),
+                "block_number":str(vec[5]),
+                "timestamp":str(vec[6]),
+                "token_address":str(vec[7]),
+                "token_symbol":str(vec[8]),
+                "ticket_id":str(vec[9]),
+                "status":str(vec[10]), #STAND_BY, DONE #faltan agregar otros status para control
+                'created':str(int(datetime.timestamp(datetime.utcnow())))
+                })
+    return True
+#======================================================================
 # PULL total docs in ERC721
 #======================================================================
 def pull_docs_erc721():

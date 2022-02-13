@@ -246,7 +246,7 @@ def untracked_hash():
                         #verificar que sea mas de 5 USDC
                         usdc_value=int(data['value'])/1000000
                         if usdc_value < 5:
-                            explorer_tx_db.update_ERC20_tx_ticket_status_refund('HOLD_ASSET',data['tx_hash'],refund_hash)
+                            explorer_tx_db.update_ERC20_tx_ticket_status_refund('HOLD_ASSET',data['tx_hash'],'HOLD_ASSET')
                             pass
                         else:
                             #reenviar el asset al propietario  
@@ -270,6 +270,7 @@ def untracked_hash():
             else:
                 pass
         except Exception as e:
+            explorer_tx_db.update_ERC20_tx_stand_by(data['tx_hash'])
             print(e)
             return
 #========================================
@@ -309,6 +310,7 @@ def untracked_hash():
             else:
                 pass
         except Exception as e:
+            explorer_tx_db.update_ERC721_tx_stand_by(data['tx_hash'])
             print(e)
             return
 

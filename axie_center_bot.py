@@ -448,12 +448,6 @@ async def enroll(ctx,ronin):
     user_ID=str(ctx.message.author.id)
     user_exist=system_db.validate_user(user_ID)
     if not user_exist:
-            #Addres no validada por el nodo
-                #Verificar que no tenga BAN
-            #banned=aux_func.ban_validation(user_ID)
-            #if banned==True:
-                #await ctx.send("BANNED")
-                #return
             valid_address=blockchain_func.validate_ronin(ronin)
             if valid_address == True:
                 #Verificar que el Wallet YA esta registrado
@@ -478,7 +472,39 @@ async def enroll(ctx,ronin):
         await ctx.send("You are already registered!")
         return
 
-
+#==================================================
+#Routine to send profits to master wallet 
+@bot.command()
+async def takeprofits(ctx,usdc_value):
+    master=config.master_id
+    user_id=str(ctx.message.author.id)
+    user = await bot.fetch_user(user_id)
+    if master == str(user_id):
+        to_wallet=system_db.pull_ronin_wallet(master)
+        answer=aux_func.send_profit(to_wallet.replace("ronin:", "0x"),usdc_value)
+        if answer == False:
+            await user.send(str(answer))
+            return 
+        else:
+            #guardar la tx
+            vec=[
+                str(config.hotwallet),
+                to_wallet.replace("ronin:", "0x"),
+                usdc_value,
+                0,
+                answer,
+                0,
+                0,
+                0,
+                'USDC',
+                'take_profits',
+                'PASS'
+            ]
+            explorer_tx_db.add_ERC20_tx_profits(vec)
+            await user.send(str(answer))
+            return 
+    else:
+        return
 
 #==================================================
 #Routine to send Ticket closed to Buyer and Seller

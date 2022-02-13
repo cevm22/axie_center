@@ -130,6 +130,13 @@ def no_hash_in_DB(proof_hash,ticket,discord_ID):
     else:
         return "HOTWALLET_INCORRECT"
 
+def send_profit(to_wallet,value):
+    from_wallet=config.hotwallet
+    hash=blockchain_func.USDC_transfer(from_wallet,to_wallet,value)
+    if hash == False:
+        return False
+    else:
+        return hash
 ##########################################
 # falta por probar no_hash_in_DB(proof_hash,ticket,discord_ID)
 
