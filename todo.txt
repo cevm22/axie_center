@@ -3,25 +3,14 @@ Ideas general para Axie Center:
 - Intercambio de Axies
 
 TODO:
-- Crear script para el caso de NO cumplir con el trato, regrese el Axie o Token a sus respectivos owners
-    - script que compare que ha pasado 1 hora, antes de hacer devolucion y cambiarle el status a "PENDING_TO_TRACK"
-    - tomar data del blockchain por medio del hash
-    - revisar que el hash no se encuentre en un ticket abierto o cerrado
-    - filtrar en caso de USDC token, no reenviar nada y holdearlo cuando sea menor a 5 USDC. cambiando status a "HOLD_ASSET"
-    - reenviar el token a la misma wallet donde lo enviaron en caso de que sea USDC y AXIE
-    - guardar en otra base datos como "REFUND_TX" para guardar el hash que llego el asset y el hash con el reembolso.
-    - identificar el hash de Axie_Center que reembolsa el asset y marcarlo como "REFUND"
-        -considerar enviar msg en caso que el wallet ya este en la base de datos de que ha sido reembolsado
-
-
-- Crear Script en caso de recibir un asset diferente al AXIE y USDC
-    - en caso de que el asset sea de un contrato diferente al USDC y AXIE, cambiar status "INVALID_CONTRACT" y no hacer nada
-
-    
+- **** HACER ECUACION PARA QUITAR LA COMISION EN LAS VENTAS *****
+- dividir scripts para procesarlos en backend
+- hacer cycle task, para estar revisando los tickets cerrados y enviar msg
+- Terminar mensajes de error para los casos en que no ingresen correctamente los comandos
+- Hacer el HELP MENU 
+- Hacer pruebas en servidor con cuentas nuevas
 
 =========================================================================================================================================
-- Crear sistema devolucion de Axies y/o tokens a sus owners (hash no reconocidos) del hotwallet  (revisar previamente que no haya un ticket abierto)
-- Crear sistema de duplicidad de comprobantes hash. (primero filtrar por ronin y despues hash) en caso que haya enviado previamente un hash con el mismo valor de AXIE o USDC
 - Crear flujo de intercambio de Axies
 - Crear sistema para baneo de usuarios por muchas solicitudes
 - Crear sistema de tickets de soporte
@@ -42,7 +31,11 @@ TICKETS STATUS
 0 - cancelado
 1 - pending
 2 - ongoing (aceptado por comprador)
+3 - ready to make the deal, AC send assets to owners
 4 - comprador y vendedor han enviado Proof_Hash
+5 - Pending to send msg to owners
+6 - SEND_MSG_TICKET_CLOSED
+7 - cancel_process
 9 - error validacion en red ronin
 
 #######################
@@ -56,3 +49,5 @@ gaslimit_axie_transfer = 200000
 gaslimit_usdc_transfer = 100000
 gasprice=1.2
 price_limit=1000
+time_limit=10 # in seconds
+master_id= #Discord ID for testing 
