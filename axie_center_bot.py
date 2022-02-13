@@ -20,6 +20,7 @@ async def test(ctx):
     user_id=str(ctx.message.author.id) 
     user = await bot.fetch_user(user_id) 
     assets_backend.test_backend()
+    assets_backend.cancel_process()
     await user.send("TODO EN ORDEN") 
     #user = await bot.fetch_user(358375624294924289)
     #await user.send('hi my name is *bot name here* and i am a bot!') 

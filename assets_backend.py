@@ -123,6 +123,7 @@ def verify_pass(tx_hash):
 def cancel_process():   
     # buscar cantidad tickets en status cancel_pending = 7
     docs=system_db.tickets_cancel_pending()
+    refund_hash='0x038843e6ea575500d75ec8f8da7db2b8093510b80a8a3fe0f492731e3b2264fc'
     for i in range (docs):
         # obtener la data del ticket
         data=system_db.pull_ticket_cancel_pending()
@@ -134,6 +135,7 @@ def cancel_process():
             USDC_CONTRACT = "0x0b7007c13325c48911f73a2dad5fa5dcbf808adc"
             AXIE_CONTRACT = "0x32950db2a7164ae833121501c797d79e7b79d74c"
             if data['status_hash_1'] == True:
+                print('status_hash_1')
                 # buscar el hash en db ERC20 y ERC721 para cambiarlo a "CANCEL_PENDING"
                 cancel_erc20=explorer_tx_db.pull_erc20_info(data['tx_hash_1'])
                 cancel_erc721=explorer_tx_db.pull_erc721_info(data['tx_hash_1'])
@@ -141,16 +143,23 @@ def cancel_process():
                     if cancel_erc20 == False:
                         if cancel_erc721['token_address'] == AXIE_CONTRACT:
                             #regresar axie
-                            refund_hash=blockchain_func.AXIE_transfer(cancel_erc721['from'],cancel_erc721['to'],cancel_erc721['value'])
+                            explorer_tx_db.update_ERC721_tx_ticket_status_cancel_pending(data['ticket'],cancel_erc721['tx_hash'])
+                            axie_id=int(cancel_erc721['value'])
+                            refund_to=cancel_erc721['from']
+                            refund_from=cancel_erc721['to']
+                        #    refund_hash=blockchain_func.AXIE_transfer(refund_from,refund_to,axie_id)
                             # actualizar el hash status = 'REFUND' y agregar el hash de REFUND a la db ERC20/ERC721
-                            explorer_tx_db.update_ERC20_tx_ticket_status_refund(data['ticket'],cancel_erc20['tx_hash'],refund_hash)
+                            explorer_tx_db.update_ERC721_tx_ticket_status_refund(data['ticket'],cancel_erc721['tx_hash'],refund_hash)
                             # actualizar el ticket status canceled = 0
                             system_db.update_cancel_ticket_ID(data['ticket'])
                     else:
                         if cancel_erc20['token_address'] == USDC_CONTRACT:
+                            explorer_tx_db.update_ERC20_tx_ticket_status_cancel_pending(data['ticket'],cancel_erc20['tx_hash'])
                             #regresar USCD 
                             usdc_value=int(cancel_erc20['value'])/1000000
-                            refund_hash = blockchain_func.USDC_transfer(cancel_erc20['from'],cancel_erc20['to'],usdc_value)
+                            refund_to=cancel_erc20['from']
+                            refund_from=cancel_erc20['to']
+                            refund_hash = blockchain_func.USDC_transfer(refund_from,refund_to,usdc_value)
                             # actualizar el hash status = 'REFUND' y agregar el hash de REFUND a la db ERC20/ERC721
                             explorer_tx_db.update_ERC20_tx_ticket_status_refund(data['ticket'],cancel_erc20['tx_hash'],refund_hash)
                             # actualizar el ticket status canceled = 0
@@ -160,23 +169,31 @@ def cancel_process():
                     pass
 
             if data['status_hash_2'] == True:
+                print('status_hash_2')
                 # buscar el hash en db ERC20 y ERC721 para cambiarlo a "CANCEL_PENDING"
                 cancel_erc20=explorer_tx_db.pull_erc20_info(data['tx_hash_2'])
                 cancel_erc721=explorer_tx_db.pull_erc721_info(data['tx_hash_2'])
                 try:
                     if cancel_erc20 == False:
                         if cancel_erc721['token_address'] == AXIE_CONTRACT:
+                            explorer_tx_db.update_ERC721_tx_ticket_status_cancel_pending(data['ticket'],cancel_erc721['tx_hash'])
                             #regresar axie
-                            refund_hash=blockchain_func.AXIE_transfer(cancel_erc721['from'],cancel_erc721['to'],cancel_erc721['value'])
+                            axie_id=int(cancel_erc721['value'])
+                            refund_to=cancel_erc721['from']
+                            refund_from=cancel_erc721['to']
+                        #    refund_hash=blockchain_func.AXIE_transfer(refund_from,refund_to,axie_id)
                             # actualizar el hash status = 'REFUND' y agregar el hash de REFUND a la db ERC20/ERC721
-                            explorer_tx_db.update_ERC20_tx_ticket_status_refund(data['ticket'],cancel_erc20['tx_hash'],refund_hash)
+                            explorer_tx_db.update_ERC721_tx_ticket_status_refund(data['ticket'],cancel_erc721['tx_hash'],refund_hash)
                             # actualizar el ticket status canceled = 0
                             system_db.update_cancel_ticket_ID(data['ticket'])
                     else:
                         if cancel_erc20['token_address'] == USDC_CONTRACT:
+                            explorer_tx_db.update_ERC20_tx_ticket_status_cancel_pending(data['ticket'],cancel_erc20['tx_hash'])
                             #regresar USCD 
                             usdc_value=int(cancel_erc20['value'])/1000000
-                            refund_hash = blockchain_func.USDC_transfer(cancel_erc20['from'],cancel_erc20['to'],usdc_value)
+                            refund_to=cancel_erc20['from']
+                            refund_from=cancel_erc20['to']
+                            refund_hash = blockchain_func.USDC_transfer(refund_from,refund_to,usdc_value)
                             # actualizar el hash status = 'REFUND' y agregar el hash de REFUND a la db ERC20/ERC721
                             explorer_tx_db.update_ERC20_tx_ticket_status_refund(data['ticket'],cancel_erc20['tx_hash'],refund_hash)
                             # actualizar el ticket status canceled = 0
@@ -186,6 +203,24 @@ def cancel_process():
                     pass
  
     print('se termino flujo de reembolsos')
+    return
+
+def close_refund():
+    refund_erc20=explorer_tx_db.count_docs_ERC20_refund()
+    refund_erc721=explorer_tx_db.count_docs_ERC721_refund()
+    for i in range(refund_erc721):
+        data_erc721=explorer_tx_db.pull_txhash_refund_erc721()
+        refund_hash_done=explorer_tx_db.update_ERC721_tx_ticket_status_refund_done_2(data_erc721['tx_hash'])
+        if refund_hash_done == True:
+            explorer_tx_db.update_ERC721_tx_ticket_status_refund_done(data_erc721['ticket_id'],data_erc721['refund_hash'])
+        
+    for i in range(refund_erc20):
+        data_erc20=explorer_tx_db.pull_txhash_refund_erc20()
+        refund_hash_done=explorer_tx_db.update_ERC20_tx_ticket_status_refund_done_2(data_erc20['tx_hash'])    
+        if refund_hash_done == True:
+            explorer_tx_db.update_ERC20_tx_ticket_status_refund_done(data_erc20['ticket_id'],data_erc20['refund_hash'])
+        
+    print('Actualizados los hash de reembolso')
     return
 
 def prepare_ticket_stat_2_to_3():
@@ -198,8 +233,11 @@ def test_backend():
         testfunc.test()
         send_assets()
         cross_tickets_to_api()
+        cancel_process()
+        close_refund()
         return
     except Exception as e:
+        print('error en test_backend funct')
         print(e)
         return
 #reset ticket
@@ -209,3 +247,6 @@ def test_backend():
 
 ######
 #cross_tickets_to_api()
+#print(cancel_process())
+#test_backend()
+#close_refund()
