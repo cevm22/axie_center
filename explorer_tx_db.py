@@ -82,6 +82,50 @@ def update_ERC20_tx_ticket_status_cancel_pending(ticket,proof_hash):
     else:
         return True
 #======================================================================
+# UPDATE   ERC721_tx  ticket info and status = PENDING_TRACK
+#======================================================================
+def update_ERC721_tx_pending_track(proof_hash):
+    db=client['tx_db'] # DB
+    collection=db['ERC721'] # Collection
+    data=collection.update_one({'tx_hash':proof_hash},{"$set":{"status":'PENDING_TRACK'}})
+    if not data:
+        return False
+    else:
+        return True
+#======================================================================
+# UPDATE   ERC20_tx  ticket info and status = PENDING_TRACK
+#======================================================================
+def update_ERC20_tx_pending_track(proof_hash):
+    db=client['tx_db'] # DB
+    collection=db['ERC20'] # Collection
+    data=collection.update_one({'tx_hash':proof_hash},{"$set":{"status":'PENDING_TRACK'}})
+    if not data:
+        return False
+    else:
+        return True
+#======================================================================
+# UPDATE   ERC721_tx  ticket info and status = STAND_BY
+#======================================================================
+def update_ERC721_tx_stand_by(proof_hash):
+    db=client['tx_db'] # DB
+    collection=db['ERC721'] # Collection
+    data=collection.update_one({'tx_hash':proof_hash},{"$set":{"status":'STAND_BY'}})
+    if not data:
+        return False
+    else:
+        return True
+#======================================================================
+# UPDATE   ERC20_tx  ticket info and status = STAND_BY
+#======================================================================
+def update_ERC20_tx_stand_by(proof_hash):
+    db=client['tx_db'] # DB
+    collection=db['ERC20'] # Collection
+    data=collection.update_one({'tx_hash':proof_hash},{"$set":{"status":'STAND_BY'}})
+    if not data:
+        return False
+    else:
+        return True
+#======================================================================
 # UPDATE   ERC721_tx  ticket info and status = REFUND
 #======================================================================
 def update_ERC721_tx_ticket_status_refund(ticket,proof_hash,refund_hash):
@@ -144,6 +188,28 @@ def update_ERC20_tx_ticket_status_refund_done_2(proof_hash):
     db=client['tx_db'] # DB
     collection=db['ERC20'] # Collection
     data=collection.update_one({'tx_hash':proof_hash},{"$set":{"status":'REFUND_DONE'}})
+    if not data:
+        return False
+    else:
+        return True
+#======================================================================
+# UPDATE   ERC721_tx  ticket info and status = INVALID_CONTRACT
+#======================================================================
+def update_ERC721_tx_invalid_contract(proof_hash):
+    db=client['tx_db'] # DB
+    collection=db['ERC721'] # Collection
+    data=collection.update_one({'tx_hash':proof_hash},{"$set":{"status":'INVALID_CONTRACT'}})
+    if not data:
+        return False
+    else:
+        return True
+#======================================================================
+# UPDATE   ERC20_tx  ticket info and status = INVALID_CONTRACT
+#======================================================================
+def update_ERC20_tx_invalid_contract(proof_hash):
+    db=client['tx_db'] # DB
+    collection=db['ERC20'] # Collection
+    data=collection.update_one({'tx_hash':proof_hash},{"$set":{"status":'INVALID_CONTRACT'}})
     if not data:
         return False
     else:
@@ -309,7 +375,7 @@ def count_docs_ERC20():
     data=collection.count_documents({"status":"STAND_BY"}) 
     return data
 #======================================================================
-# pull  TX_HASH ERC20 - and pull data
+# pull  TX_HASH ERC20 - and pull data TX_hash
 #======================================================================
 def pull_txhash_standby_erc20():
     db=client['tx_db'] # DB
@@ -317,7 +383,7 @@ def pull_txhash_standby_erc20():
     data=collection.find_one({"status":"STAND_BY"})
     return data['tx_hash']
 #======================================================================
-# pull  TX_HASH ERC721 - and pull data
+# pull  TX_HASH ERC721 - and pull data TX_hash
 #======================================================================
 def pull_txhash_standby_erc721():
     db=client['tx_db'] # DB
@@ -325,6 +391,22 @@ def pull_txhash_standby_erc721():
     data=collection.find_one({"status":"STAND_BY"})
     return data['tx_hash']
 
+#======================================================================
+# pull  TX_HASH ERC20 - and pull all data
+#======================================================================
+def pull_txhash_standby_erc20_data():
+    db=client['tx_db'] # DB
+    collection=db['ERC20'] # Collection     
+    data=collection.find_one({"status":"STAND_BY"})
+    return data
+#======================================================================
+# pull  TX_HASH ERC721 - and pull all data
+#======================================================================
+def pull_txhash_standby_erc721_data():
+    db=client['tx_db'] # DB
+    collection=db['ERC721'] # Collection     
+    data=collection.find_one({"status":"STAND_BY"})
+    return data
 #======================================================================
 # COUNT  ERC721 in REFUND
 #======================================================================

@@ -1,3 +1,4 @@
+
 from pymongo import MongoClient
 import datetime
 import time
@@ -119,7 +120,7 @@ def update_send_msg_ticket_ID(ticket):
     return True
 
 #======================================================================
-# UPDATE  to SEND_MSG_TICKET_CLOSED ID in ticket DB
+# UPDATE  to cancel_process ID in ticket DB
 #======================================================================
 def update_cancel_process_ticket_ID(ticket):
     db=client['tx_db'] # DB
@@ -191,6 +192,34 @@ def pull_ticket_allinfo(ticket):
     collection=db['tickets'] # Collection     
     data=collection.find_one({"ticket":ticket})
     return data
+#======================================================================
+# FIND ticket and pull all data for ticket review
+#======================================================================
+def find_untracked_hash(hash):
+    db=client['tx_db'] # DB
+    collection=db['tickets'] # Collection     
+    tx_hash_1=collection.find_one({"tx_hash_1":hash})
+    tx_hash_2=collection.find_one({"tx_hash_2":hash})
+    ac_txhash_1=collection.find_one({"ac_txhash_1":hash})
+    ac_txhash_2=collection.find_one({"ac_txhash_2":hash})
+    
+    if not tx_hash_1:
+        False
+    else:
+        return tx_hash_1
+    if not tx_hash_2:
+        False
+    else:
+        return tx_hash_2
+    if not ac_txhash_1:
+         False
+    else:
+        return ac_txhash_1
+    if not ac_txhash_2:
+        False
+    else:
+        return ac_txhash_2
+    return False
 #======================================================================
 # DB ENROLL new users
 #======================================================================

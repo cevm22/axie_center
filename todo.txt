@@ -13,11 +13,6 @@ TODO:
     - identificar el hash de Axie_Center que reembolsa el asset y marcarlo como "REFUND"
         -considerar enviar msg en caso que el wallet ya este en la base de datos de que ha sido reembolsado
 
-- Crear funcion para el flujo de cancelacion
-    - Cambiar status del ticket a "CANCEL_PROCESS = 7"
-    - tomar data del ticket cancelado y revisar si alguien hizo un enviado
-        -en caso de haber recibido algo, hacer el reenvio al wallet de origen
-    - cambiar status de los compradores a FALSE en ticket_open
 
 - Crear Script en caso de recibir un asset diferente al AXIE y USDC
     - en caso de que el asset sea de un contrato diferente al USDC y AXIE, cambiar status "INVALID_CONTRACT" y no hacer nada

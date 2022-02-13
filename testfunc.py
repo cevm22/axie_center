@@ -3,6 +3,7 @@ import json
 import explorer_tx_db
 import math
 import time
+from datetime import datetime
 import config     
 
 import discord #importamos para conectarnos con el bot
@@ -204,3 +205,7 @@ def test():
 
 #pull_erc20_api(hotwallet)
 #pull_erc721_api(hotwallet)
+
+#tiempo=int(datetime.timestamp(datetime.utcnow()))
+#delta=tiempo + 60
+
