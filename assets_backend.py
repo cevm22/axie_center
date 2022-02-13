@@ -246,6 +246,7 @@ def untracked_hash():
                         #verificar que sea mas de 5 USDC
                         usdc_value=int(data['value'])/1000000
                         if usdc_value < 5:
+                            explorer_tx_db.update_ERC20_tx_ticket_status_refund('HOLD_ASSET',data['tx_hash'],refund_hash)
                             pass
                         else:
                             #reenviar el asset al propietario  
@@ -324,6 +325,7 @@ def test_backend():
         cross_tickets_to_api()
         cancel_process()
         close_refund()
+        untracked_hash()
         return
     except Exception as e:
         print('error en test_backend funct')

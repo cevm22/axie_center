@@ -113,7 +113,7 @@ def store_tx(vec):
                 return False
             else:
                 delta=stats_erc20-total
-                print("Hay diferencia de > "+str(delta))
+                #print("Hay diferencia de > "+str(delta))
                 erc20_vec=vec[2]
                 if delta > 100:
                     if delta % 100 == 0:
@@ -183,14 +183,14 @@ def store_tx(vec):
                     ############################3
                     # Funcion para contar documentos y actualizar el status ERC_20 o ERC721
                     if vec[0] == "ERC20":
-                        print("actualizando ERC20")
+                        #print("actualizando ERC20")
                         total_erc20=explorer_tx_db.count_all_docs_ERC20()
-                        print(total_erc20)
+                        #print(total_erc20)
                         explorer_tx_db.update_explorer_ERC20_tx(str(total_erc20))
                     if vec[0] == "ERC721":
-                        print("actualizando ERC721")
+                        #print("actualizando ERC721")
                         total_erc721=explorer_tx_db.count_all_docs_ERC721()
-                        print(total_erc721)
+                        #print(total_erc721)
                         explorer_tx_db.update_explorer_ERC721_tx(str(total_erc721))
                     #print("terminado")
                     return
