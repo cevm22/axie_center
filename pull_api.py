@@ -196,10 +196,12 @@ def store_tx(vec):
         print(e)
         return False
 
-def test():
-    pull_erc20_api(hotwallet)
-    pull_erc721_api(hotwallet)
-    return
+def pull_tx_api():
+    try:
+        pull_erc20_api(hotwallet)
+        pull_erc721_api(hotwallet)
+    except:
+        return False
 
 #pull_erc20_api(hotwallet)
 #pull_erc721_api(hotwallet)
