@@ -508,12 +508,12 @@ async def takeprofits(ctx,usdc_value):
 
 #==================================================
 #Routine to send Ticket closed to Buyer and Seller
-@bot.command()
-async def closeticket(ctx):
+@tasks.loop(seconds=60)
+async def closeticket():
         #buscar tickets DONE = 5
         data=system_db.pull_ticket_closed()
         if not data:
-            print("no hay ticket")
+            #print("no hay ticket")
             return
         else:
             #print(ticket)
@@ -562,6 +562,10 @@ async def closeticket(ctx):
             await seller.send(embed=ticket_msg)
             await buyer.send(embed=ticket_msg)
 
-
+@bot.event
+async def on_ready():
+    print('AXIE CENTER READY')
+    closeticket.start()
+    
 print("bot started")
 bot.run(config.token)
