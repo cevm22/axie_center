@@ -483,7 +483,7 @@ async def deploybot(ctx):
     #crear bases de datos STATS  de tickets
     stats=explorer_tx_db.find_stats_exists()
     if stats == False:
-        explorer_tx_db.create_explorer_stats_db
+        explorer_tx_db.create_explorer_stats_db()
         await user.send("DB - Explorer Stats Created")
     ticket_stats=system_db.find_ticket_stats()
     if ticket_stats == False:
