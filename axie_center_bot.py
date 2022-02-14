@@ -49,7 +49,7 @@ async def ps(ctx,axie_ID,price,password):
             
     #verificacion numeros enteros y menores a 1000
     try:
-        comision=config.comision#aux_func.comision_calc(int(price))
+        comision=aux_func.comision_calc(int(price))
         verify_axie_ID=int(axie_ID)
     except:
         await user.send("**ONLY** decimal values")

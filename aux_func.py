@@ -5,7 +5,7 @@ import explorer_tx_db
 import blockchain_func
 import config
 #parametros
-comision=0.02
+comision=config.comision
 limit_user_ban=10
 AXIE_CONTRACT = "0x32950db2a7164ae833121501c797d79e7b79d74c"
 USDC_CONTRACT = "0x0b7007c13325c48911f73a2dad5fa5dcbf808adc" 
@@ -24,7 +24,7 @@ def comision_calc(price):
     else:
         return res 
 
-
+print(comision_calc(10))
 def store_hash_flow(discord_ID,proof_hash,seller_or_buyer,ticket):
     
     if seller_or_buyer == 'SELLER':
