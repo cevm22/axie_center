@@ -380,6 +380,9 @@ async def accept(ctx, ticket, password):
     if find_ticket_id[1]==2: 
         await user.send("This ticket has already been accepted")
         return
+    if find_ticket_id[1]==6: 
+        await user.send("This ticket was closed")
+        return
     if find_ticket_id[1]==1: 
         #####flujo de aceptacion de ticket por parte del comprador
         #verificar contrasena del ticket
@@ -404,7 +407,7 @@ async def accept(ctx, ticket, password):
             await user.send("The ticket password is **incorrect**")
             return
     else:
-        return user.send("This Ticket is in process by Axie Center")
+        return await user.send("This Ticket is in process by Axie Center")
     
 #=======================
 #Axie Trade 
