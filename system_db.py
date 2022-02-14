@@ -337,7 +337,7 @@ def create_tickets_stats_db():
 def find_ticket_stats():
     db=client['tx_db'] # DB
     collection=db['tickets_stats'] # Collection
-    data=collection.update_one({'stats_db':"stats"})
+    data=collection.find_one({'stats_db':"stats"})
     if not data:
         return False
     else:
