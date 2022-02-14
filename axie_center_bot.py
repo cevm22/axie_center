@@ -256,7 +256,7 @@ async def proof(ctx,ticket, proof_hash):
             verify_hash= aux_func.store_hash_flow(user_id,proof_hash,"SELLER",ticket)
             if verify_hash == True:
                 system_db.verify_assets_in_hotwallet()
-                await user.send("Proof Hash, verified.")
+                await user.send(":white_check_mark: Proof Hash, verified. :white_check_mark:")
                 return
             else:
                 await user.send(verify_hash)
@@ -267,7 +267,7 @@ async def proof(ctx,ticket, proof_hash):
             verify_hash= aux_func.store_hash_flow(user_id,proof_hash,"BUYER",ticket)
             if verify_hash == True:
                 system_db.verify_assets_in_hotwallet()
-                await user.send("Proof Hash, verified.")
+                await user.send(":white_check_mark: Proof Hash, verified. :white_check_mark:")
                 return
             else:
                 await user.send(verify_hash)
