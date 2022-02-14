@@ -4,10 +4,11 @@ import datetime
 import time
 import datetime 
 import json
+import config
 #======================================================================
 #parametros de base de datos
 #======================================================================
-MONGO_URI='mongodb://localhost' #ubicacion DB
+MONGO_URI=config.db_uri#'mongodb://localhost' #ubicacion DB
 client = MongoClient(MONGO_URI) #inicializacion de la base datos
 #======================================================================
 # DB CREATE ticket PRIVATE SALE
