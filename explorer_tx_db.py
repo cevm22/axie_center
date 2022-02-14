@@ -21,6 +21,17 @@ def create_explorer_stats_db():
                 })
     return True
 #======================================================================
+# exist   explorer_stats 
+#======================================================================
+def find_stats_exists():
+    db=client['tx_db'] # DB
+    collection=db['explorer_stats'] # Collection
+    data=collection.find_one({'txs':"txs"})
+    if not data:
+        return False
+    else:
+        return True
+#======================================================================
 # UPDATE   explorer_stats - ERC20_tx new total_tx
 #======================================================================
 def update_explorer_ERC20_tx(total_tx):

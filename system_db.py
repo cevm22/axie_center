@@ -332,6 +332,17 @@ def create_tickets_stats_db():
                 })
     return True
 #======================================================================
+# FIND   ticket_stats exists
+#======================================================================
+def find_ticket_stats():
+    db=client['tx_db'] # DB
+    collection=db['tickets_stats'] # Collection
+    data=collection.update_one({'stats_db':"stats"})
+    if not data:
+        return False
+    else:
+        return True
+#======================================================================
 # UPDATE   ticket_status - Total +1
 #======================================================================
 def update_tickets_stats():

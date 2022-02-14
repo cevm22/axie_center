@@ -474,6 +474,24 @@ async def enroll(ctx,ronin):
         await ctx.send("You are already registered!")
         return
 
+#=======================
+#Create DBS
+@bot.command()
+async def deploybot(ctx):
+    user_id=str(ctx.message.author.id)
+    user = await bot.fetch_user(user_id)
+    #crear bases de datos STATS  de tickets
+    stats=explorer_tx_db.find_stats_exists()
+    if stats == False:
+        explorer_tx_db.create_explorer_stats_db
+        await user.send("DB - Explorer Stats Created")
+    ticket_stats=system_db.find_ticket_stats()
+    if ticket_stats == False:
+        system_db.create_tickets_stats_db()
+        await user.send('DB - Ticket Stats Created')
+    await user.send("BOT deployed")
+    return
+
 #==================================================
 #Routine to send profits to master wallet 
 @bot.command()
