@@ -4,9 +4,9 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-axie-utils = "*"
-"discord.py" = "*"
-pymongo = "*"
+axie-utils = "1.1.3"
+"discord.py" = "1.7.3"
+pymongo = "4.0.1"
 
 [dev-packages]
 
