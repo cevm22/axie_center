@@ -14,13 +14,12 @@ bot = commands.Bot(command_prefix='_',help_command=None)
 client=discord.Client(activity=discord.Game(name='Axie Center'))
 
 price_limit=config.price_limit
-
+price_low_limit=config.price_low_limit
 @bot.command()
-async def test(ctx): 
+async def testbackend(ctx): 
     user_id=str(ctx.message.author.id) 
     user = await bot.fetch_user(user_id) 
     assets_backend.test_backend()
-    assets_backend.cancel_process()
     await user.send("TODO EN ORDEN") 
     #user = await bot.fetch_user(358375624294924289)
     #await user.send('hi my name is *bot name here* and i am a bot!') 
@@ -50,7 +49,7 @@ async def ps(ctx,axie_ID,price,password):
             
     #verificacion numeros enteros y menores a 1000
     try:
-        comision=aux_func.comision_calc(int(price))
+        comision=config.comision#aux_func.comision_calc(int(price))
         verify_axie_ID=int(axie_ID)
     except:
         await user.send("**ONLY** decimal values")
@@ -63,6 +62,9 @@ async def ps(ctx,axie_ID,price,password):
     if int(price) > int(price_limit):
         await user.send("Only private sales can be made for less than **$" + str(price_limit) + "** USDC")
         return
+    if int(price)< int(price_low_limit):
+        
+        return user.send("Only private sales can be made for more than **$" + str(price_low_limit) + "** USDC")
     else:   
         #Revisar que el usuario no tenga ticket abierto o pendiente
         ticket_status=system_db.user_ticket_opened(user_id)

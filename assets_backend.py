@@ -5,6 +5,7 @@ import explorer_tx_db
 from datetime import datetime
 hotwallet=config.hotwallet
 time_limit=config.time_limit
+comision=config.comision
 def send_assets():
     #system_db.reset_ticket_stat_to_pending()
     # obtener num de ticket_stat = 3 (ready)
@@ -17,7 +18,7 @@ def send_assets():
         seller=str(item[1].replace("ronin:", "0x"))
         buyer=str(item[2].replace("ronin:", "0x"))
         AXIE_id=int(item[3])
-        USDC_asset=int(item[4])
+        USDC_asset=int(item[4])-comision
         
         
         #funcion para obtener hash

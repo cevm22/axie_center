@@ -5,7 +5,6 @@ Ideas general para Axie Center:
 TODO:
 - **** HACER ECUACION PARA QUITAR LA COMISION EN LAS VENTAS *****
 - dividir scripts para procesarlos en backend
-- hacer cycle task, para estar revisando los tickets cerrados y enviar msg
 - Terminar mensajes de error para los casos en que no ingresen correctamente los comandos
 - Hacer el HELP MENU 
 - Hacer pruebas en servidor con cuentas nuevas
@@ -49,5 +48,8 @@ gaslimit_axie_transfer = 200000
 gaslimit_usdc_transfer = 100000
 gasprice=1.2
 price_limit=1000
+price_low_limit=10
 time_limit=10 # in seconds
 master_id= #Discord ID for testing 
+db_uri='mongodb://localhost'
+comision=4
