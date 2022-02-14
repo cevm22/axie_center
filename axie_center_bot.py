@@ -273,8 +273,6 @@ async def proof(ctx,ticket, proof_hash):
                 await user.send(verify_hash)
                 return
         
-
-
 #=======================
 #Ticket cancel
 @bot.command()
@@ -348,7 +346,6 @@ async def cancel(ctx, ticket):
             await user.send("You can **NOT** cancel tickets from other users. You can only cancel your own tickets.")
             return
 
-
 #=======================
 #Ticket accept
 @bot.command()
@@ -383,7 +380,7 @@ async def accept(ctx, ticket, password):
     if find_ticket_id[1]==2: 
         await user.send("This ticket has already been accepted")
         return
-    else:
+    if find_ticket_id[1]==1: 
         #####flujo de aceptacion de ticket por parte del comprador
         #verificar contrasena del ticket
         ticket_pass=system_db.pull_ticket_password(ticket)
@@ -406,10 +403,9 @@ async def accept(ctx, ticket, password):
         else:
             await user.send("The ticket password is **incorrect**")
             return
-
-        return
+    else:
+        return user.send("This Ticket is in process by Axie Center")
     
-
 #=======================
 #Axie Trade 
 @bot.command()
@@ -440,7 +436,6 @@ async def trade(ctx):
     await ctx.send(":arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise:")
     await ctx.send(embed=trade_msg_2)
     return
-
 
 #=======================
 #Change enrol 
