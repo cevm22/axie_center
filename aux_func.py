@@ -1,4 +1,3 @@
-from dis import disco
 import math     
 import system_db
 import explorer_tx_db
@@ -24,7 +23,6 @@ def comision_calc(price):
     else:
         return res 
 
-print(comision_calc(10))
 def store_hash_flow(discord_ID,proof_hash,seller_or_buyer,ticket):
     
     if seller_or_buyer == 'SELLER':
@@ -137,13 +135,4 @@ def send_profit(to_wallet,value):
         return False
     else:
         return hash
-##########################################
-# falta por probar no_hash_in_DB(proof_hash,ticket,discord_ID)
 
-#discord_ID='358375624294924289'#'1642527399'
-#proof_hash='0xfa24e6ed97e4de4adc85c8b9f209ab78125142effeeda21b328727034cd4fc30'
-#proof_hash='0x85665b7a5f1f13d46f51065c6e958ba74ed827cc85189fe5cc9844502d50f13f'
-#seller_or_buyer='BUYER'
-#ticket='PS-14'
-
-#print(store_hash_flow(discord_ID,proof_hash,seller_or_buyer,ticket))

@@ -27,6 +27,7 @@ def pull_erc721_api(ronin):
         return 
         
     except Exception as e:
+        print('Error pull_erc721_api')
         print(e)
         return False
 
@@ -45,6 +46,7 @@ def pull_erc20_api(ronin):
         store_tx(vec)
         return 
     except Exception as e:
+        print('error pull_erc20_api')
         print(e)
         return False
 
@@ -92,6 +94,7 @@ def pull_cycle(tech,ronin,ind,size):
                                     explorer_tx_db.add_ERC721_tx(vec_info)
         return 
     except Exception as e:
+        print('error pull_cycle')
         print(e)
         return False
 
@@ -193,6 +196,7 @@ def store_tx(vec):
                     #print("terminado")
                     return
     except Exception as e:
+        print('error store_tx')
         print(e)
         return False
 
