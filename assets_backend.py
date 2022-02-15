@@ -54,15 +54,15 @@ def send_assets():
             if confirm_status_hash_AC[0] ==True and confirm_status_hash_AC[1]==True:
                 # Cerrar ticket como COMPLETADO
                 # Enviar Msg al buyer y seller que todo esta correcto
-                #print(item)
+                print(item)
                 system_db.update_done_ticket_ID(ticket)
                 system_db.update_tickets_stats_done()
-                #print("COMPLETADO")
+                print("COMPLETADO")
             else:
-                #print(item)
+                print(item)
                 # Cambiar a status PASS = 9, para CASO DE NO COMPLETARSE EL ENVIO DE AC -> OWNERS
                 system_db.update_pass_ticket_ID(item[0])
-                #print("ERROR")
+                print("ERROR")
     except Exception as e:
         #print("ready count > "+str(ready))
         # agregar funcion para registrar tx desde los tickets a los logs ERC20 y ERC721 
@@ -151,7 +151,7 @@ def cancel_process():
                             axie_id=int(cancel_erc721['value'])
                             refund_to=cancel_erc721['from']
                             refund_from=cancel_erc721['to']
-                            refund_hash=blockchain_func.AXIE_transfer(refund_from,refund_to,axie_id)
+                        #    refund_hash=blockchain_func.AXIE_transfer(refund_from,refund_to,axie_id)
                             # actualizar el hash status = 'REFUND' y agregar el hash de REFUND a la db ERC20/ERC721
                             explorer_tx_db.update_ERC721_tx_ticket_status_refund(data['ticket'],cancel_erc721['tx_hash'],refund_hash)
                             # actualizar el ticket status canceled = 0
@@ -184,7 +184,7 @@ def cancel_process():
                             axie_id=int(cancel_erc721['value'])
                             refund_to=cancel_erc721['from']
                             refund_from=cancel_erc721['to']
-                            refund_hash=blockchain_func.AXIE_transfer(refund_from,refund_to,axie_id)
+                        #    refund_hash=blockchain_func.AXIE_transfer(refund_from,refund_to,axie_id)
                             # actualizar el hash status = 'REFUND' y agregar el hash de REFUND a la db ERC20/ERC721
                             explorer_tx_db.update_ERC721_tx_ticket_status_refund(data['ticket'],cancel_erc721['tx_hash'],refund_hash)
                             # actualizar el ticket status canceled = 0
@@ -341,5 +341,5 @@ def test_backend():
 ######
 #cross_tickets_to_api()
 #print(cancel_process())
-#test_backend()
+test_backend()
 #close_refund()
