@@ -580,6 +580,63 @@ async def closeticket():
             await seller.send(embed=ticket_msg)
             await buyer.send(embed=ticket_msg)
 
+@ps.error
+async def ps_error(ctx: commands.Context, error: commands.CommandError):
+    user_id=str(ctx.message.author.id)
+    user = await bot.fetch_user(user_id)
+    if isinstance(error, commands.MissingRequiredArgument):
+        msg= "__Missing a required argument__ -> **_ps** [Axie ID] [Sell price, (decimal)] [password] \n -> ` _ps 12345 300 p4s5W0rd` " 
+    return await user.send(msg)
+
+@review.error
+async def review_error(ctx: commands.Context, error: commands.CommandError):
+    user_id=str(ctx.message.author.id)
+    user = await bot.fetch_user(user_id)
+    if isinstance(error, commands.MissingRequiredArgument):
+        msg= "__Missing a required argument__ -> **_review** [ticket ID] \n -> `_review PS-1` "
+    return await user.send(msg)
+
+@ticket.error
+async def ticket_error(ctx: commands.Context, error: commands.CommandError):
+    user_id=str(ctx.message.author.id)
+    user = await bot.fetch_user(user_id)
+    if isinstance(error, commands.MissingRequiredArgument):
+        msg= "__Missing a required argument__ -> **_ticket** [ticket ID] \n -> `_ticket PS-12` "
+    return await user.send(msg)
+
+@proof.error
+async def proof_error(ctx: commands.Context, error: commands.CommandError):
+    user_id=str(ctx.message.author.id)
+    user = await bot.fetch_user(user_id)
+    if isinstance(error, commands.MissingRequiredArgument):
+        msg= "__Missing a required argument__ -> **_proof** [ticket ID] [proof hash of tx] \n -> `_proof PS-123 0xfe72a592a6c4d93d58fbb6e514283187789ca0427db87373cde75e8bd5fd1518` "
+    return await user.send(msg)
+
+@cancel.error
+async def cancel_error(ctx: commands.Context, error: commands.CommandError):
+    user_id=str(ctx.message.author.id)
+    user = await bot.fetch_user(user_id)
+    if isinstance(error, commands.MissingRequiredArgument):
+        msg= "__Missing a required argument__ -> **_cancel** [ticket ID] \n -> `_ticket PS-3` "
+    return await user.send(msg)
+
+@accept.error
+async def accept_error(ctx: commands.Context, error: commands.CommandError):
+    user_id=str(ctx.message.author.id)
+    user = await bot.fetch_user(user_id)
+    if isinstance(error, commands.MissingRequiredArgument):
+        msg= "__Missing a required argument__ -> **_accept** [ticket ID] [password, given by seller] \n -> `_accept PS-3 p4s5W0rd` "
+    return await user.send(msg)
+
+@enroll.error
+async def enroll_error(ctx: commands.Context, error: commands.CommandError):
+    user_id=str(ctx.message.author.id)
+    user = await bot.fetch_user(user_id)
+    if isinstance(error, commands.MissingRequiredArgument):
+        msg= "__Missing a required argument__ -> **_enroll** [wallet start with 'ronin:'] \n -> `_enroll ronin:0f14612bad915aa3c5d6f43f1b046f703c6dead0`"
+    return await user.send(msg)
+
+
 @bot.event
 async def on_ready():
     print('AXIE CENTER READY')
