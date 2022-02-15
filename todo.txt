@@ -31,6 +31,7 @@ TICKETS STATUS
 5 - Pending to send msg to owners
 6 - SEND_MSG_TICKET_CLOSED
 7 - cancel_process
+8 - tx not found then pass to standby
 9 - error validacion en red ronin
 
 #######################

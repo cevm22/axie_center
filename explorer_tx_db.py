@@ -72,6 +72,28 @@ def update_ERC20_tx_ticket_status_pass(ticket,proof_hash):
     else:
         return True
 #======================================================================
+# UPDATE_MANY   ERC721_tx   and status = STAND_BY
+#======================================================================
+def update_ERC721_tx_all_standby_from_notfound():
+    db=client['tx_db'] # DB
+    collection=db['ERC721'] # Collection
+    data=collection.update_many({'status':'TX_NOT_FOUND'},{"$set":{"status":'STAND_BY'}})
+    if not data:
+        return False
+    else:
+        return True
+#======================================================================
+# UPDATE_MANY   ERC20_tx   and status = STAND_BY
+#======================================================================
+def update_ERC20_tx_all_standby_from_notfound():
+    db=client['tx_db'] # DB
+    collection=db['ERC20'] # Collection
+    data=collection.update_many({'status':'TX_NOT_FOUND'},{"$set":{"status":'STAND_BY'}})
+    if not data:
+        return False
+    else:
+        return True
+#======================================================================
 # UPDATE   ERC721_tx  ticket info and status = CANCEL_PENDING
 #======================================================================
 def update_ERC721_tx_ticket_status_cancel_pending(ticket,proof_hash):
@@ -133,6 +155,28 @@ def update_ERC20_tx_stand_by(proof_hash):
     db=client['tx_db'] # DB
     collection=db['ERC20'] # Collection
     data=collection.update_one({'tx_hash':proof_hash},{"$set":{"status":'STAND_BY'}})
+    if not data:
+        return False
+    else:
+        return True
+#======================================================================
+# UPDATE   ERC721_tx  ticket info and status = TX_NOT_FOUND
+#======================================================================
+def update_ERC721_tx_not_found(proof_hash):
+    db=client['tx_db'] # DB
+    collection=db['ERC721'] # Collection
+    data=collection.update_one({'tx_hash':proof_hash},{"$set":{"status":'TX_NOT_FOUND'}})
+    if not data:
+        return False
+    else:
+        return True
+#======================================================================
+# UPDATE   ERC20_tx  ticket info and status = TX_NOT_FOUND
+#======================================================================
+def update_ERC20_tx_not_found(proof_hash):
+    db=client['tx_db'] # DB
+    collection=db['ERC20'] # Collection
+    data=collection.update_one({'tx_hash':proof_hash},{"$set":{"status":'TX_NOT_FOUND'}})
     if not data:
         return False
     else:
@@ -473,3 +517,26 @@ def pull_txhash_refund_erc721():
     collection=db['ERC721'] # Collection     
     data=collection.find_one({"status":"REFUND"})
     return data
+
+#======================================================================
+# pull  TX_HASH ERC20 - and pull data with REFUND_hash created
+#======================================================================
+def pull_refund_hash_created_erc20(tx):
+    db=client['tx_db'] # DB
+    collection=db['ERC20'] # Collection     
+    data=collection.find_one({"refund_hash":tx})
+    if not data:
+        return False
+    else:
+        return True
+#======================================================================
+# pull  TX_HASH ERC721 - and pull datadata with REFUND_hash created
+#======================================================================
+def pull_refund_hash_created_erc721(tx):
+    db=client['tx_db'] # DB
+    collection=db['ERC721'] # Collection     
+    data=collection.find_one({"refund_hash":tx})
+    if not data:
+        return False
+    else:
+        return True
