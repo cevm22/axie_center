@@ -1,8 +1,7 @@
 
 from pymongo import MongoClient
 import datetime
-import time
-import datetime 
+from datetime import datetime
 import json
 import config
 #======================================================================
@@ -40,7 +39,8 @@ def create_ticket_PS(vec):
                 "type": "Private Sale",
                 "value_1": vec[1], #AXIE id
                 "value_2": vec[2], #USDC token
-                "password":vec[6]
+                "password":vec[6],
+                'created':str(int(datetime.timestamp(datetime.utcnow())))
                 })
     return
 
@@ -438,6 +438,22 @@ def verify_hash_in_ticket(hash):
     data=collection.find_one({"$or":[{"tx_hash_1":hash},{"tx_hash_2":hash},{"ac_txhash_1":hash},{"ac_txhash_2":hash}]})
     return data
 #======================================================================
+# PULL total of tickets in status sandby = 1
+#======================================================================
+def tickets_stand_by():
+    db=client['tx_db'] # DB
+    collection=db['tickets'] # Collection 
+    data = collection.count_documents({"ticket_stat":1})  
+    return data
+#======================================================================
+# PULL total of tickets in status Accepted by buyer = 2
+#======================================================================
+def tickets_accepted():
+    db=client['tx_db'] # DB
+    collection=db['tickets'] # Collection 
+    data = collection.count_documents({"ticket_stat":2})  
+    return data
+#======================================================================
 # PULL total of tickets in status PENDING = 3
 #======================================================================
 def tickets_pending():
@@ -460,6 +476,22 @@ def tickets_cancel_pending():
     db=client['tx_db'] # DB
     collection=db['tickets'] # Collection 
     data = collection.count_documents({"ticket_stat":7})  
+    return data
+#======================================================================
+# FIND one ticket with ticket_stat = 1 and pull info 
+#======================================================================
+def pull_ticket_created():
+    db=client['tx_db'] # DB
+    collection=db['tickets'] # Collection 
+    data = collection.find_one({"ticket_stat":1})  
+    return data
+#======================================================================
+# FIND one ticket with ticket_stat = 2 and pull info 
+#======================================================================
+def pull_ticket_accepted():
+    db=client['tx_db'] # DB
+    collection=db['tickets'] # Collection 
+    data = collection.find_one({"ticket_stat":2})  
     return data
 #======================================================================
 # FIND one ticket with ticket_stat = 4 and pull info to send assets

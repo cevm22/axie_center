@@ -31,6 +31,7 @@ TICKETS STATUS
 5 - Pending to send msg to owners
 6 - SEND_MSG_TICKET_CLOSED
 7 - cancel_process
+8 - Cancel tickets timeout
 9 - error validacion en red ronin
 
 #######################
@@ -45,7 +46,8 @@ gaslimit_usdc_transfer = 100000
 gasprice=1.2
 price_limit=1000
 price_low_limit=10
-time_limit=10 # in seconds
+time_limit=3600 # in seconds
+time_limit_ticket = 1800
 master_id= #Discord ID for testing 
 db_uri='mongodb://localhost'
 comision=0.03 #porcentaje

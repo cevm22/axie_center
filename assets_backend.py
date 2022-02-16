@@ -126,9 +126,30 @@ def verify_pass(tx_hash):
         return False
 
 def cancel_process():   
+    # cancel ticket by timeout and pass status cancel_pending = 7
+    standby=system_db.tickets_stand_by()
+    for a in range(standby):
+        #buscar documentos en standby = 1
+        data_created=system_db.pull_ticket_created()
+        live_time= int(data_created['created']) + config.time_limit_ticket
+        tiempo=int(datetime.timestamp(datetime.utcnow()))
+        #comparar  la hora de creacion y que sea mayor a 30 min
+        if  live_time < tiempo:
+            #cambiarlo a status ancel_pending = 7
+            system_db.update_cancel_process_ticket_ID(data_created['ticket'])
+            
+    accepted=system_db.tickets_accepted()
+    for b in range(accepted):
+        #buscar documentos en standby = 1
+        data_accepted=system_db.pull_ticket_accepted()
+        live_time= int(data_accepted['created']) + config.time_limit_ticket
+        tiempo=int(datetime.timestamp(datetime.utcnow()))
+        #comparar  la hora de creacion y que sea mayor a 30 min
+        if  live_time < tiempo:
+            #cambiarlo a status ancel_pending = 7
+            system_db.update_cancel_process_ticket_ID(data_accepted['ticket'])      
     # buscar cantidad tickets en status cancel_pending = 7
     docs=system_db.tickets_cancel_pending()
-    refund_hash='0x038843e6ea575500d75ec8f8da7db2b8093510b80a8a3fe0f492731e3b2264fc'
     for i in range (docs):
         # obtener la data del ticket
         data=system_db.pull_ticket_cancel_pending()
@@ -266,6 +287,9 @@ def untracked_hash():
                     if data['token_address'] == USDC_CONTRACT:                
                         #revisar que no se encuentre en un ticket
                         verify_exist=system_db.find_untracked_hash(data['tx_hash'])
+                        if data['from'] == hotwallet:
+                            explorer_tx_db.update_ERC20_tx_ticket_status_refund_done('ASSET_ALREADY_SENT',data['tx_hash'])
+                            continue
                         if verify_exist == False:
                             #verificar que sea mas de 5 USDC
                             usdc_value=int(data['value'])/1000000
@@ -279,7 +303,7 @@ def untracked_hash():
                                 refund_hash = blockchain_func.USDC_transfer(refund_from,refund_to,usdc_value)
                                 if refund_hash == False or refund_hash=="TIME_OUT":
                                     explorer_tx_db.update_ERC20_tx_not_found(data['tx_hash'])
-                                    return
+                                    continue
                                 else:
                                     # dejar status como refund
                                     explorer_tx_db.update_ERC20_tx_ticket_status_refund('NO_TICKET',data['tx_hash'],refund_hash)
@@ -319,6 +343,9 @@ def untracked_hash():
                     if data['token_address'] == AXIE_CONTRACT:                
                         #revisar que no se encuentre en un ticket
                         verify_exist=system_db.find_untracked_hash(data['tx_hash'])
+                        if data['from'] == hotwallet:
+                            explorer_tx_db.update_ERC721_tx_ticket_status_refund_done('ASSET_ALREADY_SENT',data['tx_hash'])
+                            continue
                         if verify_exist == False:
                                 #reenviar el asset al propietario
                                 refund_to=data['from']
@@ -327,7 +354,7 @@ def untracked_hash():
                                 refund_hash = blockchain_func.AXIE_transfer(refund_from,refund_to,axie_id)
                                 if refund_hash == False or refund_hash=="TIME_OUT":
                                     explorer_tx_db.update_ERC721_tx_not_found(data['tx_hash'])
-                                    return
+                                    continue
                                 else:
                                     # dejar status como refund
                                     explorer_tx_db.update_ERC721_tx_ticket_status_refund('NO_TICKET',data['tx_hash'],refund_hash)
@@ -355,11 +382,17 @@ def prepare_ticket_stat_2_to_3():
 def test_backend():
     import pull_api
     try:
-        pull_api.pull_tx_api()
+        print("PULL API")
+        #pull_api.pull_tx_api()
+        print('SENDING ASSETS')
         send_assets()
+        print('CROSS TICKETS TO API')
         cross_tickets_to_api()
+        print('CANCEL PROCESS ')
         cancel_process()
+        print('CLOSE REFUND')
         close_refund()
+        print('UNTRACKED HASH')
         untracked_hash()
         return
     except Exception as e:
@@ -374,5 +407,5 @@ def test_backend():
 ######
 #cross_tickets_to_api()
 #print(cancel_process())
-#test_backend()
+test_backend()
 #close_refund()
