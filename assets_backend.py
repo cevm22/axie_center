@@ -153,7 +153,7 @@ def cancel_process():
                             refund_from=cancel_erc721['to']
                             refund_hash=blockchain_func.AXIE_transfer(refund_from,refund_to,axie_id)
                             if refund_hash == False or refund_hash=="TIME_OUT":
-                                pass
+                                continue
                             else:
                                 # actualizar el hash status = 'REFUND' y agregar el hash de REFUND a la db ERC20/ERC721
                                 explorer_tx_db.update_ERC721_tx_ticket_status_refund(data['ticket'],cancel_erc721['tx_hash'],refund_hash)
@@ -169,7 +169,7 @@ def cancel_process():
                             refund_from=cancel_erc20['to']
                             refund_hash = blockchain_func.USDC_transfer(refund_from,refund_to,usdc_value)
                             if refund_hash == False or refund_hash=="TIME_OUT":
-                                pass
+                                continue
                             else:
                                 # actualizar el hash status = 'REFUND' y agregar el hash de REFUND a la db ERC20/ERC721
                                 explorer_tx_db.update_ERC20_tx_ticket_status_refund(data['ticket'],cancel_erc20['tx_hash'],refund_hash)
@@ -194,7 +194,7 @@ def cancel_process():
                             refund_from=cancel_erc721['to']
                             refund_hash=blockchain_func.AXIE_transfer(refund_from,refund_to,axie_id)
                         if refund_hash == False or refund_hash=="TIME_OUT":
-                                pass
+                                continue
                         else:
                             # actualizar el hash status = 'REFUND' y agregar el hash de REFUND a la db ERC20/ERC721
                             explorer_tx_db.update_ERC721_tx_ticket_status_refund(data['ticket'],cancel_erc721['tx_hash'],refund_hash)
@@ -210,7 +210,7 @@ def cancel_process():
                             refund_from=cancel_erc20['to']
                             refund_hash = blockchain_func.USDC_transfer(refund_from,refund_to,usdc_value)
                             if refund_hash == False or refund_hash=="TIME_OUT":
-                                pass
+                                continue
                             else:
                                 # actualizar el hash status = 'REFUND' y agregar el hash de REFUND a la db ERC20/ERC721
                                 explorer_tx_db.update_ERC20_tx_ticket_status_refund(data['ticket'],cancel_erc20['tx_hash'],refund_hash)
