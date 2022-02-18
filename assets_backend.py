@@ -140,6 +140,7 @@ def cancel_process():
             status_user_1=system_db.update_cancel_ticket(discord_users_IDS[0])
             status_user_2=system_db.update_cancel_ticket(discord_users_IDS[1])
             system_db.update_cancel_process_ticket_ID(data_created['ticket'])
+            system_db.update_tickets_stats_cancelled()
             
             
     accepted=system_db.tickets_accepted()
@@ -151,10 +152,11 @@ def cancel_process():
         #comparar  la hora de creacion y que sea mayor a 30 min
         if  live_time < tiempo:
             #cambiarlo a status ancel_pending = 7
-            discord_users_IDS=system_db.pull_discords_ID_on_ticket(data_created['ticket'])
+            discord_users_IDS=system_db.pull_discords_ID_on_ticket(data_accepted['ticket'])
             status_user_1=system_db.update_cancel_ticket(discord_users_IDS[0])
             status_user_2=system_db.update_cancel_ticket(discord_users_IDS[1])
-            system_db.update_cancel_process_ticket_ID(data_accepted['ticket'])      
+            system_db.update_cancel_process_ticket_ID(data_accepted['ticket']) 
+            system_db.update_tickets_stats_cancelled()     
     # buscar cantidad tickets en status cancel_pending = 7
     docs=system_db.tickets_cancel_pending()
     for i in range (docs):
@@ -162,7 +164,11 @@ def cancel_process():
         data=system_db.pull_ticket_cancel_pending()
         if data['status_hash_1'] == False and data['status_hash_2'] == False:
             # actualizar el ticket status canceled = 0
+            discord_users_IDS=system_db.pull_discords_ID_on_ticket(data['ticket'])
+            status_user_1=system_db.update_cancel_ticket(discord_users_IDS[0])
+            status_user_2=system_db.update_cancel_ticket(discord_users_IDS[1])
             system_db.update_cancel_ticket_ID(data['ticket'])
+            system_db.update_tickets_stats_cancelled()
             continue
         else:
             USDC_CONTRACT = "0x0b7007c13325c48911f73a2dad5fa5dcbf808adc"
@@ -186,7 +192,11 @@ def cancel_process():
                                 # actualizar el hash status = 'REFUND' y agregar el hash de REFUND a la db ERC20/ERC721
                                 explorer_tx_db.update_ERC721_tx_ticket_status_refund(data['ticket'],cancel_erc721['tx_hash'],refund_hash)
                                 # actualizar el ticket status canceled = 0
+                                discord_users_IDS=system_db.pull_discords_ID_on_ticket(data['ticket'])
+                                status_user_1=system_db.update_cancel_ticket(discord_users_IDS[0])
+                                status_user_2=system_db.update_cancel_ticket(discord_users_IDS[1])
                                 system_db.update_cancel_ticket_ID(data['ticket'])
+                                system_db.update_tickets_stats_cancelled()
                                 continue
                     else:
                         if cancel_erc20['token_address'] == USDC_CONTRACT:
@@ -202,7 +212,11 @@ def cancel_process():
                                 # actualizar el hash status = 'REFUND' y agregar el hash de REFUND a la db ERC20/ERC721
                                 explorer_tx_db.update_ERC20_tx_ticket_status_refund(data['ticket'],cancel_erc20['tx_hash'],refund_hash)
                                 # actualizar el ticket status canceled = 0
+                                discord_users_IDS=system_db.pull_discords_ID_on_ticket(data['ticket'])
+                                status_user_1=system_db.update_cancel_ticket(discord_users_IDS[0])
+                                status_user_2=system_db.update_cancel_ticket(discord_users_IDS[1])
                                 system_db.update_cancel_ticket_ID(data['ticket'])
+                                system_db.update_tickets_stats_cancelled()
                                 continue
                 except Exception as e:
                     print(e)
@@ -227,7 +241,11 @@ def cancel_process():
                             # actualizar el hash status = 'REFUND' y agregar el hash de REFUND a la db ERC20/ERC721
                             explorer_tx_db.update_ERC721_tx_ticket_status_refund(data['ticket'],cancel_erc721['tx_hash'],refund_hash)
                             # actualizar el ticket status canceled = 0
+                            discord_users_IDS=system_db.pull_discords_ID_on_ticket(data['ticket'])
+                            status_user_1=system_db.update_cancel_ticket(discord_users_IDS[0])
+                            status_user_2=system_db.update_cancel_ticket(discord_users_IDS[1])
                             system_db.update_cancel_ticket_ID(data['ticket'])
+                            system_db.update_tickets_stats_cancelled()
                             continue
                     else:
                         if cancel_erc20['token_address'] == USDC_CONTRACT:
@@ -243,7 +261,11 @@ def cancel_process():
                                 # actualizar el hash status = 'REFUND' y agregar el hash de REFUND a la db ERC20/ERC721
                                 explorer_tx_db.update_ERC20_tx_ticket_status_refund(data['ticket'],cancel_erc20['tx_hash'],refund_hash)
                                 # actualizar el ticket status canceled = 0
+                                discord_users_IDS=system_db.pull_discords_ID_on_ticket(data['ticket'])
+                                status_user_1=system_db.update_cancel_ticket(discord_users_IDS[0])
+                                status_user_2=system_db.update_cancel_ticket(discord_users_IDS[1])
                                 system_db.update_cancel_ticket_ID(data['ticket'])
+                                system_db.update_tickets_stats_cancelled()
                                 continue
                 except Exception as e:
                     print(e)
@@ -316,7 +338,7 @@ def untracked_hash():
                                     explorer_tx_db.update_ERC20_tx_ticket_status_refund('NO_TICKET',data['tx_hash'],refund_hash)
                                     continue
                         else:
-                            discord_users_IDS=system_db.pull_discords_ID_on_ticket(data_created['ticket'])
+                            discord_users_IDS=system_db.pull_discords_ID_on_ticket(data['ticket'])
                             status_user_1=system_db.update_cancel_ticket(discord_users_IDS[0])
                             status_user_2=system_db.update_cancel_ticket(discord_users_IDS[1])
                             system_db.update_cancel_process_ticket_ID(verify_exist['ticket'])
@@ -370,7 +392,7 @@ def untracked_hash():
                                     explorer_tx_db.update_ERC721_tx_ticket_status_refund('NO_TICKET',data['tx_hash'],refund_hash)
                                     continue
                         else:
-                            discord_users_IDS=system_db.pull_discords_ID_on_ticket(data_created['ticket'])
+                            discord_users_IDS=system_db.pull_discords_ID_on_ticket(data['ticket'])
                             status_user_1=system_db.update_cancel_ticket(discord_users_IDS[0])
                             status_user_2=system_db.update_cancel_ticket(discord_users_IDS[1])
                             system_db.update_cancel_process_ticket_ID(verify_exist['ticket'])
@@ -409,7 +431,7 @@ def test_backend():
         untracked_hash()
         return
     except Exception as e:
-        print('error en test_backend funct')
+        print('error en TEST_BACKEND funct')
         print(e)
         return
 #reset ticket

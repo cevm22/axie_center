@@ -13,24 +13,22 @@ import assets_backend
 bot = commands.Bot(command_prefix='_',help_command=None)
 client=discord.Client(activity=discord.Game(name='Axie Center'))
 
+commands_limit=5
 price_limit=config.price_limit
 price_low_limit=config.price_low_limit
+
+@commands.cooldown(rate=1, per=commands_limit, type=commands.BucketType.member)
 @bot.command()
-async def testbackend(ctx): 
+async def test(ctx): 
     user_id=str(ctx.message.author.id) 
     user = await bot.fetch_user(user_id) 
-    assets_backend.test_backend()
+    #assets_backend.test_backend()
     await user.send("TODO EN ORDEN") 
-    #user = await bot.fetch_user(358375624294924289)
-    #await user.send('hi my name is *bot name here* and i am a bot!') 
-    #await ctx.message.author.send('hi, i am a bot!')#enviar DM tomando el mensaje del autor
-    #await ctx.send(f"se han agregado 200 puntos a <@{a}>")
-    #await ctx.send("Test")
-    #<@!375140672329613324> # andres
-    #358375624294924289 #lasthope
-    #return
+
+
 #=======================
 #Private Sale 
+@commands.cooldown(rate=1, per=commands_limit, type=commands.BucketType.member)
 @bot.command()
 async def ps(ctx,axie_ID,price,password):
     user_id=str(ctx.message.author.id)
@@ -98,6 +96,7 @@ async def ps(ctx,axie_ID,price,password):
 
 #=======================
 #review ticket
+@commands.cooldown(rate=1, per=commands_limit, type=commands.BucketType.member)
 @bot.command()
 async def review(ctx,ticket):
     user_id=str(ctx.message.author.id)
@@ -129,6 +128,7 @@ async def review(ctx,ticket):
 
 #=======================
 #Ticket 
+@commands.cooldown(rate=1, per=commands_limit, type=commands.BucketType.member)
 @bot.command()
 async def ticket(ctx,ticket):
     user_id=str(ctx.message.author.id)
@@ -206,10 +206,10 @@ async def ticket(ctx,ticket):
         await user.send("You cannot see tickets from other users.")
         return
 
-
 #=======================
 #Ticket send hash
 @bot.command()
+@commands.cooldown(rate=1, per=commands_limit, type=commands.BucketType.member)
 async def proof(ctx,ticket, proof_hash):
     user_id=str(ctx.message.author.id)
     user = await bot.fetch_user(user_id)
@@ -276,6 +276,7 @@ async def proof(ctx,ticket, proof_hash):
 #=======================
 #Ticket cancel
 @bot.command()
+@commands.cooldown(rate=1, per=commands_limit, type=commands.BucketType.member)
 async def cancel(ctx, ticket):
     user_id=str(ctx.message.author.id)
     user = await bot.fetch_user(user_id)
@@ -349,6 +350,7 @@ async def cancel(ctx, ticket):
 #=======================
 #Ticket accept
 @bot.command()
+@commands.cooldown(rate=1, per=commands_limit, type=commands.BucketType.member)
 async def accept(ctx, ticket, password):
     user_id=str(ctx.message.author.id)
     user = await bot.fetch_user(user_id)
@@ -412,6 +414,7 @@ async def accept(ctx, ticket, password):
 #=======================
 #Axie Trade 
 @bot.command()
+@commands.cooldown(rate=1, per=commands_limit, type=commands.BucketType.member)
 async def trade(ctx):
     #template MSG TICKET
     #agregar condicional str('[Marketplace]'+'('+str(axie_url+str(msg[4])+')'))
@@ -443,6 +446,7 @@ async def trade(ctx):
 #=======================
 #Change enrol 
 @bot.command()
+@commands.cooldown(rate=1, per=commands_limit, type=commands.BucketType.member)
 async def enroll(ctx,ronin):
     #En caso que ya este registrado 
     user_ID=str(ctx.message.author.id)
@@ -475,6 +479,7 @@ async def enroll(ctx,ronin):
 #=======================
 #Create DBS
 @bot.command()
+@commands.cooldown(rate=1, per=commands_limit, type=commands.BucketType.member)
 async def deploybot(ctx):
     user_id=str(ctx.message.author.id)
     user = await bot.fetch_user(user_id)
@@ -493,6 +498,7 @@ async def deploybot(ctx):
 #==================================================
 #Routine to send profits to master wallet 
 @bot.command()
+@commands.cooldown(rate=1, per=commands_limit, type=commands.BucketType.member)
 async def takeprofits(ctx,usdc_value):
     master=config.master_id
     user_id=str(ctx.message.author.id)
@@ -636,7 +642,17 @@ async def enroll_error(ctx: commands.Context, error: commands.CommandError):
         msg= "__Missing a required argument__ -> **_enroll** [wallet start with 'ronin:'] \n -> `_enroll ronin:0f14612bad915aa3c5d6f43f1b046f703c6dead0`"
     return await user.send(msg)
 
-
+@bot.event
+async def on_command_error( ctx: commands.Context, error: commands.CommandError):
+        user_id=str(ctx.message.author.id)
+        user = await bot.fetch_user(user_id)
+        if isinstance(error, commands.CommandNotFound):
+            return await user.send('Command not found, please review the commands list with > _help ')
+        if isinstance(error, commands.CommandOnCooldown):
+            message = f"This command is on cooldown. Please try again after {round(error.retry_after, 1)} seconds. Remember, rate limit of 1 command type every "+ str(commands_limit) +" secs"
+            return await user.send(message)
+        print(error)
+        
 @bot.event
 async def on_ready():
     print('AXIE CENTER READY')
