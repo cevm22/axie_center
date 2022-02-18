@@ -22,10 +22,16 @@ price_low_limit=config.price_low_limit
 async def test(ctx): 
     user_id=str(ctx.message.author.id) 
     user = await bot.fetch_user(user_id) 
-    #assets_backend.test_backend()
-    await user.send("TODO EN ORDEN") 
+    assets_backend.test_backend()
+    await user.send("OK") 
 
-
+@commands.cooldown(rate=1, per=commands_limit, type=commands.BucketType.member)
+@bot.command()
+async def ping(ctx: commands.Context):
+    print(ctx.message) #id=944088553510567966
+    await ctx.send(f"Pong! {round(bot.latency * 1000)}ms")
+    #channel=bot.get_channel(944088553510567966)
+    #await channel.send('enviando mensaje')
 #=======================
 #Private Sale 
 @commands.cooldown(rate=1, per=commands_limit, type=commands.BucketType.member)
@@ -583,8 +589,14 @@ async def closeticket():
             ticket_msg=ES_msg_templates.ticket_msg(vec)
             #cambiar tickets CLOSED = 6
             system_db.update_send_msg_ticket_ID(data['ticket'])
+            testimonial=ES_msg_templates.testimonial()
             await seller.send(embed=ticket_msg)
+            await seller.send(embed=testimonial)
             await buyer.send(embed=ticket_msg)
+            await buyer.send(embed=testimonial)
+            channel=bot.get_channel(944088553510567966)
+            await channel.send(embed=ticket_msg)
+            return
 
 @ps.error
 async def ps_error(ctx: commands.Context, error: commands.CommandError):
