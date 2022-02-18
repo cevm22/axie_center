@@ -595,7 +595,7 @@ async def closeticket():
             await seller.send(embed=ticket_msg)
             await seller.send(embed=testimonial)
             await buyer.send(embed=ticket_msg)
-            await buyer.send(embed=testimonial)
+            await buyer.send(embed=testimonial)            
             await channel.send(embed=ticket_msg)
             
 
