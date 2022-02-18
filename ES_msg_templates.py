@@ -116,3 +116,11 @@ def accept_msg_user_2(ticket_id):
                 timestamp=datetime.datetime.utcnow(),
                 color=discord.Color.blue())
     return embed
+
+def testimonial():
+    embed = discord.Embed(title=('**TICKET CLOSED**'),
+                description=("Thank you so much to use Axie Center!, Please give us a testimonial of your experience with us in our server. "  
+                ),
+                timestamp=datetime.datetime.utcnow(),
+                color=discord.Color.red())
+    return embed
