@@ -32,6 +32,7 @@ async def ping(ctx: commands.Context):
     await ctx.send(f"Pong! {round(bot.latency * 1000)}ms")
     #channel=bot.get_channel(944088553510567966)
     #await channel.send('enviando mensaje')
+    
 #=======================
 #Private Sale 
 @commands.cooldown(rate=1, per=commands_limit, type=commands.BucketType.member)
@@ -590,13 +591,13 @@ async def closeticket():
             #cambiar tickets CLOSED = 6
             system_db.update_send_msg_ticket_ID(data['ticket'])
             testimonial=ES_msg_templates.testimonial()
+            channel=bot.get_channel(944088553510567966)
             await seller.send(embed=ticket_msg)
             await seller.send(embed=testimonial)
             await buyer.send(embed=ticket_msg)
             await buyer.send(embed=testimonial)
-            channel=bot.get_channel(944088553510567966)
             await channel.send(embed=ticket_msg)
-            return
+            
 
 @ps.error
 async def ps_error(ctx: commands.Context, error: commands.CommandError):
