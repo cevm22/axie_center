@@ -60,26 +60,32 @@ def ticket_msg(msg):
     return embed
 
 def trade_msg_1(msg):
+    seller_mark=msg_utils.check_mark(msg[6]) 
     axieID_1=str('[Marketplace]'+'('+str(axie_url+str(msg[3])+')'))
-    Owner_tx_1=str("[Proof_hash]"+'('+str(str(tx_url)+str(msg[5]))+')')
+    Owner_tx_1=msg_utils.seller_hash_status(msg[5])#str("[Proof_hash]"+'('+str(str(tx_url)+str(msg[5]))+')')
+    ticket_status=msg_utils.ticket_status_msg(msg[1])
     url_img_axie_1=str("https://storage.googleapis.com/assets.axieinfinity.com/axies/"+str(msg[3])+"/axie/axie-full-transparent.png")
     embed = discord.Embed(title=('**AXIE TRADE - STATUS**'),
     description=("**TICKET ID: ** " + str(msg[0]) + '\n' 
-                + "**STATUS: ** " + str(msg[1])  ),
+                + "**STATUS: ** " + str(ticket_status)  ),
     color=discord.Color.green())
     embed.set_image(url=url_img_axie_1)
     embed.add_field(name="Axie(1) ID",value=(str(msg[3])),inline=True) #   
     embed.add_field(name="Axie(1) URL",value=(axieID_1),inline=True)
     embed.add_field(name="Opened",value=(str(msg[2])),inline=True)
     embed.add_field(name="Owner(1)",value=Owner_tx_1,inline=True) 
-    embed.add_field(name="Owner(1) Status ",value=msg[6],inline=True)
+    embed.add_field(name="Owner(1) Status ",value=seller_mark,inline=True)
     return embed
 
 def trade_msg_2(msg):
+    buyer_mark=msg_utils.check_mark(msg[8]) 
+    assets_ready=msg_utils.check_mark(msg[9])
+    ticket_closed=msg_utils.check_mark(msg[12])
+    #========================
     axieID_2=str('[Marketplace]'+'('+str(axie_url+str(msg[4])+')'))
-    Owner_tx_2=str("[Proof_hash]"+'('+str(str(tx_url)+str(msg[7]))+')')
-    AC_to_Owner_1=str("[Proof_hash]"+'('+str(str(tx_url)+str(msg[10]))+')')
-    AC_to_Owner_2=str("[Proof_hash]"+'('+str(str(tx_url)+str(msg[11]))+')')
+    Owner_tx_2=msg_utils.buyer_hash_status(msg[7])#str("[Proof_hash]"+'('+str(str(tx_url)+str(msg[7]))+')')
+    AC_to_Owner_1=msg_utils.AC_to_Seller_hash_status(msg[10])#str("[Proof_hash]"+'('+str(str(tx_url)+str(msg[10]))+')')
+    AC_to_Owner_2=msg_utils.AC_to_Buyer_hash_status(msg[11])#str("[Proof_hash]"+'('+str(str(tx_url)+str(msg[11]))+')')
     url_img_axie_1=str("https://storage.googleapis.com/assets.axieinfinity.com/axies/"+str(msg[4])+"/axie/axie-full-transparent.png")
     embed = discord.Embed(timestamp=datetime.datetime.utcnow(),
     color=discord.Color.green())
@@ -88,14 +94,38 @@ def trade_msg_2(msg):
     embed.add_field(name="Axie(2) URL",value=(axieID_2),inline=True)
     embed.add_field(name="-",value='-',inline=True) 
     embed.add_field(name="Owner(2)",value=Owner_tx_2,inline=True) 
-    embed.add_field(name="Owner(2) Status ",value=msg[8],inline=True)
-    embed.add_field(name="AxieCenter Status ",value=msg[9],inline=False)  
+    embed.add_field(name="Owner(2) Status ",value=buyer_mark,inline=True)
+    embed.add_field(name="AxieCenter Status ",value=assets_ready,inline=False)  
     embed.add_field(name="AC_to_Owner_1 ",value=AC_to_Owner_1,inline=True) 
     embed.add_field(name="AC_to_Owner_2 ",value=AC_to_Owner_2,inline=True)
-    embed.add_field(name="Closed",value=msg[12],inline=True)    
+    embed.add_field(name="Closed",value=ticket_closed,inline=True)    
     embed.add_field(name="Notes",value=msg[13],inline=False)    
     embed.set_footer(text="AXIE TRADE") 
     return embed
+
+def trade_review_msg(msg):
+    marketplace=str('[Marketplace]'+'('+str(axie_url+str(msg[1])+')'))
+    
+    embed = discord.Embed(title=('**PRIVATE TRADE**'),
+                            description=("**TICKET ID:** " + str(msg[0])),
+                            timestamp=datetime.datetime.utcnow(),
+                            color=discord.Color.green())
+
+    embed.set_image(url="https://storage.googleapis.com/assets.axieinfinity.com/axies/"+str(msg[1])+"/axie/axie-full-transparent.png")
+    embed.add_field(name="Axie ID",value=str(msg[1]),inline=True)
+    embed.add_field(name="Axie URL",value=(marketplace),inline=True)
+    
+    embed_2 = discord.Embed(
+                            color=discord.Color.green())
+
+    embed_2.set_image(url="https://storage.googleapis.com/assets.axieinfinity.com/axies/"+str(msg[2])+"/axie/axie-full-transparent.png")
+    embed_2.add_field(name="Axie ID",value=str(msg[2]),inline=True)
+    embed_2.add_field(name="Axie URL",value=(marketplace),inline=True)
+    embed_2.set_footer(text="PRIVATE TRADE")
+    
+    return [embed,embed_2]
+
+
 
 def accept_msg_user_1(ticket_id):
     embed = discord.Embed(title=('**ACCEPTED BY BUYER**'),

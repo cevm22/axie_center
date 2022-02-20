@@ -22,13 +22,12 @@ price_low_limit=config.price_low_limit
 async def test(ctx): 
     user_id=str(ctx.message.author.id) 
     user = await bot.fetch_user(user_id) 
-    assets_backend.test_backend()
+    #assets_backend.test_backend()
     await user.send("OK") 
 
 @commands.cooldown(rate=1, per=commands_limit, type=commands.BucketType.member)
 @bot.command()
 async def ping(ctx: commands.Context):
-    print(ctx.message) #id=944088553510567966
     await ctx.send(f"Pong! {round(bot.latency * 1000)}ms")
     #channel=bot.get_channel(944088553510567966)
     #await channel.send('enviando mensaje')
@@ -120,16 +119,26 @@ async def review(ctx,ticket):
             await user.send("BANNED")
             return
     data=system_db.pull_ticket_allinfo(ticket)
+    if not data:
+        return await user.send('There is NO ticket with this ID')
     pending=data['ticket_stat']
     if pending == 1:
         ticket_vec=[
-                ticket,#str('PS-'+ str(new_id)),#"PS-0000001", ticket id
-                int(data['value_1']),#int(axie_ID), #axie ID
-                int(data['value_2'])#int(price), #price
-                ]
-        ps_msg_template=ES_msg_templates.ps_msg(ticket_vec)
-        await user.send(embed=ps_msg_template)
-        return
+                    ticket,#str('PS-'+ str(new_id)),#"PS-0000001", ticket id
+                    int(data['value_1']),#int(axie_ID), #axie ID
+                    int(data['value_2'])#int(price), #price
+                    ]
+        if data['type']=='Private Sale':
+            
+            ps_msg_template=ES_msg_templates.ps_msg(ticket_vec)
+            await user.send(embed=ps_msg_template)
+            return
+        else:
+            trade_template=ES_msg_templates.trade_review_msg(ticket_vec)
+            await user.send(embed=trade_template[0])
+            await ctx.send(":arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise:")
+            await user.send(embed=trade_template[1])
+            return
     else:
         await user.send("This ticket was accepted or canceled")
         return
@@ -168,51 +177,96 @@ async def ticket(ctx,ticket):
  
     #revisar que el usuario se encuentre en un ticket
     discord_users_IDS=system_db.pull_discords_ID_on_ticket(ticket)
-    if discord_users_IDS[0]==user_id or discord_users_IDS[1]==user_id:
-        #Proceso para mostrar ticket
-        #pull data from ticket
-        data=system_db.pull_ticket_allinfo(ticket)
-        ticket_id=data['ticket']
-        ticket_status= data['ticket_stat']
-        axie_id=data['value_1']
-        price=data['value_2']
-        #template MSG TICKET
-        seller_proof_hash=data['tx_hash_1']
-        buyer_proof_hash=data['tx_hash_2']
-        AC_to_seller_proof_hash=data['ac_txhash_1']
-        AC_to_buyer_proof_hash=data["ac_txhash_2"]
-        #marks 
-        seller_mark=data['status_hash_1'] 
-        buyer_mark=data['status_hash_2'] 
-        if seller_mark==False and buyer_mark ==False:
-            assets_ready=False 
+    data=system_db.pull_ticket_allinfo(ticket)
+    if data['type']=='Private Sale':
+        if discord_users_IDS[0]==user_id or discord_users_IDS[1]==user_id:
+            #Proceso para mostrar ticket
+            #pull data from ticket
+            ticket_id=data['ticket']
+            ticket_status= data['ticket_stat']
+            axie_id=data['value_1']
+            price=data['value_2']
+            #template MSG TICKET
+            seller_proof_hash=data['tx_hash_1']
+            buyer_proof_hash=data['tx_hash_2']
+            AC_to_seller_proof_hash=data['ac_txhash_1']
+            AC_to_buyer_proof_hash=data["ac_txhash_2"]
+            #marks 
+            seller_mark=data['status_hash_1'] 
+            buyer_mark=data['status_hash_2'] 
+            if seller_mark==False and buyer_mark ==False:
+                assets_ready=False 
+            else:
+                assets_ready=True
+            ticket_closed=data['ticket_stat'] 
+            logs=data['log']
+            timestamp_to_date=data['init_time'].strftime("%m/%d/%Y, %H:%M:%S")#datetime.datetime.utcnow().strftime("%m/%d/%Y, %H:%M:%S")
+            vec=[
+                ticket_id,#Ticket ID:
+                ticket_status,#Ticket Status:
+                str(timestamp_to_date),#Opened:
+                axie_id,#Axie ID:
+                price,#Price:
+                seller_proof_hash,#Seller Proof Hash:
+                seller_mark,#Seller Status Hash:
+                buyer_proof_hash,#Buyer Proof Hash:
+                buyer_mark,#Buyer Status Hash:
+                assets_ready,#Assets in AxieCenter: 
+                AC_to_seller_proof_hash,#AxieCenter to Seller Hash:
+                AC_to_buyer_proof_hash,#AxieCenter to Buyer Hash:
+                ticket_closed,#Closed:
+                logs #Notes
+            ]
+            ticket_msg=ES_msg_templates.ticket_msg(vec)
+            await user.send(embed=ticket_msg)
+            return
         else:
-            assets_ready=True
-        ticket_closed=data['ticket_stat'] 
-        logs=data['log']
-        timestamp_to_date=data['init_time'].strftime("%m/%d/%Y, %H:%M:%S")#datetime.datetime.utcnow().strftime("%m/%d/%Y, %H:%M:%S")
-        vec=[
-            ticket_id,#Ticket ID:
-            ticket_status,#Ticket Status:
-            str(timestamp_to_date),#Opened:
-            axie_id,#Axie ID:
-            price,#Price:
-            seller_proof_hash,#Seller Proof Hash:
-            seller_mark,#Seller Status Hash:
-            buyer_proof_hash,#Buyer Proof Hash:
-            buyer_mark,#Buyer Status Hash:
-            assets_ready,#Assets in AxieCenter: 
-            AC_to_seller_proof_hash,#AxieCenter to Seller Hash:
-            AC_to_buyer_proof_hash,#AxieCenter to Buyer Hash:
-            ticket_closed,#Closed:
-            logs #Notes
-        ]
-        ticket_msg=ES_msg_templates.ticket_msg(vec)
-        await user.send(embed=ticket_msg)
-        return
+            await user.send("You cannot see tickets from other users.")
+            return
     else:
-        await user.send("You cannot see tickets from other users.")
-        return
+        if discord_users_IDS[0]==user_id or discord_users_IDS[1]==user_id:
+            timestamp_to_date=data['init_time'].strftime("%m/%d/%Y, %H:%M:%S")
+            #template MSG TICKET
+            seller_proof_hash=data['tx_hash_1']
+            buyer_proof_hash=data['tx_hash_2']
+            AC_to_seller_proof_hash=data['ac_txhash_1']
+            AC_to_buyer_proof_hash=data["ac_txhash_2"]
+            #marks 
+            seller_mark=data['status_hash_1'] 
+            buyer_mark=data['status_hash_2'] 
+            ticket_closed=data['ticket_stat'] 
+            logs=data['log']
+            if seller_mark==False and buyer_mark ==False:
+                assets_ready=False 
+            else:
+                assets_ready=True
+            vec_msg=[
+                str(ticket),#Ticket ID:
+                data['ticket_stat'],#Ticket Status:
+                timestamp_to_date,#Opened:
+                data['value_1'],#Axie_1 ID:
+                #Axie_1 img:
+                data['value_2'],#Axie_2 ID:
+                #Axie_2 img:
+                seller_proof_hash,#Owner_1 Proof Hash:
+                seller_mark,#Owner_1 Status Hash:
+                buyer_proof_hash,#Owner_2 Proof Hash:
+                buyer_mark,#Owner_2 Status Hash:
+                assets_ready,#Assets in AxieCenter: 
+                AC_to_seller_proof_hash,#AxieCenter to Owner_1 Hash:
+                AC_to_buyer_proof_hash,#AxieCenter to Owner_2 Hash:
+                ticket_closed,#Closed:
+                logs,#Notes:
+            ]
+            trade_msg_1=ES_msg_templates.trade_msg_1(vec_msg)
+            trade_msg_2=ES_msg_templates.trade_msg_2(vec_msg)
+            await ctx.send(embed=trade_msg_1)
+            await ctx.send(":arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise:")
+            await ctx.send(embed=trade_msg_2)
+            return
+        else:   
+            await user.send("You cannot see tickets from other users.")
+            return
 
 #=======================
 #Ticket send hash
@@ -259,9 +313,14 @@ async def proof(ctx,ticket, proof_hash):
         #revisar que el usuario se encuentre en un ticket
         discord_users_IDS=system_db.pull_discords_ID_on_ticket(ticket)
         
+        #get TRADE or PRIVATE SALE
+        type_ticket=ticket[0]
         if discord_users_IDS[0]==user_id: #usuario 1 - vendedor
             #funcion enviar hash
-            verify_hash= aux_func.store_hash_flow(user_id,proof_hash,"SELLER",ticket)
+            if type_ticket =='T':
+                verify_hash= aux_func.store_hash_flow_trade(user_id,proof_hash,"SELLER",ticket)
+            else:
+                verify_hash= aux_func.store_hash_flow(user_id,proof_hash,"SELLER",ticket)
             if verify_hash == True:
                 system_db.verify_assets_in_hotwallet()
                 await user.send(":white_check_mark: Proof Hash, verified. :white_check_mark:")
@@ -272,7 +331,10 @@ async def proof(ctx,ticket, proof_hash):
             
         if discord_users_IDS[1]==user_id: #usuario 2 - comprador
             #funcion enviar hash
-            verify_hash= aux_func.store_hash_flow(user_id,proof_hash,"BUYER",ticket)
+            if type_ticket =='T':
+                verify_hash= aux_func.store_hash_flow_trade(user_id,proof_hash,"BUYER",ticket)
+            else:
+                verify_hash= aux_func.store_hash_flow(user_id,proof_hash,"BUYER",ticket)
             if verify_hash == True:
                 system_db.verify_assets_in_hotwallet()
                 await user.send(":white_check_mark: Proof Hash, verified. :white_check_mark:")
@@ -404,15 +466,27 @@ async def accept(ctx, ticket, password):
             #actualizar estatus del comprador con el mismo ticket ID y en ticket abierto
             actualizar_user=system_db.update_ticket_last_status(user_id,ticket)
             #enviar mensaje al comprador y vendedor de que ha sido aceptado
-            vendedor=system_db.pull_user_seller(ticket)
-            user_2 = await bot.fetch_user(vendedor)
-            #enviar mensaje al vendedor donde enviar su AXIE
-            msg_1=ES_msg_templates.accept_msg_user_2(ticket)
-            msg_2=ES_msg_templates.accept_msg_user_1(ticket)
-            await user.send(embed=msg_1)
-            #enviar mensaje al comprador donde enviar sus tokens USDC
-            await user_2.send(embed=msg_2)
-            return
+            data=system_db.pull_ticket_allinfo(ticket)
+            if data['type']=='Private Sale':
+                vendedor=system_db.pull_user_seller(ticket)
+                user_2 = await bot.fetch_user(vendedor)
+                #enviar mensaje al vendedor donde enviar su AXIE
+                msg_1=ES_msg_templates.accept_msg_user_2(ticket)
+                msg_2=ES_msg_templates.accept_msg_user_1(ticket)
+                await user.send(embed=msg_1)
+                #enviar mensaje al comprador donde enviar sus tokens USDC
+                await user_2.send(embed=msg_2)
+                return
+            else:
+                vendedor=system_db.pull_user_seller(ticket)
+                user_2 = await bot.fetch_user(vendedor)
+                #enviar mensaje al vendedor donde enviar su AXIE
+                msg_1=ES_msg_templates.accept_msg_user_1(ticket)
+                msg_2=ES_msg_templates.accept_msg_user_1(ticket)
+                await user.send(embed=msg_1)
+                #enviar mensaje al comprador donde enviar sus tokens USDC
+                await user_2.send(embed=msg_2)
+                return
         else:
             await user.send("The ticket password is **incorrect**")
             return
@@ -421,35 +495,72 @@ async def accept(ctx, ticket, password):
     
 #=======================
 #Axie Trade 
-@bot.command()
 @commands.cooldown(rate=1, per=commands_limit, type=commands.BucketType.member)
-async def trade(ctx):
-    #template MSG TICKET
-    #agregar condicional str('[Marketplace]'+'('+str(axie_url+str(msg[4])+')'))
-    vec=[
-        'T-00001',#Ticket ID:
-        'PENDING',#Ticket Status:
-        "2022-01-19 00:00:50",#Opened:
-        '123456',#Axie_1 ID:
-        #Axie_1 img:
-        '654321',#Axie_2 ID:
-        #Axie_2 img:
-        '0xcea4ced35f6e5d8ce647099f46d0706ddee5a3d521d169ee3cfbfafa098275c8___1',#Owner_1 Proof Hash:
-        ':white_check_mark:',#Owner_1 Status Hash:
-        '0xd1fa214b3e920c8d50ab83e502e4237b8de472cb3b3e2a4189d8830fcccedd65___2',#Owner_2 Proof Hash:
-        ':white_check_mark:',#Owner_2 Status Hash:
-        ':white_check_mark:',#Assets in AxieCenter: 
-        '0xcea4ced35f6e5d8ce647099f46d0706ddee5a3d521d169ee3cfbfafa098275c8',#AxieCenter to Owner_1 Hash:
-        '0xd1fa214b3e920c8d50ab83e502e4237b8de472cb3b3e2a4189d8830fcccedd65',#AxieCenter to Owner_2 Hash:
-        '2022-01-19 00:00:50',#Closed:
-        'Notas varias en caso de cancelar o error',#Notes:
-    ]
-    trade_msg_1=ES_msg_templates.trade_msg_1(vec)
-    trade_msg_2=ES_msg_templates.trade_msg_2(vec)
-    await ctx.send(embed=trade_msg_1)
-    await ctx.send(":arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise:")
-    await ctx.send(embed=trade_msg_2)
-    return
+@bot.command()
+async def trade(ctx,axie_ID_1,axie_ID_2,password):
+    user_id=str(ctx.message.author.id)
+    user = await bot.fetch_user(user_id)
+    #Verificar que se encuentre registrado
+    verify=system_db.validate_user(user_id)
+    if not verify:
+            await user.send("You are **NOT** registered, use the command : **_enroll** [ronin_wallet]")
+            return
+    #Verificar que no tenga BAN
+    banned=aux_func.ban_validation(user_id)
+    if banned==True:
+            await user.send("BANNED")
+            return
+    #Revisar que el usuario no tenga ticket abierto o pendiente
+    ticket_status=system_db.user_ticket_opened(user_id)
+    if ticket_status[0] == True:
+        await user.send("You already have a pending ticket, you must **cancel or finish** it before requesting a new one." +"\n" + "Your pending ticket ID is > **"+str(ticket_status[1])+"**")
+        return
+    else:
+        #template MSG TICKET
+        #Flujo creación de Ticket para venta privada
+        new_id=int(system_db.pull_tickets_stats_total())+1
+        ronin_wallet=system_db.pull_ronin_wallet(user_id)
+        ticket_vec=[
+                    str('T-'+ str(new_id)),#"PS-0000001", ticket id
+                    int(axie_ID_1), #axie ID
+                    int(axie_ID_2), #price
+                    0,#comision #pendiente hacer func comision
+                    datetime.datetime.utcnow(),#timestamp
+                    user_id,
+                    str(password),
+                    str(ronin_wallet)
+                ]
+        
+        vec=[
+            str('T-'+ str(new_id)),#Ticket ID:
+            1,#Ticket Status:
+            datetime.datetime.utcnow(),#Opened:
+            str(axie_ID_1),#Axie_1 ID:
+            #Axie_1 img:
+            str(axie_ID_2),#Axie_2 ID:
+            #Axie_2 img:
+            '0x1',#Owner_1 Proof Hash:
+            ':x:',#Owner_1 Status Hash:
+            '0x2',#Owner_2 Proof Hash:
+            ':x:',#Owner_2 Status Hash:
+            ':x:',#Assets in AxieCenter: 
+            'ac1',#AxieCenter to Owner_1 Hash:
+            'ac2',#AxieCenter to Owner_2 Hash:
+            ':x:',#Closed:
+            'Notes',#Notes:
+        ]
+         #Modificar user_status el ticket_last y ticket_status
+        system_db.update_ticket_last_status(user_id,ticket_vec[0])
+        #Incrementar total tickets stats
+        system_db.update_tickets_stats()
+        #crear ticket
+        system_db.create_ticket_TRADE(ticket_vec)
+        trade_msg_1=ES_msg_templates.trade_msg_1(vec)
+        trade_msg_2=ES_msg_templates.trade_msg_2(vec)
+        await ctx.send(embed=trade_msg_1)
+        await ctx.send(":arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise:")
+        await ctx.send(embed=trade_msg_2)
+        return
 
 #=======================
 #Change enrol 
@@ -588,6 +699,9 @@ async def closeticket():
                 True,#Closed:
                 logs #Notes
             ]
+            discord_users_IDS=system_db.pull_discords_ID_on_ticket(data['ticket'])
+            status_user_1=system_db.update_cancel_ticket(discord_users_IDS[0])
+            status_user_2=system_db.update_cancel_ticket(discord_users_IDS[1])
             ticket_msg=ES_msg_templates.ticket_msg(vec)
             #cambiar tickets CLOSED = 6
             system_db.update_send_msg_ticket_ID(data['ticket'])
@@ -598,7 +712,15 @@ async def closeticket():
             await buyer.send(embed=ticket_msg)
             await buyer.send(embed=testimonial)            
             await channel.send(embed=ticket_msg)
-            
+
+@trade.error
+async def trade_error(ctx: commands.Context, error: commands.CommandError):
+    user_id=str(ctx.message.author.id)
+    user = await bot.fetch_user(user_id)
+    if isinstance(error, commands.MissingRequiredArgument):
+        msg= "__Missing a required argument__ -> **_trade** [Axie ID 1] [Axie ID 2] [password] \n -> ` _trade 12345 67890 p4s5W0rd` " 
+    return await user.send(msg)            
+
 @ps.error
 async def ps_error(ctx: commands.Context, error: commands.CommandError):
     user_id=str(ctx.message.author.id)

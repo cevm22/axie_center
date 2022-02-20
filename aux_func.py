@@ -23,6 +23,61 @@ def comision_calc(price):
     else:
         return res 
 
+def store_hash_flow_trade(discord_ID,proof_hash,seller_or_buyer,ticket):
+    if seller_or_buyer == 'SELLER':
+        #obtener info del hash en DB (en caso de existir)   
+        hash_info=explorer_tx_db.pull_erc721_info(proof_hash)
+        if hash_info == False:
+            status=no_hash_in_DB(proof_hash,ticket,discord_ID)
+            return status
+        else: #flow cuando se tenga la informacion
+            validate_user_ID=system_db.validate_ronin(hash_info['from'].replace("0x", "ronin:"))
+            if not validate_user_ID:
+                return "USER_NOT_EXIST"
+            if str(validate_user_ID["discord_id"]) == str(discord_ID):
+                ticket_info=system_db.pull_ticket_allinfo(ticket)
+                axie_id_PS=str(ticket_info['value_1'])
+                axie_id_hash=str(hash_info['value'])
+                if axie_id_PS == axie_id_hash:
+                    #hacer flujo para actualizar la marca y el hash ticket con la informacion de la PS
+                    system_db.update_mark_discordID_1(ticket) #mark TRUE 
+                    system_db.update_hash_user_1(ticket,proof_hash) #update proof hash in ticket status
+                    system_db.update_ongoing_ticket_ID(ticket) #update ticket status to 2 - ONGOING
+                    explorer_tx_db.update_ERC721_tx_ticket_status_pass(ticket,proof_hash) #update to add ticketid and status = PASS
+                    return True
+                else:
+                    print('error en SELLER')
+                    return "WRONG_AXIE_ID"
+            else: #caso en que NO este registrado el ronin o NO corresponda al usuario de la venta privada
+                return "USER_NOT_EXIST" 
+            
+    if seller_or_buyer == 'BUYER':
+        #obtener info del hash en DB (en caso de existir)   
+        hash_info=explorer_tx_db.pull_erc721_info(proof_hash)
+        if hash_info == False:
+            status=no_hash_in_DB(proof_hash,ticket,discord_ID)
+            return status
+        else: #flow cuando se tenga la informacion
+            validate_user_ID=system_db.validate_ronin(hash_info['from'].replace("0x", "ronin:"))
+            if not validate_user_ID:
+                return "USER_NOT_EXIST"
+            if str(validate_user_ID["discord_id"]) == str(discord_ID):
+                ticket_info=system_db.pull_ticket_allinfo(ticket)
+                axie_id_PS=str(ticket_info['value_2'])
+                axie_id_hash=str(hash_info['value'])
+                if axie_id_PS == axie_id_hash:
+                    #hacer flujo para actualizar la marca y el hash ticket con la informacion de la PS
+                    system_db.update_mark_discordID_2(ticket) #mark TRUE 
+                    system_db.update_hash_user_2(ticket,proof_hash) #update proof hash in ticket status
+                    system_db.update_ongoing_ticket_ID(ticket) #update ticket status to 2 - ONGOING
+                    explorer_tx_db.update_ERC721_tx_ticket_status_pass(ticket,proof_hash) #update to add ticketid and status = PASS
+                    return True
+                else:
+                    print('Error en buyer')
+                    return "WRONG_AXIE_ID"
+            else: #caso en que NO este registrado el ronin o NO corresponda al usuario de la venta privada
+                return "USER_NOT_EXIST" 
+
 def store_hash_flow(discord_ID,proof_hash,seller_or_buyer,ticket):
     
     if seller_or_buyer == 'SELLER':
@@ -87,46 +142,84 @@ def no_hash_in_DB(proof_hash,ticket,discord_ID):
     tx_to=verify_hash[2]
     value=verify_hash[3]
     ticket_info=system_db.pull_ticket_allinfo(ticket)    
+    if ticket_info['ticket'][0]=='T':
+        if tx_to == hotwallet:
+            if verify_hash == "TX_FAIL":
+                return "TX_FAIL"
+            if verify_hash == "NOT_FOUND":
+                return "NOT_FOUND"
+            if contrato== AXIE_CONTRACT:
+                if discord_ID == ticket_info['discord_id_1']:
+                    if str(ticket_info["value_1"]) == str(value):
+                        validate_user_ID=system_db.validate_ronin(tx_from.replace("0x", "ronin:"))
+                        if not validate_user_ID:
+                            return "USER_NOT_EXIST" 
+                        if str(discord_ID) == str(validate_user_ID["discord_id"]):
+                            system_db.update_mark_discordID_1(ticket) #mark TRUE 
+                            system_db.update_hash_user_1(ticket,proof_hash) #update proof hash in ticket status
+                            system_db.update_ongoing_ticket_ID(ticket) #update ticket status to 2 - ONGOING
+                            return True
+                        else:
+                            return "USER_NOT_EXIST_1"
+                    else:
+                        return "WRONG_AXIE_ID_1"
+                else:
+                    if str(ticket_info["value_2"]) == str(value):
+                        validate_user_ID=system_db.validate_ronin(tx_from.replace("0x", "ronin:"))
+                        if not validate_user_ID:
+                            return "USER_NOT_EXIST" 
+                        if str(discord_ID) == str(validate_user_ID["discord_id"]):
+                            system_db.update_mark_discordID_2(ticket) #mark TRUE 
+                            system_db.update_hash_user_2(ticket,proof_hash) #update proof hash in ticket status
+                            system_db.update_ongoing_ticket_ID(ticket) #update ticket status to 2 - ONGOING
+                            return True
+                        else:
+                            return "USER_NOT_EXIST_2"
+                    else:
+                        return "WRONG_AXIE_ID_2"   
 
-    if tx_to == hotwallet:
-        if verify_hash == "TX_FAIL":
-            return "TX_FAIL"
-        if verify_hash == "NOT_FOUND":
-            return "NOT_FOUND"
-        if contrato== AXIE_CONTRACT:
-            #flow en caso de que sea un axie asset
-            if str(ticket_info["value_1"]) == str(value):
-                validate_user_ID=system_db.validate_ronin(tx_from.replace("0x", "ronin:"))
-                if not validate_user_ID:
-                    return "USER_NOT_EXIST" 
-                if str(discord_ID) == str(validate_user_ID["discord_id"]):
-                    system_db.update_mark_discordID_1(ticket) #mark TRUE 
-                    system_db.update_hash_user_1(ticket,proof_hash) #update proof hash in ticket status
-                    system_db.update_ongoing_ticket_ID(ticket) #update ticket status to 2 - ONGOING
-                    return True
-                else:
-                    return "USER_NOT_EXIST_1"
-            else:
-                return "WRONG_AXIE_ID"
-        if contrato == USDC_CONTRACT:
-            usdc_value=math.floor(int(int(value)/1000000))
-            if str(ticket_info["value_2"]) == str(usdc_value):
-                validate_user_ID=system_db.validate_ronin(tx_from.replace("0x", "ronin:"))
-                if not validate_user_ID:
-                    return "USER_NOT_EXIST" 
-                if str(discord_ID) == validate_user_ID["discord_id"]:
-                    system_db.update_mark_discordID_2(ticket) #mark TRUE 
-                    system_db.update_hash_user_2(ticket,proof_hash) #update proof hash in ticket status
-                    system_db.update_ongoing_ticket_ID(ticket) #update ticket status to 2 - ONGOING
-                    return True
-                else:
-                    return "USER_NOT_EXIST_1"
-            else:
-                return "INCORRECT_AMOUNT"
         else:
-            return "CONTRACT_UNDEFINED"
+            return "HOTWALLET_INCORRECT"
     else:
-        return "HOTWALLET_INCORRECT"
+        if tx_to == hotwallet:
+            if verify_hash == "TX_FAIL":
+                return "TX_FAIL"
+            if verify_hash == "NOT_FOUND":
+                return "NOT_FOUND"
+            if contrato== AXIE_CONTRACT:
+                #flow en caso de que sea un axie asset
+                if str(ticket_info["value_1"]) == str(value):
+                    validate_user_ID=system_db.validate_ronin(tx_from.replace("0x", "ronin:"))
+                    if not validate_user_ID:
+                        return "USER_NOT_EXIST" 
+                    if str(discord_ID) == str(validate_user_ID["discord_id"]):
+                        system_db.update_mark_discordID_1(ticket) #mark TRUE 
+                        system_db.update_hash_user_1(ticket,proof_hash) #update proof hash in ticket status
+                        system_db.update_ongoing_ticket_ID(ticket) #update ticket status to 2 - ONGOING
+                        return True
+                    else:
+                        return "USER_NOT_EXIST_1"
+                else:
+                    return "WRONG_AXIE_ID"
+            if contrato == USDC_CONTRACT:
+                usdc_value=math.floor(int(int(value)/1000000))
+                if str(ticket_info["value_2"]) == str(usdc_value):
+                    validate_user_ID=system_db.validate_ronin(tx_from.replace("0x", "ronin:"))
+                    if not validate_user_ID:
+                        return "USER_NOT_EXIST" 
+                    if str(discord_ID) == validate_user_ID["discord_id"]:
+                        system_db.update_mark_discordID_2(ticket) #mark TRUE 
+                        system_db.update_hash_user_2(ticket,proof_hash) #update proof hash in ticket status
+                        system_db.update_ongoing_ticket_ID(ticket) #update ticket status to 2 - ONGOING
+                        return True
+                    else:
+                        return "USER_NOT_EXIST_1"
+                else:
+                    return "INCORRECT_AMOUNT"
+            else:
+                return "CONTRACT_UNDEFINED"
+        else:
+            return "HOTWALLET_INCORRECT"
 
 def send_profit(to_wallet,value):
     from_wallet=config.hotwallet

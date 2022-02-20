@@ -43,7 +43,40 @@ def create_ticket_PS(vec):
                 'created':str(int(datetime.timestamp(datetime.utcnow())))
                 })
     return
-
+#======================================================================
+# DB CREATE ticket TRADE 
+#======================================================================
+def create_ticket_TRADE(vec):
+    db=client['tx_db'] # DB
+    collection=db['tickets'] # Collection
+    collection.insert_one({
+                "init_time": vec[4],
+                "comision": vec[3],
+                "end_time": 0,
+                "discord_id_1":vec[5],
+                "discord_id_2":0,
+                "log": "comentarios",
+                "ronin_1": vec[7],
+                "ronin_2": "0",
+                "tx_hash_1": "0x1",
+                "tx_hash_2": "0x2",
+                "status_hash_1": False,
+                "status_hash_2": False,
+                "status_ac_hash_1": False,
+                "status_ac_hash_2": False,
+                "ticket": vec[0],
+                "ticket_stat": 1,
+                "token_1": "AXIE",
+                "token_2": "AXIE",
+                "ac_txhash_1": "ac1",
+                "ac_txhash_2": "ac2",
+                "type": "TRADE",
+                "value_1": vec[1], #AXIE id
+                "value_2": vec[2], #AXIE token
+                "password":vec[6],
+                'created':str(int(datetime.timestamp(datetime.utcnow())))
+                })
+    return
 #======================================================================
 # FIND USER ronin wallet
 #======================================================================
