@@ -136,7 +136,7 @@ async def review(ctx,ticket):
         else:
             trade_template=ES_msg_templates.trade_review_msg(ticket_vec)
             await user.send(embed=trade_template[0])
-            await ctx.send(":arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise:")
+            await user.send(":arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise:")
             await user.send(embed=trade_template[1])
             return
     else:
@@ -667,51 +667,84 @@ async def closeticket():
             #data=system_db.pull_ticket_closed()
             ticket_id=data['ticket']
             ticket_status= data['ticket_stat']
-            axie_id=data['value_1']
-            price=data['value_2']
-            #template MSG TICKET
-            seller_proof_hash=data['tx_hash_1']
-            buyer_proof_hash=data['tx_hash_2']
-            AC_to_seller_proof_hash=data['ac_txhash_1']
-            AC_to_buyer_proof_hash=data["ac_txhash_2"]
-            #marks 
-            seller_mark=data['status_hash_1'] 
-            buyer_mark=data['status_hash_2'] 
-            if seller_mark==False and buyer_mark ==False:
-                assets_ready=False 
-            else:
-                assets_ready=True
-            logs=data['log']
-            timestamp_to_date=data['init_time'].strftime("%m/%d/%Y, %H:%M:%S")#datetime.datetime.utcnow().strftime("%m/%d/%Y, %H:%M:%S")
-            vec=[
-                ticket_id,#Ticket ID:
-                ticket_status,#Ticket Status:
-                str(timestamp_to_date),#Opened:
-                axie_id,#Axie ID:
-                price,#Price:
-                seller_proof_hash,#Seller Proof Hash:
-                seller_mark,#Seller Status Hash:
-                buyer_proof_hash,#Buyer Proof Hash:
-                buyer_mark,#Buyer Status Hash:
-                assets_ready,#Assets in AxieCenter: 
-                AC_to_seller_proof_hash,#AxieCenter to Seller Hash:
-                AC_to_buyer_proof_hash,#AxieCenter to Buyer Hash:
-                True,#Closed:
-                logs #Notes
-            ]
-            discord_users_IDS=system_db.pull_discords_ID_on_ticket(data['ticket'])
-            status_user_1=system_db.update_cancel_ticket(discord_users_IDS[0])
-            status_user_2=system_db.update_cancel_ticket(discord_users_IDS[1])
-            ticket_msg=ES_msg_templates.ticket_msg(vec)
-            #cambiar tickets CLOSED = 6
-            system_db.update_send_msg_ticket_ID(data['ticket'])
-            testimonial=ES_msg_templates.testimonial()
-            channel=bot.get_channel(944088553510567966)
-            await seller.send(embed=ticket_msg)
-            await seller.send(embed=testimonial)
-            await buyer.send(embed=ticket_msg)
-            await buyer.send(embed=testimonial)            
-            await channel.send(embed=ticket_msg)
+            if data['ticket'][0]=='T':
+
+                discord_users_IDS=system_db.pull_discords_ID_on_ticket(data['ticket'])
+                status_user_1=system_db.update_cancel_ticket(discord_users_IDS[0])
+                status_user_2=system_db.update_cancel_ticket(discord_users_IDS[1])
+                
+                
+                system_db.update_send_msg_ticket_ID(data['ticket'])
+                testimonial=ES_msg_templates.testimonial()
+                channel=bot.get_channel(944088553510567966)
+                #=====================================
+                ticket_vec=[
+                    data['ticket'],#str('PS-'+ str(new_id)),#"PS-0000001", ticket id
+                    int(data['value_1']),#int(axie_ID), #axie ID
+                    int(data['value_2'])#int(price), #price
+                    ]
+                trade_template=ES_msg_templates.trade_review_msg(ticket_vec)
+                await seller.send(embed=trade_template[0])
+                await seller.send(":arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise:")
+                await seller.send(embed=trade_template[1])
+                await seller.send(embed=testimonial)
+                
+                await buyer.send(embed=trade_template[0])
+                await buyer.send(":arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise:")
+                await buyer.send(embed=trade_template[1])
+                await buyer.send(embed=testimonial)
+                 
+                await channel.send(embed=trade_template[0])
+                await channel.send(":arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise::arrows_counterclockwise:")
+                await channel.send(embed=trade_template[1])
+
+
+            else:   
+                axie_id=data['value_1']
+                price=data['value_2']
+                #template MSG TICKET
+                seller_proof_hash=data['tx_hash_1']
+                buyer_proof_hash=data['tx_hash_2']
+                AC_to_seller_proof_hash=data['ac_txhash_1']
+                AC_to_buyer_proof_hash=data["ac_txhash_2"]
+                #marks 
+                seller_mark=data['status_hash_1'] 
+                buyer_mark=data['status_hash_2'] 
+                if seller_mark==False and buyer_mark ==False:
+                    assets_ready=False 
+                else:
+                    assets_ready=True
+                logs=data['log']
+                timestamp_to_date=data['init_time'].strftime("%m/%d/%Y, %H:%M:%S")#datetime.datetime.utcnow().strftime("%m/%d/%Y, %H:%M:%S")
+                vec=[
+                    ticket_id,#Ticket ID:
+                    ticket_status,#Ticket Status:
+                    str(timestamp_to_date),#Opened:
+                    axie_id,#Axie ID:
+                    price,#Price:
+                    seller_proof_hash,#Seller Proof Hash:
+                    seller_mark,#Seller Status Hash:
+                    buyer_proof_hash,#Buyer Proof Hash:
+                    buyer_mark,#Buyer Status Hash:
+                    assets_ready,#Assets in AxieCenter: 
+                    AC_to_seller_proof_hash,#AxieCenter to Seller Hash:
+                    AC_to_buyer_proof_hash,#AxieCenter to Buyer Hash:
+                    True,#Closed:
+                    logs #Notes
+                ]
+                discord_users_IDS=system_db.pull_discords_ID_on_ticket(data['ticket'])
+                status_user_1=system_db.update_cancel_ticket(discord_users_IDS[0])
+                status_user_2=system_db.update_cancel_ticket(discord_users_IDS[1])
+                ticket_msg=ES_msg_templates.ticket_msg(vec)
+                #cambiar tickets CLOSED = 6
+                system_db.update_send_msg_ticket_ID(data['ticket'])
+                testimonial=ES_msg_templates.testimonial()
+                channel=bot.get_channel(944088553510567966)
+                await seller.send(embed=ticket_msg)
+                await seller.send(embed=testimonial)
+                await buyer.send(embed=ticket_msg)
+                await buyer.send(embed=testimonial)            
+                await channel.send(embed=ticket_msg)
 
 @trade.error
 async def trade_error(ctx: commands.Context, error: commands.CommandError):
