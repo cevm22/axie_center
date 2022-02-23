@@ -85,7 +85,14 @@ def pull_ronin_wallet(discord_id):
     collection=db['user'] # Collection     
     data=collection.find_one({"discord_id":discord_id},{"ronin":1})
     return data['ronin']
-
+#======================================================================
+# FIND USER STATS
+#======================================================================
+def pull_user_stats(discord_id):
+    db=client['users_data'] # DB
+    collection=db['user'] # Collection     
+    data=collection.find_one({"discord_id":discord_id})
+    return [data['ronin'],data['ticket_open'],data['ticket_last']]
 #======================================================================
 # VALIDATE USERS_TICKET in pending/opened
 #======================================================================

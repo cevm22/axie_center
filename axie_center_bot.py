@@ -630,7 +630,34 @@ async def change(ctx,ronin):
         else:
             await user.send("Invalid Address, Please use a valid **ronin** Address")
             return
-        
+ 
+#=======================
+#Show user stats
+@bot.command()
+@commands.cooldown(rate=1, per=commands_limit, type=commands.BucketType.member)
+async def stats(ctx):
+    user_id=str(ctx.message.author.id)
+    user = await bot.fetch_user(user_id)
+    verify=system_db.validate_user(user_id)
+    if not verify:
+            await user.send("You are **NOT** registered, use the command : **_enroll** [ronin_wallet]")
+            return
+    #Verificar que no tenga BAN
+    banned=aux_func.ban_validation(user_id)
+    if banned==True:
+            await user.send("BANNED")
+            return
+    else:
+        data=system_db.pull_user_stats(user_id)
+        embed = discord.Embed(title=('**AXIE CENTER STATS**'),
+                            description=('**Address: **' + str(data[0]) + '\n' +
+                                        '**Ticket Open: **' +str(data[1]) + '\n' +
+                                        '**Last ticket ID: **' +str(data[2])),
+                            timestamp=datetime.datetime.utcnow(),
+                            color=discord.Color.red())
+        embed.set_footer(text="STATS")
+        await user.send(embed=embed)
+        return      
 
 #=======================
 #Create DBS
