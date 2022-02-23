@@ -9,6 +9,7 @@ import aux_func
 import blockchain_func
 import explorer_tx_db
 import assets_backend
+import msg_utils
 #El bot es activado con el prefijo '_' + comando en la funcion
 bot = commands.Bot(command_prefix='_',help_command=None)
 client=discord.Client(activity=discord.Game(name='Axie Center'))
@@ -16,7 +17,7 @@ client=discord.Client(activity=discord.Game(name='Axie Center'))
 commands_limit=5
 price_limit=config.price_limit
 price_low_limit=config.price_low_limit
-
+sales_chat=config.sales_chat
 @commands.cooldown(rate=1, per=commands_limit, type=commands.BucketType.member)
 @bot.command()
 async def test(ctx): 
@@ -28,10 +29,31 @@ async def test(ctx):
 @commands.cooldown(rate=1, per=commands_limit, type=commands.BucketType.member)
 @bot.command()
 async def ping(ctx: commands.Context):
+    print(ctx.message)
     await ctx.send(f"Pong! {round(bot.latency * 1000)}ms")
     #channel=bot.get_channel(944088553510567966)
     #await channel.send('enviando mensaje')
-  
+
+#=======================
+#help
+@commands.cooldown(rate=1, per=commands_limit, type=commands.BucketType.member)
+@bot.command()
+async def help(ctx):
+    user_id=str(ctx.message.author.id)
+    user = await bot.fetch_user(user_id)
+    #Verificar que se encuentre registrado
+    verify=system_db.validate_user(user_id)
+    if not verify:
+            await user.send("You are **NOT** registered, use the command : **_enroll** [ronin_wallet]")
+            return
+    #Verificar que no tenga BAN
+    banned=aux_func.ban_validation(user_id)
+    if banned==True:
+            await user.send("BANNED")
+            return 
+    else:
+        await user.send('You can see more info here https://discordapp.com/channels/840809298778259486/945836816307720202/945838287187238962')
+        return
 
 #=======================
 #Private Sale 
@@ -198,7 +220,7 @@ async def ticket(ctx,ticket):
                 assets_ready=False 
             else:
                 assets_ready=True
-            ticket_closed=data['ticket_stat'] 
+            ticket_closed=msg_utils.check_mark(assets_ready)
             logs=data['log']
             timestamp_to_date=data['init_time'].strftime("%m/%d/%Y, %H:%M:%S")#datetime.datetime.utcnow().strftime("%m/%d/%Y, %H:%M:%S")
             vec=[
@@ -569,6 +591,7 @@ async def trade(ctx,axie_ID_1,axie_ID_2,password):
 async def enroll(ctx,ronin):
     #En caso que ya este registrado 
     user_ID=str(ctx.message.author.id)
+    user = await bot.fetch_user(user_ID)
     user_exist=system_db.validate_user(user_ID)
     if not user_exist:
             valid_address=blockchain_func.validate_ronin(ronin)
@@ -580,19 +603,19 @@ async def enroll(ctx,ronin):
                     vector=[user_ID,str(ronin.lower())]
                     validate_enroll=system_db.enroll_new(vector)            
                     if validate_enroll == True:
-                        await ctx.send("Welcome to Axie Center")
+                        await user.send("Welcome to Axie Center, This bot is in BETA version, use it at your own risk. For more info, use command **_help**")
                         return
                     else:
-                        await ctx.send("Somthing is wrong, please verify with an Admin")
+                        await user.send("Somthing is wrong, please verify with an Admin")
                         return
                 else:
-                    await ctx.send("This Ronin address is already in use, Please Verify it! and send it again")
+                    await user.send("This Ronin address is already in use, Please Verify it! and send it again. Also if you guess is something wrong, please talk with an admin to verify the ownership of your ronin address.")
                     return
             else:
-                await ctx.send("Invalid Address, Please use a valid **ronin** Address")
+                await user.send("Invalid Address, Please use a valid **ronin** Address.")
                 return
     else:
-        await ctx.send("You are already registered!")
+        await user.send("You are already registered!S")
         return
 
 
@@ -614,7 +637,7 @@ async def change(ctx,ronin):
             return
     is_on_ticket=system_db.user_ticket_opened(user_id)
     if is_on_ticket[0]==True:
-        await user.send('You have an open ticket with ID: **' + str(is_on_ticket[1]) + '**, please close it before to change your Ronin address')
+        await user.send('You have an open ticket with ID: **' + str(is_on_ticket[1]) + '**, please close or cancel it before to change your Ronin address')
         return
     else:
         exist_ronin=system_db.validate_ronin(str(ronin))
@@ -742,7 +765,7 @@ async def closeticket():
                     
                     system_db.update_send_msg_ticket_ID(data['ticket'])
                     testimonial=ES_msg_templates.testimonial()
-                    channel=bot.get_channel(944088553510567966)
+                    channel=bot.get_channel(sales_chat)
                     #=====================================
                     ticket_vec=[
                         data['ticket'],#str('PS-'+ str(new_id)),#"PS-0000001", ticket id
@@ -805,7 +828,7 @@ async def closeticket():
                     #cambiar tickets CLOSED = 6
                     system_db.update_send_msg_ticket_ID(data['ticket'])
                     testimonial=ES_msg_templates.testimonial()
-                    channel=bot.get_channel(944088553510567966)
+                    channel=bot.get_channel(sales_chat)
                     await seller.send(embed=ticket_msg)
                     await seller.send(embed=testimonial)
                     await buyer.send(embed=ticket_msg)
