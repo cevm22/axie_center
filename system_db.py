@@ -503,7 +503,15 @@ def tickets_done():
     data = collection.count_documents({"ticket_stat":4})  
     return data
 #======================================================================
-# PULL total of tickets in status DONE = 7
+# PULL total of tickets in status PENDING MSG = 5
+#======================================================================
+def tickets_msg_pending_count():
+    db=client['tx_db'] # DB
+    collection=db['tickets'] # Collection 
+    data = collection.count_documents({"ticket_stat":5})  
+    return data
+#======================================================================
+# PULL total of tickets in status CANCEL PENDING = 7
 #======================================================================
 def tickets_cancel_pending():
     db=client['tx_db'] # DB
