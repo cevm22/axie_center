@@ -595,6 +595,43 @@ async def enroll(ctx,ronin):
         await ctx.send("You are already registered!")
         return
 
+
+#=======================
+#Change ronin wallet
+@bot.command()
+@commands.cooldown(rate=1, per=commands_limit, type=commands.BucketType.member)
+async def change(ctx,ronin):
+    user_id=str(ctx.message.author.id)
+    user = await bot.fetch_user(user_id)
+    verify=system_db.validate_user(user_id)
+    if not verify:
+            await user.send("You are **NOT** registered, use the command : **_enroll** [ronin_wallet]")
+            return
+    #Verificar que no tenga BAN
+    banned=aux_func.ban_validation(user_id)
+    if banned==True:
+            await user.send("BANNED")
+            return
+    is_on_ticket=system_db.user_ticket_opened(user_id)
+    if is_on_ticket[0]==True:
+        await user.send('You have an open ticket with ID: **' + str(is_on_ticket[1]) + '**, please close it before to change your Ronin address')
+        return
+    else:
+        exist_ronin=system_db.validate_ronin(str(ronin))
+        valid_address=blockchain_func.validate_ronin(ronin)
+        if valid_address == True:            
+            if not exist_ronin:
+                system_db.update_ronin_from_discord_ID(user_id,str(ronin.lower()))
+                await user.send('WALLET UPDATED')
+                return
+            else:
+                await user.send('This Wallet is linked with another account, you cant use this Ronin Address. ')
+                return
+        else:
+            await user.send("Invalid Address, Please use a valid **ronin** Address")
+            return
+        
+
 #=======================
 #Create DBS
 @bot.command()
@@ -748,6 +785,13 @@ async def closeticket():
                     await buyer.send(embed=testimonial)            
                     await channel.send(embed=ticket_msg)
 
+@change.error
+async def trade_error(ctx: commands.Context, error: commands.CommandError):
+    user_id=str(ctx.message.author.id)
+    user = await bot.fetch_user(user_id)
+    if isinstance(error, commands.MissingRequiredArgument):
+        msg= "__Missing a required argument__ -> **_change** [ronin:address] \n -> ` _change ronin:0f14612bad915aa3c5d6f43f1b046f703c6dead0` " 
+    return await user.send(msg) 
 @trade.error
 async def trade_error(ctx: commands.Context, error: commands.CommandError):
     user_id=str(ctx.message.author.id)

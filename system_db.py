@@ -584,3 +584,11 @@ def reset_ticket_stat_to_pending():
                                 { "$set": { "ticket_stat":3 } })
     return True
 
+#======================================================================
+# change ronin wallet from user
+#======================================================================
+def update_ronin_from_discord_ID(user,ronin):
+    db=client['users_data'] # DB
+    collection=db['user'] # Collection     
+    data=collection.update_one({'discord_id':user},{"$set":{"ronin":ronin}}) 
+    return True
