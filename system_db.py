@@ -1,4 +1,3 @@
-
 from pymongo import MongoClient
 import datetime
 from datetime import datetime
@@ -280,7 +279,14 @@ def enroll_new(vec):
                 "language": "EN"
                 })
     return True
-
+#======================================================================
+# DB delete user
+#======================================================================
+def delete_user_ID(discord_id,WORD):
+    db=client['users_data'] # DB
+    collection=db['user'] # Collection
+    data=collection.update_one({'discord_id':discord_id},{"$set":{'discord_id':WORD}})
+    return True
 #======================================================================
 # DB change status LANGUAGE
 #======================================================================

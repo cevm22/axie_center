@@ -26,10 +26,10 @@ async def test(ctx):
     #assets_backend.test_backend()
     await user.send("OK") 
 
-@commands.cooldown(rate=1, per=commands_limit, type=commands.BucketType.member)
+@commands.cooldown(rate=1, per=60, type=commands.BucketType.member)
 @bot.command()
 async def ping(ctx: commands.Context):
-    print(ctx.message)
+    #print(ctx.message)
     await ctx.send(f"Pong! {round(bot.latency * 1000)}ms")
     #channel=bot.get_channel(944088553510567966)
     #await channel.send('enviando mensaje')
@@ -593,30 +593,67 @@ async def enroll(ctx,ronin):
     user_ID=str(ctx.message.author.id)
     user = await bot.fetch_user(user_ID)
     user_exist=system_db.validate_user(user_ID)
-    if not user_exist:
-            valid_address=blockchain_func.validate_ronin(ronin)
-            if valid_address == True:
-                #Verificar que el Wallet YA esta registrado
-                ronin_exist=system_db.validate_ronin(str(ronin.lower()))
-                if not ronin_exist:
-                    #### Hacer flujo de registro
-                    vector=[user_ID,str(ronin.lower())]
-                    validate_enroll=system_db.enroll_new(vector)            
-                    if validate_enroll == True:
-                        await user.send("Welcome to Axie Center, This bot is in BETA version, use it at your own risk. For more info, use command **_help**")
-                        return
+    deleted_before=system_db.validate_user((user_ID+'DELETED'))
+    if not deleted_before:
+        
+        if not user_exist:
+                valid_address=blockchain_func.validate_ronin(ronin)
+                if valid_address == True:
+                    #Verificar que el Wallet YA esta registrado
+                    ronin_exist=system_db.validate_ronin(str(ronin.lower()))
+                    if not ronin_exist:
+                        #### Hacer flujo de registro
+                        vector=[user_ID,str(ronin.lower())]
+                        validate_enroll=system_db.enroll_new(vector)            
+                        if validate_enroll == True:
+                            await user.send("Welcome to Axie Center, This bot is in BETA version, use it at your own risk. For more info, use command **_help**")
+                            return
+                        else:
+                            await user.send("Somthing is wrong, please verify with an Admin")
+                            return
                     else:
-                        await user.send("Somthing is wrong, please verify with an Admin")
+                        await user.send("This Ronin address is already in use, Please Verify it! and send it again. Also if you guess is something wrong, please talk with an admin to verify the ownership of your ronin address.")
                         return
                 else:
-                    await user.send("This Ronin address is already in use, Please Verify it! and send it again. Also if you guess is something wrong, please talk with an admin to verify the ownership of your ronin address.")
+                    await user.send("Invalid Address, Please use a valid **ronin** Address.")
                     return
-            else:
-                await user.send("Invalid Address, Please use a valid **ronin** Address.")
-                return
+        else:
+            await user.send("You are already registered!")
+            return
     else:
-        await user.send("You are already registered!S")
+        await user.send("You account was deleted before, please ask to an admin to help you")
         return
+#=======================
+#Command to delete user 
+@bot.command()
+@commands.cooldown(rate=1, per=commands_limit, type=commands.BucketType.member) 
+async def delete(ctx,confirm):
+    user_id=str(ctx.message.author.id)
+    user = await bot.fetch_user(user_id)
+    #Verificar que se encuentre registrado
+    verify=system_db.validate_user(user_id)
+    if not verify:
+            await user.send("You are **NOT** registered, use the command : **_enroll** [ronin_wallet]")
+            return
+    #Verificar que no tenga BAN
+    banned=aux_func.ban_validation(user_id)
+    if banned==True:
+            await user.send("BANNED")
+            return
+    #Revisar que el usuario no tenga ticket abierto o pendiente
+    ticket_status=system_db.user_ticket_opened(user_id)
+    if ticket_status[0] == True:
+        await user.send("You already have a pending ticket, you must **cancel or finish** it before requesting a new one." +"\n" + "Your pending ticket ID is > **"+str(ticket_status[1])+"**")
+        return
+    else:
+        if confirm=='yes':
+            delete_word=str(user_id) + 'DELETED'
+            system_db.delete_user_ID(user_id,delete_word)
+            await user.send('Account Deleted')
+            return
+        else:
+            await user.send('If you want to delete your account, please Type **_delete yes** But remember, you cant delete it again after 7 days.')
+            return
 
 
 #=======================
@@ -835,20 +872,29 @@ async def closeticket():
                     await buyer.send(embed=testimonial)            
                     await channel.send(embed=ticket_msg)
 
+
+@delete.error
+async def delete_error(ctx: commands.Context, error: commands.CommandError):
+    user_id=str(ctx.message.author.id)
+    user = await bot.fetch_user(user_id)
+    if isinstance(error, commands.MissingRequiredArgument):
+        msg= "__Missing a required argument__ -> **_delete** [yes] \n -> ` _delete yes` " 
+        return await user.send(msg) 
+    
 @change.error
 async def trade_error(ctx: commands.Context, error: commands.CommandError):
     user_id=str(ctx.message.author.id)
     user = await bot.fetch_user(user_id)
     if isinstance(error, commands.MissingRequiredArgument):
         msg= "__Missing a required argument__ -> **_change** [ronin:address] \n -> ` _change ronin:0f14612bad915aa3c5d6f43f1b046f703c6dead0` " 
-    return await user.send(msg) 
+        return await user.send(msg) 
 @trade.error
 async def trade_error(ctx: commands.Context, error: commands.CommandError):
     user_id=str(ctx.message.author.id)
     user = await bot.fetch_user(user_id)
     if isinstance(error, commands.MissingRequiredArgument):
         msg= "__Missing a required argument__ -> **_trade** [Axie ID 1] [Axie ID 2] [password] \n -> ` _trade 12345 67890 p4s5W0rd` " 
-    return await user.send(msg)            
+        return await user.send(msg)            
 
 @ps.error
 async def ps_error(ctx: commands.Context, error: commands.CommandError):
@@ -856,7 +902,7 @@ async def ps_error(ctx: commands.Context, error: commands.CommandError):
     user = await bot.fetch_user(user_id)
     if isinstance(error, commands.MissingRequiredArgument):
         msg= "__Missing a required argument__ -> **_ps** [Axie ID] [Sell price, (decimal)] [password] \n -> ` _ps 12345 300 p4s5W0rd` " 
-    return await user.send(msg)
+        return await user.send(msg)
 
 @review.error
 async def review_error(ctx: commands.Context, error: commands.CommandError):
@@ -864,7 +910,7 @@ async def review_error(ctx: commands.Context, error: commands.CommandError):
     user = await bot.fetch_user(user_id)
     if isinstance(error, commands.MissingRequiredArgument):
         msg= "__Missing a required argument__ -> **_review** [ticket ID] \n -> `_review PS-1` "
-    return await user.send(msg)
+        return await user.send(msg)
 
 @ticket.error
 async def ticket_error(ctx: commands.Context, error: commands.CommandError):
@@ -872,7 +918,7 @@ async def ticket_error(ctx: commands.Context, error: commands.CommandError):
     user = await bot.fetch_user(user_id)
     if isinstance(error, commands.MissingRequiredArgument):
         msg= "__Missing a required argument__ -> **_ticket** [ticket ID] \n -> `_ticket PS-12` "
-    return await user.send(msg)
+        return await user.send(msg)
 
 @proof.error
 async def proof_error(ctx: commands.Context, error: commands.CommandError):
@@ -880,7 +926,7 @@ async def proof_error(ctx: commands.Context, error: commands.CommandError):
     user = await bot.fetch_user(user_id)
     if isinstance(error, commands.MissingRequiredArgument):
         msg= "__Missing a required argument__ -> **_proof** [ticket ID] [proof hash of tx] \n -> `_proof PS-123 0xfe72a592a6c4d93d58fbb6e514283187789ca0427db87373cde75e8bd5fd1518` "
-    return await user.send(msg)
+        return await user.send(msg)
 
 @cancel.error
 async def cancel_error(ctx: commands.Context, error: commands.CommandError):
@@ -888,7 +934,7 @@ async def cancel_error(ctx: commands.Context, error: commands.CommandError):
     user = await bot.fetch_user(user_id)
     if isinstance(error, commands.MissingRequiredArgument):
         msg= "__Missing a required argument__ -> **_cancel** [ticket ID] \n -> `_ticket PS-3` "
-    return await user.send(msg)
+        return await user.send(msg)
 
 @accept.error
 async def accept_error(ctx: commands.Context, error: commands.CommandError):
@@ -896,7 +942,7 @@ async def accept_error(ctx: commands.Context, error: commands.CommandError):
     user = await bot.fetch_user(user_id)
     if isinstance(error, commands.MissingRequiredArgument):
         msg= "__Missing a required argument__ -> **_accept** [ticket ID] [password, given by seller] \n -> `_accept PS-3 p4s5W0rd` "
-    return await user.send(msg)
+        return await user.send(msg)
 
 @enroll.error
 async def enroll_error(ctx: commands.Context, error: commands.CommandError):
@@ -904,7 +950,7 @@ async def enroll_error(ctx: commands.Context, error: commands.CommandError):
     user = await bot.fetch_user(user_id)
     if isinstance(error, commands.MissingRequiredArgument):
         msg= "__Missing a required argument__ -> **_enroll** [wallet start with 'ronin:'] \n -> `_enroll ronin:0f14612bad915aa3c5d6f43f1b046f703c6dead0`"
-    return await user.send(msg)
+        return await user.send(msg)
 
 @bot.event
 async def on_command_error( ctx: commands.Context, error: commands.CommandError):
@@ -913,7 +959,7 @@ async def on_command_error( ctx: commands.Context, error: commands.CommandError)
         if isinstance(error, commands.CommandNotFound):
             return await user.send('Command not found, please review the commands list with > _help ')
         if isinstance(error, commands.CommandOnCooldown):
-            message = f"This command is on cooldown. Please try again after {round(error.retry_after, 1)} seconds. Remember, rate limit of 1 command type every "+ str(commands_limit) +" secs"
+            message = f"This command is on cooldown. Please try again after {round(error.retry_after, 1)} seconds."
             return await user.send(message)
         print(error)
         
